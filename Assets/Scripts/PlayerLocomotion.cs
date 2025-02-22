@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace SG
 {
     public class PlayerLocomotion : MonoBehaviour
@@ -14,8 +15,7 @@ namespace SG
         public Transform myTransform;
         [HideInInspector]
         public AnimatorHandler animatorHandler;
-  
-        
+
         public new Rigidbody rigidbody;
         public GameObject normalCamera;
 
@@ -30,7 +30,7 @@ namespace SG
         {
             rigidbody = GetComponent<Rigidbody>();
             inputHandler = GetComponent<InputHandler>();
-            animatorHandler = GetComponent<AnimatorHandler>();
+            animatorHandler = GetComponentInChildren<AnimatorHandler>();
             cameraObject = Camera.main.transform;
             myTransform = transform;
             animatorHandler.Initialize();
@@ -54,12 +54,12 @@ namespace SG
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, normalVector);
             rigidbody.velocity = projectedVelocity;
 
+            animatorHandler.UpdateAnimatorValues(inputHandler.moveAmount, 0);
+
             if (animatorHandler.canRotate)
             {
                 HandleRotation(delta);
             }
-
-            
         }
         #region Movement
         Vector3 normalVector;
@@ -90,3 +90,4 @@ namespace SG
         #endregion
     }
 }
+

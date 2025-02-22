@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
+
 
 namespace SG
 {
@@ -13,19 +15,12 @@ namespace SG
         public float mouseY;
 
         Player inputActions;
-      
+        
 
         Vector2 movementInput;
         Vector2 cameraInput;
 
- 
-
-        private void FixedUpdate()
-        {
-            float delta = Time.fixedDeltaTime;
-
-            
-        }
+       
 
         public void OnEnable()
         {
@@ -59,3 +54,4 @@ namespace SG
         }
     }
 }
+

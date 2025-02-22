@@ -35,7 +35,7 @@ namespace SG
             {
                 v = -0.5f;
             }
-            else if (verticalMovement > -0.55f)
+            else if (verticalMovement < -0.55f)
             {
                 v = -1;
             }
@@ -44,6 +44,7 @@ namespace SG
                 v = 0;
             }
             #endregion
+
 
             #region Horizontal
             float h = 0;
@@ -56,7 +57,7 @@ namespace SG
             {
                 h = 1;
             }
-            else if(horizontalMovement < 0 && horizontalMovement > -0.55f)
+            else if (horizontalMovement < 0 && horizontalMovement > -0.55f)
             {
                 h = -0.5f;
             }
@@ -85,3 +86,4 @@ namespace SG
         }
     }
 }
+
