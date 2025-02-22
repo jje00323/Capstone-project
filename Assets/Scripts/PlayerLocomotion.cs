@@ -12,6 +12,8 @@ namespace SG
 
         [HideInInspector]
         public Transform myTransform;
+        [HideInInspector]
+        public AnimatorHandler animatorHandler;
   
         
         public new Rigidbody rigidbody;
@@ -28,8 +30,10 @@ namespace SG
         {
             rigidbody = GetComponent<Rigidbody>();
             inputHandler = GetComponent<InputHandler>();
+            animatorHandler = GetComponent<AnimatorHandler>();
             cameraObject = Camera.main.transform;
             myTransform = transform;
+            animatorHandler.Initialize();
 
         }
 
@@ -49,6 +53,11 @@ namespace SG
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, normalVector);
             rigidbody.velocity = projectedVelocity;
+
+            if (animatorHandler.canRotate)
+            {
+                HandleRotation(delta);
+            }
 
             
         }
