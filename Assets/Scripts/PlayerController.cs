@@ -1,25 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     private PlayerControls controls;
-    private Vector3 targetPosition;
-    private bool isMoving = false;
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 10f;
+    private NavMeshAgent agent; // NavMeshAgent 추가
     public bool isRightClickPressed = false;
     public JobAnimations animationManager; // 애니메이션 매니저 추가
-
     public Animator animator;
+
+
+    public float rotationSpeed = 20f; //ver2
 
     void Awake()
     {
         controls = new PlayerControls();
         animationManager = GetComponent<JobAnimations>(); //  자동으로 연결
         animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+
+
+
+        agent.updateRotation = false; //ver2
+
+        agent.speed = 5f;
+        agent.acceleration = 999f;
+        agent.autoBraking = false;
     }
 
     void OnEnable()
@@ -43,29 +52,26 @@ public class PlayerController : MonoBehaviour
             UpdateTargetPosition();
         }
 
-        if (isMoving)
+        if (agent.velocity.magnitude > 0.1f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-
-            //  이동 속도 계산하여 애니메이션 실행
-            
-            animationManager.PlayMovementAnimation(moveSpeed);
-            //Debug.Log("현재 Speed_Basic 값: " + speed);
-            //  캐릭터 회전 처리
-            Vector3 direction = (targetPosition - transform.position).normalized;
+            Vector3 direction = agent.steeringTarget - transform.position;
             if (direction != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
-
-            // 이동이 멈추면 Idle 애니메이션 실행
-            if (!isRightClickPressed && Vector3.Distance(transform.position, targetPosition) < 0.1f)
-            {
-                isMoving = false;
-                animationManager.StopMovementAnimation();
-            }
         }
+
+        //NavMeshAgent의 속도를 기준으로 애니메이션 처리
+        if (agent.velocity.magnitude > 0.1f)
+        {
+            animationManager.PlayMovementAnimation(agent.velocity.magnitude);
+        }
+        else
+        {
+            animationManager.StopMovementAnimation();
+        }
+
     }
 
     public void OnRightClickStart(InputAction.CallbackContext context)
@@ -74,7 +80,6 @@ public class PlayerController : MonoBehaviour
         {
             isRightClickPressed = true;
             UpdateTargetPosition();
-            isMoving = true;
         }
     }
 
@@ -95,14 +100,16 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            targetPosition = hit.point;
-            isMoving = true;
+            if (NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(navHit.position);
+            }
         }
     }
 
     public void StopMovement()
     {
-        isMoving = false;
+        agent.ResetPath();
         Debug.Log("PlayerController: 이동 멈춤");
 
     }
