@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private bool isMovementStopped = false;
 
 
-    public float rotationSpeed = 20f; //ver2
+    public float rotationSpeed = 10f; 
 
     void Awake()
     {
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        agent.updateRotation = false; //ver2
+        agent.updateRotation = false; 
 
         agent.speed = 5f;
         agent.acceleration = 999f;
