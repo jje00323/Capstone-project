@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerSkill : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class PlayerSkill : MonoBehaviour
     private bool bAttacking = false; // 공격 중인지 여부
     private bool bComboEnable = false; // 콤보 입력이 가능한지 여부
     private bool bComboExist = false; // 다음 공격이 예약되었는지 여부
-
+    private float combonum = 0;
     public static PlayerSkill Instance;
     private Dictionary<string, GameObject> hitboxes = new Dictionary<string, GameObject>();
     GameObject hitbox;
@@ -28,6 +30,7 @@ public class PlayerSkill : MonoBehaviour
         controls = new PlayerControls();
         controls.Player.DashSkill.performed += ctx => TryDash();
         controls.Player.OnLeftClick.performed += ctx => UpdateAttacking();
+        controls.Player.QWER.performed += TrySkills;
 
         playerController = GetComponent<PlayerController>();
         Actionanimator = GetComponent<Animator>();
@@ -105,15 +108,25 @@ public class PlayerSkill : MonoBehaviour
 
         if (bComboExist) //  추가 입력이 들어왔으면 즉시 다음 공격 실행
         {
+            combonum++;
             //Debug.Log("추가 공격 실행");
             bComboEnable = false;
             StartCoroutine(PerformAttack());
+            
+        }
+        else if(combonum == 3)
+        {
+            yield return new WaitUntil(() =>
+                Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f &&
+                !Actionanimator.IsInTransition(0));
+            playerController.StartMovement();
+            Actionanimator.SetTrigger("endCombo");
         }
         else
         {
             //  공격이 끝나기 직전에 Idle 상태로 복귀
             yield return new WaitUntil(() =>
-                Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f &&
+                Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f &&
                 !Actionanimator.IsInTransition(0));
             playerController.StartMovement();
             Actionanimator.SetTrigger("endCombo");
@@ -213,7 +226,65 @@ public class PlayerSkill : MonoBehaviour
         playerController.StartMovement();
     }
 
+    private void TrySkills(InputAction.CallbackContext context)
+    {
+        if (playerController != null)
+        {
+            playerController.StopMovement();
+            
+        }
+        LookAtMouse();
 
+        string keyPressed = context.control.displayName; // 누른 키의 이름 가져오기
+        Debug.Log($" TrySkills 실행됨! 입력된 키: {keyPressed}"); //  실행 로그 추가
+
+        if (keyPressed == "Q")StartCoroutine(UseSkill("Q"));
+        else if (keyPressed == "W") StartCoroutine(UseSkill("W"));
+        else if (keyPressed == "E") StartCoroutine(UseSkill("E"));
+        else if (keyPressed == "R") StartCoroutine(UseSkill("R"));
+    }
+
+    private IEnumerator UseSkill(string skillName)
+    {
+        
+
+        string key = $"{currentJob}_{skillName}";
+        string animationStartTrigger = $"Press_{skillName}";
+        string animatioEndTrigger = $"end_skill";
+        Debug.Log($" UseSkill 실행됨! 스킬 이름: {skillName}, 애니메이션: {animationStartTrigger}"); //  실행 로그 추가
+
+
+        if (hitboxes.ContainsKey(key))
+        {
+
+            Debug.Log($" {skillName} 스킬 사용!");
+            
+
+            Actionanimator.SetTrigger(animationStartTrigger);
+            StartCoroutine(ActivateHitboxAfterDelay(key, 0.3f));
+
+            yield return new WaitUntil(() =>
+                Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f &&
+                !Actionanimator.IsInTransition(0));
+
+            yield return new WaitUntil(() =>
+            {
+                var animState = Actionanimator.GetCurrentAnimatorStateInfo(0);
+                return animState.normalizedTime >= 0.8f && !Actionanimator.IsInTransition(0);
+            });
+
+            Actionanimator.SetTrigger(animatioEndTrigger);
+
+        }
+        else
+        {
+            Debug.LogError($" {key} 스킬이 없습니다! LoadHitboxes()에서 추가하세요.");
+        }
+        if (playerController != null)
+        {
+            playerController.StartMovement(); // 스킬 종료 후 이동 다시 활성화
+        }
+    }
 
 
 
@@ -234,6 +305,8 @@ public class PlayerSkill : MonoBehaviour
     private void LoadHitboxes()
     {
         hitboxes["Basic_Attack"] = Resources.Load<GameObject>("Hitboxes/Basic_Attack");
+        hitboxes["Basic_Q"] = Resources.Load<GameObject>("Hitboxes/Basic_Q");
+        
     }
 
     private IEnumerator ActivateHitboxAfterDelay(string key, float delay)

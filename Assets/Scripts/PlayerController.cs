@@ -121,14 +121,14 @@ public class PlayerController : MonoBehaviour
         agent.ResetPath();
         agent.isStopped = true; // 이동 정지
         isMovementStopped = true;
-        //Debug.Log("PlayerController: 이동 멈춤");
+        Debug.Log("PlayerController: 이동 멈춤");
     }
 
     public void StartMovement()
     {
         agent.isStopped = false; // 이동 다시 시작
         isMovementStopped = false;
-        //Debug.Log("PlayerController: 이동 시작");
+        Debug.Log("PlayerController: 이동 시작");
     }
 
     public void StopAllMovementAnimations()
