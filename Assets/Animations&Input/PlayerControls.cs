@@ -44,6 +44,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OnLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f67fd56-95f2-478f-8aa1-7c70a02c7f13"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +77,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""DashSkill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6df0231e-87b4-4f47-b110-be139128a3ef"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +98,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_OnRightClick = m_Player.FindAction("OnRightClick", throwIfNotFound: true);
         m_Player_DashSkill = m_Player.FindAction("DashSkill", throwIfNotFound: true);
+        m_Player_OnLeftClick = m_Player.FindAction("OnLeftClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -141,12 +162,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_OnRightClick;
     private readonly InputAction m_Player_DashSkill;
+    private readonly InputAction m_Player_OnLeftClick;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
         public PlayerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @OnRightClick => m_Wrapper.m_Player_OnRightClick;
         public InputAction @DashSkill => m_Wrapper.m_Player_DashSkill;
+        public InputAction @OnLeftClick => m_Wrapper.m_Player_OnLeftClick;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -162,6 +185,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DashSkill.started += instance.OnDashSkill;
             @DashSkill.performed += instance.OnDashSkill;
             @DashSkill.canceled += instance.OnDashSkill;
+            @OnLeftClick.started += instance.OnOnLeftClick;
+            @OnLeftClick.performed += instance.OnOnLeftClick;
+            @OnLeftClick.canceled += instance.OnOnLeftClick;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -172,6 +198,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DashSkill.started -= instance.OnDashSkill;
             @DashSkill.performed -= instance.OnDashSkill;
             @DashSkill.canceled -= instance.OnDashSkill;
+            @OnLeftClick.started -= instance.OnOnLeftClick;
+            @OnLeftClick.performed -= instance.OnOnLeftClick;
+            @OnLeftClick.canceled -= instance.OnOnLeftClick;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -193,5 +222,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     {
         void OnOnRightClick(InputAction.CallbackContext context);
         void OnDashSkill(InputAction.CallbackContext context);
+        void OnOnLeftClick(InputAction.CallbackContext context);
     }
 }

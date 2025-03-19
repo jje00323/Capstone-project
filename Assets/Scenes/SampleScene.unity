@@ -176,7 +176,7 @@ Transform:
   m_GameObject: {fileID: 99735624}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -208,7 +208,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &99735631
 MonoBehaviour:
@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7426565e367404746aed97ca4a7b6dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
   moveSpeed: 5
   rotationSpeed: 10
   isRightClickPressed: 0
@@ -240,7 +241,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 72357ae96b3f4bc4bb65e4c3f1808a87, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -273,6 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25bd4b7e23d7dc43a00732f18112bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Actionanimator: {fileID: 99735632}
 --- !u!1 &606245957
 GameObject:
   m_ObjectHideFlags: 0
