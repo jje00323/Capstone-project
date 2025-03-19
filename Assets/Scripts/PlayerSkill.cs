@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class PlayerSkill : MonoBehaviour
@@ -188,11 +189,18 @@ public class PlayerSkill : MonoBehaviour
 
         transform.position = targetPosition;
         isDashing = false;
+        playerController.StartMovement();
     }
 
 
 
-    
+
+
+
+
+
+
+
 
 
     private Vector3 GetMouseWorldPosition()

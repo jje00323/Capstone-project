@@ -26,14 +26,14 @@ public class JobAnimations : MonoBehaviour
     //이동 애니메이션 실행
     public void PlayMovementAnimation(float speed)
     {
-        Debug.Log("PlayMovementAnimation() 호출됨. Speed: " + speed);
+        //Debug.Log("PlayMovementAnimation() 호출됨. Speed: " + speed);
 
         if (JobManager.Instance == null) return;
 
         if (currentJob == JobManager.JobType.Basic)
         {
             animator.SetFloat("Speed_Basic", speed);
-            Debug.Log($"Basic 직업 - Speed_Basic 값 설정: {speed}");
+            //Debug.Log($"Basic 직업 - Speed_Basic 값 설정: {speed}");
         }
         else if (currentJob == JobManager.JobType.Warrior)
         {
