@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerControls controls;
     private NavMeshAgent agent; // NavMeshAgent 추가
+
     public bool isRightClickPressed = false;
     public JobAnimations animationManager; // 애니메이션 매니저 추가
     public Animator animator;
@@ -126,6 +127,29 @@ public class PlayerController : MonoBehaviour
                 }
             }
             Debug.Log("모든 애니메이션 파라미터 0으로 설정");
+        }
+    }
+
+    void OnAnimatorIK(int layerIndex)
+    {
+        if (animator)
+        {
+            animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
+            animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
+
+            RaycastHit hit;
+            Vector3 leftFootPos = animator.GetIKPosition(AvatarIKGoal.LeftFoot);
+            Vector3 rightFootPos = animator.GetIKPosition(AvatarIKGoal.RightFoot);
+
+            if (Physics.Raycast(leftFootPos + Vector3.up, Vector3.down, out hit, 1.5f, LayerMask.GetMask("Ground")))
+            {
+                animator.SetIKPosition(AvatarIKGoal.LeftFoot, hit.point);
+            }
+
+            if (Physics.Raycast(rightFootPos + Vector3.up, Vector3.down, out hit, 1.5f, LayerMask.GetMask("Ground")))
+            {
+                animator.SetIKPosition(AvatarIKGoal.RightFoot, hit.point);
+            }
         }
     }
 }
