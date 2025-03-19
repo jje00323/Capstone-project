@@ -24,6 +24,7 @@ public class PlayerSkill : MonoBehaviour
     public static PlayerSkill Instance;
     private Dictionary<string, GameObject> hitboxes = new Dictionary<string, GameObject>();
     GameObject hitbox;
+    private bool isSkillActive = false;
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class PlayerSkill : MonoBehaviour
 
         playerController = GetComponent<PlayerController>();
         Actionanimator = GetComponent<Animator>();
-
+        InitializeSkillCooldowns();
         mainCamera = Camera.main;
 
         LoadHitboxes();
@@ -223,11 +224,30 @@ public class PlayerSkill : MonoBehaviour
 
         transform.position = targetPosition;
         isDashing = false;
+        bAttacking = false; //  기본 공격 가능하도록 초기화
+        bComboEnable = false; //  콤보 초기화
+        bComboExist = false;
+        combonum = 0;
         playerController.StartMovement();
     }
 
     private void TrySkills(InputAction.CallbackContext context)
     {
+        if (isSkillActive)
+        {
+            return;
+        }
+
+        string keyPressed = context.control.displayName; // 누른 키의 이름 가져오기
+
+        if (IsSkillOnCooldown(keyPressed))
+        {
+            Debug.Log($" {keyPressed} 스킬은 아직 쿨타임 중!");
+            return; // 스킬 사용 불가
+        }
+        Debug.Log($" TrySkills 실행됨! 입력된 키: {keyPressed}"); //  실행 로그 추가
+
+
         if (playerController != null)
         {
             playerController.StopMovement();
@@ -235,19 +255,19 @@ public class PlayerSkill : MonoBehaviour
         }
         LookAtMouse();
 
-        string keyPressed = context.control.displayName; // 누른 키의 이름 가져오기
-        Debug.Log($" TrySkills 실행됨! 입력된 키: {keyPressed}"); //  실행 로그 추가
+        
 
         if (keyPressed == "Q")StartCoroutine(UseSkill("Q"));
         else if (keyPressed == "W") StartCoroutine(UseSkill("W"));
         else if (keyPressed == "E") StartCoroutine(UseSkill("E"));
         else if (keyPressed == "R") StartCoroutine(UseSkill("R"));
+        skillLastUsedTime[keyPressed] = Time.time;
     }
 
     private IEnumerator UseSkill(string skillName)
     {
-        
 
+        isSkillActive = true;
         string key = $"{currentJob}_{skillName}";
         string animationStartTrigger = $"Press_{skillName}";
         string animatioEndTrigger = $"end_skill";
@@ -280,8 +300,14 @@ public class PlayerSkill : MonoBehaviour
         {
             Debug.LogError($" {key} 스킬이 없습니다! LoadHitboxes()에서 추가하세요.");
         }
+
         if (playerController != null)
         {
+            bAttacking = false; //  기본 공격 가능하도록 초기화
+            bComboEnable = false; //  콤보 초기화
+            bComboExist = false;
+            combonum = 0;
+            isSkillActive = false;
             playerController.StartMovement(); // 스킬 종료 후 이동 다시 활성화
         }
     }
@@ -306,7 +332,10 @@ public class PlayerSkill : MonoBehaviour
     {
         hitboxes["Basic_Attack"] = Resources.Load<GameObject>("Hitboxes/Basic_Attack");
         hitboxes["Basic_Q"] = Resources.Load<GameObject>("Hitboxes/Basic_Q");
-        
+        hitboxes["Basic_W"] = Resources.Load<GameObject>("Hitboxes/Basic_W");
+        hitboxes["Basic_E"] = Resources.Load<GameObject>("Hitboxes/Basic_E");
+        hitboxes["Basic_R"] = Resources.Load<GameObject>("Hitboxes/Basic_R");
+
     }
 
     private IEnumerator ActivateHitboxAfterDelay(string key, float delay)
@@ -321,5 +350,67 @@ public class PlayerSkill : MonoBehaviour
     }
 
     // 히트박스 일정 시간 후 비활성화
-  
+
+    private Dictionary<JobManager.JobType, Dictionary<string, float>> jobSkillCooldowns = new Dictionary<JobManager.JobType, Dictionary<string, float>>();
+
+    private Dictionary<string, float> skillLastUsedTime = new Dictionary<string, float>(); // 마지막 사용 시간 저장
+
+    //  직업별 스킬 쿨타임 초기화
+    private void InitializeSkillCooldowns()
+    {
+        jobSkillCooldowns[JobManager.JobType.Basic] = new Dictionary<string, float>
+    {
+        { "Q", 2.0f },
+        { "W", 2.0f },
+        { "E", 2.0f },
+        { "R", 2.0f }
+    };
+
+        jobSkillCooldowns[JobManager.JobType.Warrior] = new Dictionary<string, float>
+    {
+        { "Q", 5.0f },
+        { "W", 8.0f },
+        { "E", 10.0f },
+        { "R", 20.0f }
+    };
+
+        jobSkillCooldowns[JobManager.JobType.Mage] = new Dictionary<string, float>
+    {
+        { "Q", 4.0f },  
+        { "W", 7.0f },
+        { "E", 12.0f },
+        { "R", 25.0f }   
+    };
+
+        jobSkillCooldowns[JobManager.JobType.Archer] = new Dictionary<string, float>
+    {
+        { "Q", 3.0f },  
+        { "W", 6.0f },
+        { "E", 8.0f },
+        { "R", 15.0f }
+    };
+    }
+
+    private bool IsSkillOnCooldown(string skillName)
+    {
+        if (!skillLastUsedTime.ContainsKey(skillName))
+            return false; //  스킬을 한 번도 사용하지 않았다면 사용 가능
+
+        float lastUsed = skillLastUsedTime[skillName];
+        float cooldown = GetSkillCooldown(skillName); // 현재 직업의 스킬 쿨타임 가져오기
+
+        return (Time.time - lastUsed) < cooldown; //  현재 시간이 마지막 사용 시간 + 쿨타임보다 작으면 아직 사용 불가
+    }
+    private float GetSkillCooldown(string skillName)
+    {
+        JobManager.JobType currentJob = JobManager.Instance.GetCurrentJob();
+
+        if (jobSkillCooldowns.ContainsKey(currentJob) && jobSkillCooldowns[currentJob].ContainsKey(skillName))
+        {
+            return jobSkillCooldowns[currentJob][skillName]; //  현재 직업의 해당 스킬 쿨타임 반환
+        }
+
+        return 2.0f; // 기본값 (만약 설정되지 않은 경우)
+    }
+
 }
