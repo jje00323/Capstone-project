@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerSkill : MonoBehaviour
 {
-
+    private JobManager.JobType currentJob;
     private PlayerControls controls;
     private PlayerController playerController;
     private Camera mainCamera;
@@ -18,6 +18,9 @@ public class PlayerSkill : MonoBehaviour
     private bool bComboEnable = false; // 콤보 입력이 가능한지 여부
     private bool bComboExist = false; // 다음 공격이 예약되었는지 여부
 
+    public static PlayerSkill Instance;
+    private Dictionary<string, GameObject> hitboxes = new Dictionary<string, GameObject>();
+    GameObject hitbox;
 
     private void Awake()
     {
@@ -29,6 +32,19 @@ public class PlayerSkill : MonoBehaviour
         Actionanimator = GetComponent<Animator>();
 
         mainCamera = Camera.main;
+
+        LoadHitboxes();
+    }
+
+    private void Start()
+    {
+        if (JobManager.Instance == null)
+        {
+            Debug.LogError("PlayerSkill: JobManager.Instance가 null입니다! JobManager가 씬에 있는지 확인하세요.");
+            return;
+        }
+
+        currentJob = JobManager.Instance.GetCurrentJob();
     }
 
     private void OnEnable() { controls.Player.Enable(); }
@@ -43,7 +59,7 @@ public class PlayerSkill : MonoBehaviour
             if (bComboEnable) // 콤보 가능 상태일 때만 추가 입력을 허용
             {
                 bComboExist = true;
-                Debug.Log("추가 공격 입력 감지");
+                //Debug.Log("추가 공격 입력 감지");
             }
             return;
         }
@@ -53,6 +69,9 @@ public class PlayerSkill : MonoBehaviour
 
     private IEnumerator PerformAttack()
     {
+
+        string key = $"{currentJob}_Attack";
+        
         if (playerController != null)
         {
             playerController.StopMovement();
@@ -66,7 +85,8 @@ public class PlayerSkill : MonoBehaviour
 
         //  애니메이션 실행 (Base Layer → AttackState)
         Actionanimator.SetTrigger("NextCombo");
-        Debug.Log("공격 시작");
+        StartCoroutine(ActivateHitboxAfterDelay(key, 0.3f));
+        //Debug.Log("공격 시작");
 
         //  애니메이션이 30% 진행되면 다음 입력을 받을 수 있도록 설정
         yield return new WaitUntil(() =>
@@ -74,7 +94,8 @@ public class PlayerSkill : MonoBehaviour
             !Actionanimator.IsInTransition(0));
 
         bComboEnable = true; //  다음 공격 입력 가능
-        Debug.Log("콤보 입력 가능");
+        //Debug.Log("콤보 입력 가능");
+
 
         //  애니메이션이 70% 진행되면 추가 입력을 감지하여 즉시 실행
         yield return new WaitUntil(() =>
@@ -83,7 +104,7 @@ public class PlayerSkill : MonoBehaviour
 
         if (bComboExist) //  추가 입력이 들어왔으면 즉시 다음 공격 실행
         {
-            Debug.Log("추가 공격 실행");
+            //Debug.Log("추가 공격 실행");
             bComboEnable = false;
             StartCoroutine(PerformAttack());
         }
@@ -123,14 +144,14 @@ public class PlayerSkill : MonoBehaviour
     {
         bAttacking = false;
         bComboEnable = false;
-        Debug.Log("공격 종료 → 즉시 다시 공격 가능");
+        //Debug.Log("공격 종료 → 즉시 다시 공격 가능");
         
     }
 
 
     public void Hit()
     {
-        Debug.Log(" Hit 이벤트 발생! (공격 판정 처리)");
+        //Debug.Log(" Hit 이벤트 발생! (공격 판정 처리)");
         // 여기에서 실제 공격 판정을 구현하면 됨 (예: Raycast, Collider 검사 등)
     }
 
@@ -145,7 +166,7 @@ public class PlayerSkill : MonoBehaviour
         }
         else
         {
-            Debug.Log($"대쉬 사용 불가! 남은 쿨타임: {dashSettings.GetRemainingCooldown():F1}초");
+            //Debug.Log($"대쉬 사용 불가! 남은 쿨타임: {dashSettings.GetRemainingCooldown():F1}초");
         }
     }
     private IEnumerator Dash(DashSettings dashSettings)
@@ -192,7 +213,7 @@ public class PlayerSkill : MonoBehaviour
 
 
 
-    
+
 
 
     private Vector3 GetMouseWorldPosition()
@@ -207,4 +228,24 @@ public class PlayerSkill : MonoBehaviour
 
         return transform.position + transform.forward * 5f;
     }
+
+
+    private void LoadHitboxes()
+    {
+        hitboxes["Basic_Attack"] = Resources.Load<GameObject>("Hitboxes/Basic_Attack");
+    }
+
+    private IEnumerator ActivateHitboxAfterDelay(string key, float delay)
+    {
+        yield return new WaitForSeconds(delay); // 애니메이션 공격 타이밍에 맞춰 지연
+
+        Vector3 spawnPosition = transform.position + transform.forward * 1.5f;
+        spawnPosition.y += 1.0f;
+
+        hitbox = Instantiate(hitboxes[key], spawnPosition, Quaternion.identity);
+        hitbox.SetActive(true);
+    }
+
+    // 히트박스 일정 시간 후 비활성화
+  
 }

@@ -8,32 +8,31 @@ public class JobAnimations : MonoBehaviour
     public Animator animator;
     private JobManager.JobType currentJob;
 
-    void Awake()
+    void Start()
     {
         animator = GetComponent<Animator>();
 
-        if (JobManager.Instance != null)
+        if (JobManager.Instance == null)
         {
-            currentJob = JobManager.Instance.GetCurrentJob(); //  Awake()에서 설정
-            Debug.Log($"JobAnimations Awake - 현재 직업: {currentJob}");
+            Debug.LogError("JobManager.Instance가 null입니다! JobManager가 씬에 있는지 확인하세요.");
+            return;
         }
-        else
-        {
-            Debug.LogError("JobManager.Instance가 null입니다! 씬에 JobManager가 추가되었는지 확인하세요.");
-        }
+
+        currentJob = JobManager.Instance.GetCurrentJob(); //  Awake()에서 설정
+        Debug.Log($"JobAnimations Awake - 현재 직업: {currentJob}");
     }
 
     //이동 애니메이션 실행
     public void PlayMovementAnimation(float speed)
     {
-        Debug.Log("PlayMovementAnimation() 호출됨. Speed: " + speed);
+        //Debug.Log("PlayMovementAnimation() 호출됨. Speed: " + speed);
 
         if (JobManager.Instance == null) return;
 
         if (currentJob == JobManager.JobType.Basic)
         {
             animator.SetFloat("Speed_Basic", speed);
-            Debug.Log($"Basic 직업 - Speed_Basic 값 설정: {speed}");
+            //Debug.Log($"Basic 직업 - Speed_Basic 값 설정: {speed}");
         }
         else if (currentJob == JobManager.JobType.Warrior)
         {

@@ -8,7 +8,7 @@ public class JobManager : MonoBehaviour
     public enum JobType { Basic, Warrior, Mage, Archer } // 직업 유형 선언
     public JobType currentJob = JobType.Basic; // 기본 직업 설정
 
-    public static JobManager Instance; // 싱글턴 패턴 적용 (한 개만 존재)
+    public static JobManager Instance { get; private set; }// 싱글턴 패턴 적용 (한 개만 존재)
 
     private Dictionary<JobType, DashSettings> dashSettings;
 
@@ -19,9 +19,12 @@ public class JobManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+            Debug.Log("JobManager 인스턴스 생성됨!");
         }
         else
         {
+            Debug.LogWarning("JobManager 중복 생성! 기존 인스턴스를 유지합니다.");
             Destroy(gameObject);
         }
 
