@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QWER"",
+                    ""type"": ""Button"",
+                    ""id"": ""42608d25-7734-4713-997a-aba583ff3f46"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -88,6 +97,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""OnLeftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d888571f-9219-4de1-a4a7-83972f275490"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QWER"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +119,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_OnRightClick = m_Player.FindAction("OnRightClick", throwIfNotFound: true);
         m_Player_DashSkill = m_Player.FindAction("DashSkill", throwIfNotFound: true);
         m_Player_OnLeftClick = m_Player.FindAction("OnLeftClick", throwIfNotFound: true);
+        m_Player_QWER = m_Player.FindAction("QWER", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,6 +184,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_OnRightClick;
     private readonly InputAction m_Player_DashSkill;
     private readonly InputAction m_Player_OnLeftClick;
+    private readonly InputAction m_Player_QWER;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -170,6 +192,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @OnRightClick => m_Wrapper.m_Player_OnRightClick;
         public InputAction @DashSkill => m_Wrapper.m_Player_DashSkill;
         public InputAction @OnLeftClick => m_Wrapper.m_Player_OnLeftClick;
+        public InputAction @QWER => m_Wrapper.m_Player_QWER;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -188,6 +211,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OnLeftClick.started += instance.OnOnLeftClick;
             @OnLeftClick.performed += instance.OnOnLeftClick;
             @OnLeftClick.canceled += instance.OnOnLeftClick;
+            @QWER.started += instance.OnQWER;
+            @QWER.performed += instance.OnQWER;
+            @QWER.canceled += instance.OnQWER;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -201,6 +227,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OnLeftClick.started -= instance.OnOnLeftClick;
             @OnLeftClick.performed -= instance.OnOnLeftClick;
             @OnLeftClick.canceled -= instance.OnOnLeftClick;
+            @QWER.started -= instance.OnQWER;
+            @QWER.performed -= instance.OnQWER;
+            @QWER.canceled -= instance.OnQWER;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -223,5 +252,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnOnRightClick(InputAction.CallbackContext context);
         void OnDashSkill(InputAction.CallbackContext context);
         void OnOnLeftClick(InputAction.CallbackContext context);
+        void OnQWER(InputAction.CallbackContext context);
     }
 }
