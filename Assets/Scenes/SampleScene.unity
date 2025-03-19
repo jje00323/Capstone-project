@@ -282,7 +282,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -709,7 +709,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 3f838520bf1ed16418a4e8eecb97b2dd, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: e616132d77a102243aeb355d973b7653, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &800919563
 Transform:
