@@ -93,6 +93,7 @@ public class PlayerSkill : MonoBehaviour
             yield return new WaitUntil(() =>
                 Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f &&
                 !Actionanimator.IsInTransition(0));
+            playerController.StartMovement();
             Actionanimator.SetTrigger("endCombo");
 
 

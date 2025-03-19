@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public bool isRightClickPressed = false;
     public JobAnimations animationManager; // 애니메이션 매니저 추가
     public Animator animator;
+    private bool isMovementStopped = false;
 
 
     public float rotationSpeed = 20f; //ver2
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour
         agent.autoBraking = false;
     }
 
+
+
     void OnEnable()
     {
         controls.Player.OnRightClick.performed += OnRightClickStart;
@@ -49,6 +52,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (isRightClickPressed)
+        {
+            UpdateTargetPosition();
+        }
+
+        if (!isMovementStopped && isRightClickPressed)
         {
             UpdateTargetPosition();
         }
@@ -111,8 +119,16 @@ public class PlayerController : MonoBehaviour
     public void StopMovement()
     {
         agent.ResetPath();
+        agent.isStopped = true; // 이동 정지
+        isMovementStopped = true;
         Debug.Log("PlayerController: 이동 멈춤");
+    }
 
+    public void StartMovement()
+    {
+        agent.isStopped = false; // 이동 다시 시작
+        isMovementStopped = false;
+        Debug.Log("PlayerController: 이동 시작");
     }
 
     public void StopAllMovementAnimations()
