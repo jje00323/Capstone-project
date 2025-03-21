@@ -388,7 +388,7 @@ public class PlayerSkill : MonoBehaviour
         // 이펙트 생성
         if (effectPrefabs.ContainsKey(key))
         {
-            GameObject effect = Instantiate(effectPrefabs[key], spawnPosition, Quaternion.LookRotation(transform.forward));
+            GameObject effect = Instantiate(effectPrefabs[key], worldPosition, Quaternion.LookRotation(transform.forward));
             Destroy(effect, 2f); // 2초 후 자동 제거
         }
     }
