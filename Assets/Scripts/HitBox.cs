@@ -23,7 +23,7 @@ public class Hitbox : MonoBehaviour
     IEnumerator DisableAfterDuration()
     {
         yield return new WaitForSeconds(duration);
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
