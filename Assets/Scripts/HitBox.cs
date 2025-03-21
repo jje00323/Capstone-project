@@ -6,13 +6,18 @@ public class Hitbox : MonoBehaviour
 {
     public float damage = 10f; // 기본 공격력
     public float duration = 0.5f; // 히트박스 지속 시간
-    private Collider hitboxCollider;
+    private Collider[] allColliders;
 
     void Awake()
     {
-        hitboxCollider = GetComponent<Collider>();
-        if (hitboxCollider != null)
-            hitboxCollider.isTrigger = true;
+        allColliders = GetComponents<Collider>();
+        if (allColliders != null)
+        {
+            foreach (var col in allColliders)
+            {
+                col.isTrigger = true;
+            }
+        }
     }
 
     void OnEnable()
@@ -41,19 +46,26 @@ public class Hitbox : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (hitboxCollider != null)
+        Gizmos.color = Color.red;
+
+        // 회전/위치 반영
+        Matrix4x4 oldMatrix = Gizmos.matrix;
+        Gizmos.matrix = transform.localToWorldMatrix;
+
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (Collider col in colliders)
         {
-            Gizmos.color = Color.red;
-            if (hitboxCollider is BoxCollider)
+            if (col is BoxCollider box)
             {
-                BoxCollider box = (BoxCollider)hitboxCollider;
-                Gizmos.DrawWireCube(transform.position + box.center, box.size);
+                Gizmos.DrawWireCube(box.center, box.size);
             }
-            else if (hitboxCollider is SphereCollider)
+            else if (col is SphereCollider sphere)
             {
-                SphereCollider sphere = (SphereCollider)hitboxCollider;
-                Gizmos.DrawWireSphere(transform.position + sphere.center, sphere.radius);
+                Gizmos.DrawWireSphere(sphere.center, sphere.radius);
             }
+            // Capsule, Mesh 등 다른 타입도 원하면 여기에 추가
         }
+
+        Gizmos.matrix = oldMatrix; // 원래 상태 복구
     }
 }

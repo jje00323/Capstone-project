@@ -340,12 +340,39 @@ public class PlayerSkill : MonoBehaviour
 
     private IEnumerator ActivateHitboxAfterDelay(string key, float delay)
     {
-        yield return new WaitForSeconds(delay); // 애니메이션 공격 타이밍에 맞춰 지연
+        yield return new WaitForSeconds(delay); // 애니메이션 타이밍 맞춰 지연
 
-        Vector3 spawnPosition = transform.position + transform.forward * 1.5f;
-        spawnPosition.y += 1.0f;
+        if (!hitboxes.ContainsKey(key))
+        {
+            Debug.LogError($"히트박스 {key} 없음!");
+            yield break;
+        }
 
-        hitbox = Instantiate(hitboxes[key], spawnPosition, Quaternion.identity);
+        GameObject hitboxPrefab = hitboxes[key];
+
+        // 1. 임시로 프리팹 생성해서 SpawnPoint 위치와 회전 정보를 가져온다
+        GameObject temp = Instantiate(hitboxPrefab); // 임시로 생성 (위치 계산용)
+        Transform spawnPoint = temp.transform.Find("SpawnPoint");
+
+        if (spawnPoint == null)
+        {
+            Debug.LogError($"히트박스 {key}에 'SpawnPoint' 오브젝트가 없습니다.");
+            Destroy(temp);
+            yield break;
+        }
+
+        // 2. SpawnPoint의 로컬 위치와 회전을 기준으로 월드 위치 계산
+        Vector3 localOffset = spawnPoint.localPosition;
+        Quaternion localRotation = spawnPoint.localRotation;
+
+        // 현재 플레이어의 위치와 방향을 기준으로 변환
+        Vector3 worldPosition = transform.position + transform.TransformDirection(localOffset);
+        Quaternion worldRotation = transform.rotation * localRotation;
+
+        Destroy(temp); // 위치 계산 끝났으니 임시 프리팹 제거
+
+        // 3. 히트박스를 올바른 위치와 방향으로 생성
+        hitbox = Instantiate(hitboxPrefab, worldPosition, worldRotation);
         hitbox.SetActive(true);
     }
 
