@@ -23,6 +23,7 @@ public class PlayerSkill : MonoBehaviour
     private float combonum = 0;
     public static PlayerSkill Instance;
     private Dictionary<string, GameObject> hitboxes = new Dictionary<string, GameObject>();
+    private Dictionary<string, GameObject> effectPrefabs = new Dictionary<string, GameObject>();
     GameObject hitbox;
     private bool isSkillActive = false;
 
@@ -39,6 +40,7 @@ public class PlayerSkill : MonoBehaviour
         mainCamera = Camera.main;
 
         LoadHitboxes();
+        LoadSkillEffects();
     }
 
     private void Start()
@@ -338,6 +340,14 @@ public class PlayerSkill : MonoBehaviour
 
     }
 
+    private void LoadSkillEffects()
+    {
+        effectPrefabs["Basic_Q"] = Resources.Load<GameObject>("Effects/Basic_Q_Effect");
+        effectPrefabs["Basic_W"] = Resources.Load<GameObject>("Effects/Basic_W_Effect");
+        effectPrefabs["Basic_E"] = Resources.Load<GameObject>("Effects/Basic_E_Effect");
+        effectPrefabs["Basic_R"] = Resources.Load<GameObject>("Effects/Basic_R_Effect");
+    }
+
     private IEnumerator ActivateHitboxAfterDelay(string key, float delay)
     {
         yield return new WaitForSeconds(delay); // 애니메이션 공격 타이밍에 맞춰 지연
@@ -347,6 +357,13 @@ public class PlayerSkill : MonoBehaviour
 
         hitbox = Instantiate(hitboxes[key], spawnPosition, Quaternion.identity);
         hitbox.SetActive(true);
+
+        // 이펙트 생성
+        if (effectPrefabs.ContainsKey(key))
+        {
+            GameObject effect = Instantiate(effectPrefabs[key], spawnPosition, Quaternion.LookRotation(transform.forward));
+            Destroy(effect, 2f); // 2초 후 자동 제거
+        }
     }
 
     // 히트박스 일정 시간 후 비활성화
