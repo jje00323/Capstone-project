@@ -131,20 +131,20 @@ public class PlayerController : MonoBehaviour
         Debug.Log("PlayerController: 이동 시작");
     }
 
-    public void StopAllMovementAnimations()
-    {
-        if (animator != null)
-        {
-            foreach (AnimatorControllerParameter param in animator.parameters)
-            {
-                if (param.type == AnimatorControllerParameterType.Float)
-                {
-                    animator.SetFloat(param.name, 0.1f);
-                }
-            }
-            //Debug.Log("모든 애니메이션 파라미터 0으로 설정");
-        }
-    }
+    //public void StopAllMovementAnimations()
+    //{
+    //    if (animator != null)
+    //    {
+    //        foreach (AnimatorControllerParameter param in animator.parameters)
+    //        {
+    //            if (param.type == AnimatorControllerParameterType.Float)
+    //            {
+    //                animator.SetFloat(param.name, 0.1f);
+    //            }
+    //        }
+    //        //Debug.Log("모든 애니메이션 파라미터 0으로 설정");
+    //    }
+    //}
 
     void OnAnimatorIK(int layerIndex)
     {

@@ -82,7 +82,6 @@ public class PlayerSkill : MonoBehaviour
         if (playerController != null)
         {
             playerController.StopMovement();
-            playerController.StopAllMovementAnimations();
         }
         bAttacking = true;
         bComboExist = false;
@@ -117,13 +116,17 @@ public class PlayerSkill : MonoBehaviour
             StartCoroutine(PerformAttack());
             
         }
-        else if(combonum == 3)
+        else if (combonum == 3)
         {
             yield return new WaitUntil(() =>
                 Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f &&
                 !Actionanimator.IsInTransition(0));
-            playerController.StartMovement();
+
             Actionanimator.SetTrigger("endCombo");
+
+            yield return new WaitForSeconds(0.1f); // <- 약간의 지연을 둠
+            EndAttack();
+            playerController.StartMovement();
         }
         else
         {
@@ -161,8 +164,11 @@ public class PlayerSkill : MonoBehaviour
     {
         bAttacking = false;
         bComboEnable = false;
+        bComboExist = false;
+        combonum = 0;
+        isSkillActive = false;
+        isDashing = false;
         //Debug.Log("공격 종료 → 즉시 다시 공격 가능");
-        
     }
 
 
@@ -194,7 +200,6 @@ public class PlayerSkill : MonoBehaviour
         if (playerController != null)
         {
             playerController.StopMovement();
-            playerController.StopAllMovementAnimations();
         }
 
         Vector3 dashDirection;
@@ -225,11 +230,7 @@ public class PlayerSkill : MonoBehaviour
         }
 
         transform.position = targetPosition;
-        isDashing = false;
-        bAttacking = false; //  기본 공격 가능하도록 초기화
-        bComboEnable = false; //  콤보 초기화
-        bComboExist = false;
-        combonum = 0;
+        EndAttack();
         playerController.StartMovement();
     }
 
