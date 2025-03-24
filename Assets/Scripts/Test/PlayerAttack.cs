@@ -49,16 +49,23 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log($"콤보 가능 -> 현재 콤보: {comboIndex}");
     }
 
+    public void DisableComboInput()
+    {
+        canCombo = false;
+        Debug.Log("추가 콤보 입력 차단");
+    }
+
     public void EndCombo()
     {
+
         isAttacking = false;
         canCombo = false;
         comboIndex = 0;
 
         animator.ResetTrigger("NextCombo");  // 혹시라도 잔여 트리거 제거
         animator.SetTrigger("endCombo");     // Animator 트리거 기반으로 상태 전이
-
         Debug.Log($"공격 초기화");
+
         stateMachine.ChangeState(PlayerState.Idle);
     }
 }

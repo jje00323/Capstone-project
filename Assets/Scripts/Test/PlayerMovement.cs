@@ -24,11 +24,15 @@ public class PlayerMovement : MonoBehaviour
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
 
-        if (!agent.pathPending && agent.remainingDistance > agent.stoppingDistance && agent.velocity.sqrMagnitude > 0.01f)
+        bool isMoving = !agent.pathPending &&
+                        agent.remainingDistance > agent.stoppingDistance &&
+                        agent.velocity.sqrMagnitude > 0.05f;
+
+        if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
         {
             stateMachine.ChangeState(PlayerState.Moving);
         }
-        else
+        else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
         {
             stateMachine.ChangeState(PlayerState.Idle);
         }
