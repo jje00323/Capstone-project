@@ -413,10 +413,10 @@ public class PlayerSkill : MonoBehaviour
 
         jobSkillCooldowns[JobManager.JobType.Warrior] = new Dictionary<string, float>
     {
-        { "Q", 5.0f },
-        { "W", 8.0f },
-        { "E", 10.0f },
-        { "R", 20.0f }
+        { "Q", 1.0f },
+        { "W", 1.0f },
+        { "E", 1.0f },
+        { "R", 1.0f }
     };
 
         jobSkillCooldowns[JobManager.JobType.Mage] = new Dictionary<string, float>

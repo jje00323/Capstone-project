@@ -11,6 +11,26 @@ public class JobManager : MonoBehaviour
     public static JobManager Instance { get; private set; }// 싱글턴 패턴 적용 (한 개만 존재)
 
     private Dictionary<JobType, DashSettings> dashSettings;
+    public List<JobResources> jobResourcesList;
+    private Dictionary<JobType, JobResources> jobResourcesDict;
+
+
+    [System.Serializable]
+    public class JobResources
+    {
+        public JobManager.JobType jobType;
+
+        public RuntimeAnimatorController animatorController;
+        public Avatar avatar;
+
+        public GameObject modelPrefab; 
+    }
+
+    [Header("모델이 붙을 위치")]
+    public Transform modelParent;
+
+    private GameObject currentModel;
+
 
 
     void Awake()
@@ -20,6 +40,7 @@ public class JobManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            InitializeJobResources();
             Debug.Log("JobManager 인스턴스 생성됨!");
         }
         else
@@ -37,11 +58,68 @@ public class JobManager : MonoBehaviour
         };
     }
 
+    void Start()
+    {
+        // 시작 직후 현재 직업 적용
+        ChangeJob(currentJob);
+    }
+
+    private void InitializeJobResources()
+    {
+        jobResourcesDict = new Dictionary<JobType, JobResources>();
+
+        foreach (var resource in jobResourcesList)
+        {
+            if (!jobResourcesDict.ContainsKey(resource.jobType))
+            {
+                jobResourcesDict[resource.jobType] = resource;
+            }
+        }
+    }
+
     // 현재 직업을 변경하는 함수
     public void ChangeJob(JobType newJob)
     {
         currentJob = newJob;
-        Debug.Log("직업 변경됨: " + currentJob);
+
+        if (!jobResourcesDict.ContainsKey(newJob))
+        {
+            Debug.LogError("해당 직업 리소스 없음: " + newJob);
+            return;
+        }
+
+        var res = jobResourcesDict[newJob];
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player == null)
+        {
+            Debug.LogError("Player 오브젝트를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 2. 기존 모델 제거
+        if (currentModel != null)
+        {
+            Destroy(currentModel);
+        }
+
+        // 2. 새 모델 Instantiate
+        currentModel = Instantiate(res.modelPrefab, modelParent); // 또는 player.transform
+        currentModel.transform.localPosition = Vector3.zero;
+        currentModel.transform.localRotation = Quaternion.identity;
+
+        // 3. Animator 설정은 모델이 생성된 후에
+        Animator playerAnimator = player.GetComponent<Animator>();
+        if (playerAnimator != null)
+        {
+            playerAnimator.runtimeAnimatorController = res.animatorController;
+            playerAnimator.avatar = res.avatar;
+        }
+
+        // 4. 연결 확인 (디버그)
+        var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
+        Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
+
+        Debug.Log($"[직업 변경 완료] {newJob}");
     }
 
     public DashSettings GetDashSettings()
@@ -53,5 +131,24 @@ public class JobManager : MonoBehaviour
     public JobType GetCurrentJob()
     {
         return currentJob;
+    }
+
+    public void ChangeToBasic()
+    {
+        JobManager.Instance.ChangeJob(JobManager.JobType.Basic);
+    }
+    public void ChangeToWarrior()
+    {
+        JobManager.Instance.ChangeJob(JobManager.JobType.Warrior);
+    }
+
+    public void ChangeToMage()
+    {
+        JobManager.Instance.ChangeJob(JobManager.JobType.Mage);
+    }
+
+    public void ChangeToArcher()
+    {
+        JobManager.Instance.ChangeJob(JobManager.JobType.Archer);
     }
 }
