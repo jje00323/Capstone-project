@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isRightClickPressed: 0
-  animationManager: {fileID: 99735633}
+  animationManager: {fileID: 0}
   animator: {fileID: 99735632}
   rotationSpeed: 20
 --- !u!95 &99735632

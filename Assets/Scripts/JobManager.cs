@@ -115,6 +115,12 @@ public class JobManager : MonoBehaviour
             playerAnimator.avatar = res.avatar;
         }
 
+        PlayerSkill playerSkill = FindObjectOfType<PlayerSkill>();
+        if (playerSkill != null)
+        {
+            playerSkill.UpdateCurrentJob(newJob);
+        }
+
         // 4. 연결 확인 (디버그)
         var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
         Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
