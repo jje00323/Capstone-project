@@ -19,7 +19,7 @@ public class PlayerSkillUI : MonoBehaviour
         foreach (SkillInfo skill in data.skills)
         {
             GameObject btnObj = Instantiate(skillButtonPrefab, skillButtonParent);
-
+            btnObj.SetActive(true);
             // 아이콘 설정
             Image btnImage = btnObj.GetComponent<Image>();
             if (btnImage != null && skill.skillIcon != null)

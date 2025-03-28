@@ -69,9 +69,14 @@ public class JobManager : MonoBehaviour
         // 시작 직후 현재 직업 적용
         ChangeJob(currentJob);
     }
-    public JobSkillData GetSkillData(JobType job)
+    public JobSkillData GetSkillData(JobType jobType)
     {
-        return skillDataDict[job];
+        foreach (var data in allJobSkillData)
+        {
+            if (data.jobType == jobType)
+                return data;
+        }
+        return null;
     }
 
 
@@ -149,6 +154,8 @@ public class JobManager : MonoBehaviour
     {
         return currentJob;
     }
+
+
 
     public void ChangeToBasic()
     {
