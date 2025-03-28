@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9933904d344c08743b67ca6fd9ba0e5f, type: 3}
+  m_Name: BasicSkills
+  m_EditorClassIdentifier: 
+  jobType: 0
+  skills:
+  - skillKey: Basic_Q
+    skillName: kick
+    skillIcon: {fileID: 21300000, guid: f656d804daeaddf409ad1ab6fa5041bd, type: 3}
+    description: "\uADF8\uB0E5 \uBC1C\uCC28\uAE30"
+    cooldown: 2
+    hitboxPrefab: {fileID: 8791580168348741197, guid: 59065bc6b3123274698ccef0f440e6bf, type: 3}
+    effectPrefab: {fileID: 3153472991145048103, guid: 98cca0cb5acfe2d4596f67fbc14eb39a, type: 3}
+  - skillKey: Basic_W
+    skillName: WWW
+    skillIcon: {fileID: 21300000, guid: f674fc3820f76d74ea84b1190da62bb1, type: 3}
+    description: "\uBAB0\uB77C"
+    cooldown: 3
+    hitboxPrefab: {fileID: 334107297067051712, guid: c7723d50cc9f2ca4ba495e15043d98d6, type: 3}
+    effectPrefab: {fileID: 3367314013316085171, guid: 98239e513041822448eb7ad1f7e91ce9, type: 3}
+  - skillKey: Basic_E
+    skillName: EEE
+    skillIcon: {fileID: 21300000, guid: f0987846435e1474781a21274c269bdf, type: 3}
+    description: "\uBAB0\uB77C"
+    cooldown: 4
+    hitboxPrefab: {fileID: 9050656858112122589, guid: ee8a970f5d85c014f9d8fe87b6004c43, type: 3}
+    effectPrefab: {fileID: 7478731271839673279, guid: b1301aa781b99f340983902b98e82ced, type: 3}
+  - skillKey: Basic_R
+    skillName: RRR
+    skillIcon: {fileID: 21300000, guid: ad10465a97cce9c44aabefdaeccd1f45, type: 3}
+    description: "\uBAB0\uB77C"
+    cooldown: 5
+    hitboxPrefab: {fileID: 5908785546678674856, guid: d2888fa4f78d7a74fb3b181f4ffb341d, type: 3}
+    effectPrefab: {fileID: 1289543790355709915, guid: 4373cfbb035de044a822add98363a3f0, type: 3}
