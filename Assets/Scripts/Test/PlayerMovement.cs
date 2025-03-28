@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void HandleRightClick()
     {
+        if (!stateMachine.CanMove()) return;
+
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
