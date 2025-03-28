@@ -14,6 +14,8 @@ public class JobManager : MonoBehaviour
     public List<JobResources> jobResourcesList;
     private Dictionary<JobType, JobResources> jobResourcesDict;
 
+    public JobSkillData[] allJobSkillData; // 모든 직업의 스킬 데이터가 담긴 배열
+    private Dictionary<JobType, JobSkillData> skillDataDict;
 
     [System.Serializable]
     public class JobResources
@@ -56,6 +58,10 @@ public class JobManager : MonoBehaviour
             { JobType.Mage, new DashSettings(7f, 0.3f, 5f, true) },     // 마법사는 긴 거리 대쉬 (마우스 방향)
             { JobType.Archer, new DashSettings(6f, 0.25f, 6f, true) }   // 궁수는 중간 거리 대쉬 (마우스 방향)
         };
+
+        skillDataDict = new Dictionary<JobType, JobSkillData>();
+        foreach (var data in allJobSkillData)
+            skillDataDict[data.jobType] = data;
     }
 
     void Start()
@@ -63,6 +69,11 @@ public class JobManager : MonoBehaviour
         // 시작 직후 현재 직업 적용
         ChangeJob(currentJob);
     }
+    public JobSkillData GetSkillData(JobType job)
+    {
+        return skillDataDict[job];
+    }
+
 
     private void InitializeJobResources()
     {
