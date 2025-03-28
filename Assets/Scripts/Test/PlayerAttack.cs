@@ -6,17 +6,21 @@ using static PlayerStateMachine;
 [RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerAttack : MonoBehaviour
 {
+    private PlayerMovement movement;
+
     private Animator animator;
     private PlayerStateMachine stateMachine;
 
     private int comboIndex = 0;
     private bool isAttacking = false;
     private bool canCombo = false;
+    private bool inputRegistered = false;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
         stateMachine = GetComponent<PlayerStateMachine>();
+        movement = GetComponent<PlayerMovement>();
     }
 
 
@@ -25,19 +29,27 @@ public class PlayerAttack : MonoBehaviour
         if (!stateMachine.CanAttack())
             return;
 
-        if (isAttacking && canCombo)
+        if (isAttacking && canCombo && !inputRegistered)
         {
             // 콤보 타이밍에 다시 클릭한 경우
+            inputRegistered = true;
             canCombo = false;
+
+            movement.RotateToMouse();
             comboIndex++;
+
+            animator.ResetTrigger("NextCombo");
             animator.SetTrigger("NextCombo");
         }
         else if (!isAttacking)
         {
+            movement.StopAgent();
+            movement.RotateToMouse();
             // 첫 공격 시작
             isAttacking = true;
             comboIndex = 1;
             stateMachine.ChangeState(PlayerState.Attacking);
+            animator.ResetTrigger("NextCombo");
             animator.SetTrigger("NextCombo");
         }
     }
@@ -45,6 +57,7 @@ public class PlayerAttack : MonoBehaviour
     // 애니메이션 이벤트로 호출될 함수
     public void EnableComboInput()
     {
+        inputRegistered = false;
         canCombo = true;
         Debug.Log($"콤보 가능 -> 현재 콤보: {comboIndex}");
     }
@@ -57,10 +70,12 @@ public class PlayerAttack : MonoBehaviour
 
     public void EndCombo()
     {
-
+        inputRegistered = false;
         isAttacking = false;
         canCombo = false;
         comboIndex = 0;
+
+        movement.ResumeAgent();
 
         animator.ResetTrigger("NextCombo");  // 혹시라도 잔여 트리거 제거
         animator.SetTrigger("endCombo");     // Animator 트리거 기반으로 상태 전이

@@ -30,7 +30,7 @@ public class PlayerStateMachine : MonoBehaviour
 
     public bool CanAttack()
     {
-        return CurrentState == PlayerState.Idle || CurrentState == PlayerState.Moving;
+        return CurrentState == PlayerState.Idle || CurrentState == PlayerState.Moving || CurrentState == PlayerState.Attacking;
     }
 
     public bool CanDodge()
