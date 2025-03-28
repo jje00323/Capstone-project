@@ -91,7 +91,7 @@ public class PlayerSkill : MonoBehaviour
 
         //  애니메이션 실행 (Base Layer → AttackState)
         Actionanimator.SetTrigger("NextCombo");
-        StartCoroutine(ActivateHitboxAfterDelay(key, 0.3f));
+        ActivateHitbox(key);
         //Debug.Log("공격 시작");
 
         //  애니메이션이 30% 진행되면 다음 입력을 받을 수 있도록 설정
@@ -284,7 +284,7 @@ public class PlayerSkill : MonoBehaviour
             
 
             Actionanimator.SetTrigger(animationStartTrigger);
-            StartCoroutine(ActivateHitboxAfterDelay(key, 0.3f));
+            ActivateHitbox(key);
 
             yield return new WaitUntil(() =>
                 Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f &&
@@ -339,6 +339,12 @@ public class PlayerSkill : MonoBehaviour
         hitboxes["Basic_E"] = Resources.Load<GameObject>("Hitboxes/Basic_E");
         hitboxes["Basic_R"] = Resources.Load<GameObject>("Hitboxes/Basic_R");
 
+        hitboxes["Warrior_Attack"] = Resources.Load<GameObject>("Hitboxes/Warrior_Attack");
+        hitboxes["Warrior_Q"] = Resources.Load<GameObject>("Hitboxes/Warrior_Q");
+        hitboxes["Warrior_W"] = Resources.Load<GameObject>("Hitboxes/Warrior_W");
+        hitboxes["Warrior_E"] = Resources.Load<GameObject>("Hitboxes/Warrior_E");
+        hitboxes["Warrior_R"] = Resources.Load<GameObject>("Hitboxes/Warrior_R");
+
     }
 
     private void LoadSkillEffects()
@@ -347,50 +353,76 @@ public class PlayerSkill : MonoBehaviour
         effectPrefabs["Basic_W"] = Resources.Load<GameObject>("Effects/Basic_W_Effect");
         effectPrefabs["Basic_E"] = Resources.Load<GameObject>("Effects/Basic_E_Effect");
         effectPrefabs["Basic_R"] = Resources.Load<GameObject>("Effects/Basic_R_Effect");
+
+        effectPrefabs["Warrior_Q"] = Resources.Load<GameObject>("Effects/Warrior_Q_Effect");
+        effectPrefabs["Warrior_W"] = Resources.Load<GameObject>("Effects/Warrior_W_Effect");
+        effectPrefabs["Warrior_E"] = Resources.Load<GameObject>("Effects/Warrior_E_Effect");
+        effectPrefabs["Warrior_R"] = Resources.Load<GameObject>("Effects/Warrior_R_Effect");
     }
 
-    private IEnumerator ActivateHitboxAfterDelay(string key, float delay)
+    private void ActivateHitbox(string key)
     {
-        yield return new WaitForSeconds(delay); // 애니메이션 타이밍 맞춰 지연
-
+        // 1. 히트박스 프리팹이 존재하는지 확인
         if (!hitboxes.ContainsKey(key))
         {
             Debug.LogError($"히트박스 {key} 없음!");
-            yield break;
+            return;
         }
 
         GameObject hitboxPrefab = hitboxes[key];
 
-        // 1. 임시로 프리팹 생성해서 SpawnPoint 위치와 회전 정보를 가져온다
-        GameObject temp = Instantiate(hitboxPrefab); // 임시로 생성 (위치 계산용)
+        // 2. 프리팹에서 Hitbox 컴포넌트를 꺼내 설정값 확인 (isProjectile 등)
+        Hitbox hitboxData = hitboxPrefab.GetComponent<Hitbox>();
+        if (hitboxData == null)
+        {
+            Debug.LogError($"Hitbox 스크립트가 {key} 프리팹에 없습니다.");
+            return;
+        }
+
+        // 3. 임시 프리팹 생성 → SpawnPoint 위치 계산용
+        GameObject temp = Instantiate(hitboxPrefab);
         Transform spawnPoint = temp.transform.Find("SpawnPoint");
 
         if (spawnPoint == null)
         {
             Debug.LogError($"히트박스 {key}에 'SpawnPoint' 오브젝트가 없습니다.");
             Destroy(temp);
-            yield break;
+            return;
         }
 
-        // 2. SpawnPoint의 로컬 위치와 회전을 기준으로 월드 위치 계산
+        // 4. SpawnPoint 기준 로컬 위치/회전을 월드 위치로 변환
         Vector3 localOffset = spawnPoint.localPosition;
         Quaternion localRotation = spawnPoint.localRotation;
 
-        // 현재 플레이어의 위치와 방향을 기준으로 변환
         Vector3 worldPosition = transform.position + transform.TransformDirection(localOffset);
+
+        Destroy(temp); // 임시 프리팹 제거 (SpawnPoint 용도 끝)
+
+        worldPosition.y = 1.0f;
+
         Quaternion worldRotation = transform.rotation * localRotation;
 
-        Destroy(temp); // 위치 계산 끝났으니 임시 프리팹 제거
+        // 히트박스 생성
+        GameObject hitbox = Instantiate(hitboxPrefab, worldPosition, worldRotation);
+        
+        // 6. 투사체 설정일 경우 → Rigidbody를 forward 방향으로 날려줌
+        if (hitboxData.isProjectile)
+        {
+            Rigidbody rb = hitbox.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.velocity = transform.forward * hitboxData.projectileSpeed;
+            }
+        }
 
-        // 3. 히트박스를 올바른 위치와 방향으로 생성
-        hitbox = Instantiate(hitboxPrefab, worldPosition, worldRotation);
+        // 7. 히트박스 활성화
         hitbox.SetActive(true);
 
-        // 이펙트 생성
+        // 8. 이펙트 프리팹이 등록되어 있으면 같이 생성 (위치 동일)
         if (effectPrefabs.ContainsKey(key))
         {
             GameObject effect = Instantiate(effectPrefabs[key], worldPosition, Quaternion.LookRotation(transform.forward));
-            Destroy(effect, 2f); // 2초 후 자동 제거
+            Destroy(effect, 2f); // 2초 뒤 자동 제거
         }
     }
 
@@ -413,10 +445,10 @@ public class PlayerSkill : MonoBehaviour
 
         jobSkillCooldowns[JobManager.JobType.Warrior] = new Dictionary<string, float>
     {
-        { "Q", 5.0f },
-        { "W", 8.0f },
-        { "E", 10.0f },
-        { "R", 20.0f }
+        { "Q", 1.0f },
+        { "W", 1.0f },
+        { "E", 1.0f },
+        { "R", 1.0f }
     };
 
         jobSkillCooldowns[JobManager.JobType.Mage] = new Dictionary<string, float>
@@ -456,6 +488,11 @@ public class PlayerSkill : MonoBehaviour
         }
 
         return 2.0f; // 기본값 (만약 설정되지 않은 경우)
+    }
+
+    public void UpdateCurrentJob(JobManager.JobType newJob)
+    {
+        currentJob = newJob;
     }
 
 }

@@ -100,3 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   duration: 0.5
+  startDelay: 0.3
+  repeatCount: 1
+  repeatInterval: 0.5
+  isProjectile: 0
+  projectileSpeed: 10
