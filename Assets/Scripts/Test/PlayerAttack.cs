@@ -21,6 +21,10 @@ public class PlayerAttack : MonoBehaviour
     private bool canExecuteImmediately = false;
     private bool inputLocked = false; // 광클 방지용
 
+    private bool isCombat = false;
+    private float combatTimer = 0f;
+    private float combatDuration = 4f; // 8초 유지
+
 
     void Awake()
     {
@@ -29,23 +33,26 @@ public class PlayerAttack : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
     }
 
-
-    public void TryComboAttack() // 애니메이션 이벤트로 호출됨
+    void Update()
     {
-        if (canCombo && inputRegistered)
-        {
-            comboIndex++;
-            animator.SetTrigger("NextCombo");
-            movement.RotateToMouse();
+        CombatSystem();
+    }
 
-            canCombo = false;      // 입력 처리 후 다시 막기
-            inputRegistered = false;
 
-            Debug.Log("다음 콤보 공격 실행!");
-        }
-        else
+    public void CombatSystem()
+    {
+        if (isCombat && !isAttacking)
         {
-            Debug.Log("콤보 입력 없음, 다음 공격 실행 안함");
+            combatTimer += Time.deltaTime;
+
+            if (combatTimer >= combatDuration)
+            {
+                isCombat = false;
+                animator.SetBool("IsCombat", false);
+                combatTimer = 0f;
+
+                Debug.Log("전투 상태 종료됨: BasicMove 상태로 돌아감");
+            }
         }
     }
 
@@ -73,6 +80,12 @@ public class PlayerAttack : MonoBehaviour
         }
         else
         {
+            if (!isCombat)
+            {
+                isCombat = true;
+                animator.SetBool("IsCombat", isCombat);
+            }
+            combatTimer = 0f; // 타이머 초기화
             // 첫 공격
             isAttacking = true;
             comboIndex = 1;
@@ -92,6 +105,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (comboIndex >= 4) return;
 
+        combatTimer = 0f;
         comboIndex++;
         animator.SetTrigger("NextCombo");
         movement.RotateToMouse();
@@ -100,6 +114,7 @@ public class PlayerAttack : MonoBehaviour
         allowBufferedInput = false;
         canExecuteImmediately = false;
         inputLocked = true; // 다시 잠금
+
 
         Debug.Log($"콤보 {comboIndex}번째 실행됨");
     }
@@ -137,36 +152,23 @@ public class PlayerAttack : MonoBehaviour
     }
 
     public void EndCombo()
-    {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+    {     
+        // 현재 상태와 comboIndex가 일치하면 정상 종료
+        inputRegistered = false;
+        isAttacking = false;
+        canCombo = false;
+        inputBuffered = false;
+        allowBufferedInput = false;
+        canExecuteImmediately = false;
+        inputLocked = false; //  중요: 입력 잠금 해제
+        comboIndex = 0;
 
-        if (stateInfo.IsName("BasicAttack_1") && comboIndex == 1 ||
-            stateInfo.IsName("BasicAttack_2") && comboIndex == 2 ||
-            stateInfo.IsName("BasicAttack_3") && comboIndex == 3 ||
-            comboIndex >= 4)
-        {
-            // 현재 상태와 comboIndex가 일치하면 정상 종료
-            inputRegistered = false;
-            isAttacking = false;
-            canCombo = false;
-            inputBuffered = false;
-            allowBufferedInput = false;
-            canExecuteImmediately = false;
-            inputLocked = false; //  중요: 입력 잠금 해제
-            comboIndex = 0;
+        //animator.SetTrigger("endCombo");
+        movement.ResumeAgent();
 
-            animator.SetTrigger("endCombo");
-            movement.ResumeAgent();
 
-            
-            Debug.Log("공격 초기화");
+        Debug.Log("공격 초기화");
 
-            stateMachine.ChangeState(PlayerState.Idle);
-        }
-        else
-        {
-            // 다음 콤보로 이미 넘어간 경우 EndCombo 무시
-            Debug.Log("EndCombo 무시됨 - 이미 다음 콤보 진행 중");
-        }
+        stateMachine.ChangeState(PlayerState.Idle);
     }
 }
