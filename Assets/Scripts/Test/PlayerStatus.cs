@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStatus : MonoBehaviour
+public class PlayerStatus : CharacterStatus
 {
-    public float maxHP = 100f;
-    public float currentHP = 100f;
-
     public float maxMP = 50f;
     public float currentMP = 50f;
 
@@ -22,15 +19,9 @@ public class PlayerStatus : MonoBehaviour
         UpdateAllUI();
     }
 
-    public void TakeDamage(float damage)
+    public override void TakeDamage(float damage)
     {
-        currentHP = Mathf.Clamp(currentHP - damage, 0, maxHP);
-        playerUI.UpdateHP(currentHP, maxHP);
-        Debug.Log("TakeDamage() 호출됨, 현재 체력: " + currentHP);
-    }
-    public void Heal(float amount)
-    {
-        currentHP = Mathf.Clamp(currentHP + amount, 0, maxHP);
+        base.TakeDamage(damage);
         playerUI.UpdateHP(currentHP, maxHP);
     }
 
@@ -47,7 +38,6 @@ public class PlayerStatus : MonoBehaviour
         {
             currentEXP -= maxEXP;
             level++;
-            // 레벨업시 maxEXP 증가 같은 로직 추가 가능
             playerUI.UpdateLevel(level);
         }
         playerUI.UpdateEXP(currentEXP, maxEXP);
@@ -60,4 +50,11 @@ public class PlayerStatus : MonoBehaviour
         playerUI.UpdateEXP(currentEXP, maxEXP);
         playerUI.UpdateLevel(level);
     }
+
+    protected override void OnDeath()
+    {
+        Debug.Log("플레이어 사망 처리");
+        // 플레이어 사망 처리 추가
+    }
 }
+
