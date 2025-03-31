@@ -16,10 +16,17 @@ public class EnemyFSM : MonoBehaviour
     public EnemyStunnedState stunnedState;
     public EnemyDeadState deadState;
 
+    public float detectRadius = 8f;
+    [HideInInspector] public Vector3 spawnPosition; // 적의 원래 위치
+    public float returnSpeedMultiplier = 2f;
+    public float returnDistance = 15f; // 원위치로 돌아가는 최대 거리
+
     private void Start()
     {
         animator.runtimeAnimatorController = enemyData.animatorController;
         enemyStatus.Setup(enemyData);
+
+        spawnPosition = transform.position; // 스폰 위치 저장
 
         if (enemyStatus.target == null)
         {
@@ -37,6 +44,7 @@ public class EnemyFSM : MonoBehaviour
         deadState = new EnemyDeadState(this);
 
         ChangeState(idleState);
+
     }
 
     private void Update()
@@ -57,6 +65,11 @@ public class EnemyFSM : MonoBehaviour
         animator.SetTrigger("Die");
         Debug.Log("적 사망");
         // 이후 파괴 또는 풀 반환 처리
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectRadius);
     }
 }
 

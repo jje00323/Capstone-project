@@ -4,28 +4,45 @@ using UnityEngine;
 
 public class EnemyAttackState : EnemyState
 {
-    private float attackCooldown = 1.5f;
+    private float attackCooldown = 1.2f;
     private float timer = 0f;
+    private bool hasAttacked = false;
 
     public EnemyAttackState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
     {
         timer = 0f;
+        hasAttacked = false;
+
+        // 공격 시작 시 한 번만 회전 (빠르게)
+        Vector3 dir = (enemy.enemyStatus.target.position - enemy.transform.position).normalized;
+        if (dir != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 480f); // 빠르게 맞춤
+        }
+
         enemy.animator.SetTrigger("Attack");
     }
+
 
     public override void Update()
     {
         timer += Time.deltaTime;
 
-        if (timer >= attackCooldown)
+        float distance = Vector3.Distance(enemy.transform.position, enemy.enemyStatus.target.position);
+        if (distance > 2.5f)
         {
-            // 공격 애니메이션 다시 트리거
-            timer = 0f;
-            enemy.animator.SetTrigger("Attack");
+            enemy.ChangeState(enemy.detectState);
+            return;
+        }
 
-            // 데미지 적용 예시 (PlayerStatus 가정)
+        // 공격 딜 타이밍 (0.5초 후 한 번만 데미지 적용)
+        if (!hasAttacked && timer >= 0.5f)
+        {
+            hasAttacked = true;
+
             PlayerStatus player = enemy.enemyStatus.target.GetComponent<PlayerStatus>();
             if (player != null)
             {
@@ -33,8 +50,8 @@ public class EnemyAttackState : EnemyState
             }
         }
 
-        float distance = Vector3.Distance(enemy.transform.position, enemy.enemyStatus.target.position);
-        if (distance > 2.5f) // 추적 거리보다 멀어지면 다시 탐지 상태로
+        // 애니메이션 끝난 뒤 상태 복귀
+        if (timer >= attackCooldown)
         {
             enemy.ChangeState(enemy.detectState);
         }
@@ -42,4 +59,5 @@ public class EnemyAttackState : EnemyState
 
     public override void Exit() { }
 }
+
 
