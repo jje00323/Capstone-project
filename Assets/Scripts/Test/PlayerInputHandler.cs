@@ -21,7 +21,7 @@ public class PlayerInputHandler : MonoBehaviour
         dodge = GetComponent<PlayerDodge>();
 
         controls.Player.OnRightClick.performed += ctx => movement.HandleRightClick();
-        controls.Player.OnLeftClick.performed += ctx => attack.HandleAttack();
+        controls.Player.OnLeftClick.performed += ctx => attack.HandleAttackInput();
         controls.Player.DashSkill.performed += ctx => dodge.HandleDodge();
     }
 
