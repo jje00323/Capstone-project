@@ -105,7 +105,7 @@ public class PlayerSkillSystem : MonoBehaviour
         GameObject instance;
 
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
-     
+
         Vector3 offset = spawnPoint.localPosition;
         Vector3 worldOffset = transform.position + transform.TransformDirection(offset);
         Quaternion localRotations = spawnPoint.localRotation;
@@ -113,18 +113,12 @@ public class PlayerSkillSystem : MonoBehaviour
         Quaternion worldRotations = transform.rotation * localRotations;
         instance = Instantiate(prefab, worldOffset, worldRotations);
 
-
-        Hitbox hitboxDataa = instance.GetComponent<Hitbox>();
-        if (hitboxDataa != null && hitboxDataa.isProjectile)
+        //  핵심: 생성 후 caster 지정
+        Hitbox hitbox = instance.GetComponent<Hitbox>();
+        if (hitbox != null)
         {
-            Rigidbody rb = instance.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = instance.transform.forward * hitboxDataa.projectileSpeed;
-            }
+            hitbox.Initialize(transform); // 이 스크립트를 가진 플레이어 오브젝트
         }
-
-
     }
 
     // 애니메이션 이벤트로 호출될 함수

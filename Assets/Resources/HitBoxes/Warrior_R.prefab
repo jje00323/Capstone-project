@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2071864197161098865}
   - component: {fileID: 7108281566943221307}
   - component: {fileID: 1778366838186492613}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Warrior_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,6 +69,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 15
   duration: 0.5
+  startDelay: 0
+  repeatCount: 1
+  repeatInterval: 0.5
+  isProjectile: 0
+  projectileSpeed: 10
 --- !u!1 &6420205313444469217
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +83,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7787253673023205465}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

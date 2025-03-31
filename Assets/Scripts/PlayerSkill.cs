@@ -91,7 +91,7 @@ public class PlayerSkill : MonoBehaviour
 
         //  애니메이션 실행 (Base Layer → AttackState)
         Actionanimator.SetTrigger("NextCombo");
-        ActivateHitbox(key);
+        //ActivateHitbox(key);
         //Debug.Log("공격 시작");
 
         //  애니메이션이 30% 진행되면 다음 입력을 받을 수 있도록 설정
@@ -284,7 +284,7 @@ public class PlayerSkill : MonoBehaviour
             
 
             Actionanimator.SetTrigger(animationStartTrigger);
-            ActivateHitbox(key);
+            //ActivateHitbox(key);
 
             yield return new WaitUntil(() =>
                 Actionanimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f &&
@@ -360,71 +360,71 @@ public class PlayerSkill : MonoBehaviour
         effectPrefabs["Warrior_R"] = Resources.Load<GameObject>("Effects/Warrior_R_Effect");
     }
 
-    private void ActivateHitbox(string key)
-    {
-        // 1. 히트박스 프리팹이 존재하는지 확인
-        if (!hitboxes.ContainsKey(key))
-        {
-            Debug.LogError($"히트박스 {key} 없음!");
-            return;
-        }
+    //private void ActivateHitbox(string key)
+    //{
+    //    // 1. 히트박스 프리팹이 존재하는지 확인
+    //    if (!hitboxes.ContainsKey(key))
+    //    {
+    //        Debug.LogError($"히트박스 {key} 없음!");
+    //        return;
+    //    }
 
-        GameObject hitboxPrefab = hitboxes[key];
+    //    GameObject hitboxPrefab = hitboxes[key];
 
-        // 2. 프리팹에서 Hitbox 컴포넌트를 꺼내 설정값 확인 (isProjectile 등)
-        Hitbox hitboxData = hitboxPrefab.GetComponent<Hitbox>();
-        if (hitboxData == null)
-        {
-            Debug.LogError($"Hitbox 스크립트가 {key} 프리팹에 없습니다.");
-            return;
-        }
+    //    // 2. 프리팹에서 Hitbox 컴포넌트를 꺼내 설정값 확인 (isProjectile 등)
+    //    Hitbox hitboxData = hitboxPrefab.GetComponent<Hitbox>();
+    //    if (hitboxData == null)
+    //    {
+    //        Debug.LogError($"Hitbox 스크립트가 {key} 프리팹에 없습니다.");
+    //        return;
+    //    }
 
-        // 3. 임시 프리팹 생성 → SpawnPoint 위치 계산용
-        GameObject temp = Instantiate(hitboxPrefab);
-        Transform spawnPoint = temp.transform.Find("SpawnPoint");
+    //    // 3. 임시 프리팹 생성 → SpawnPoint 위치 계산용
+    //    GameObject temp = Instantiate(hitboxPrefab);
+    //    Transform spawnPoint = temp.transform.Find("SpawnPoint");
 
-        if (spawnPoint == null)
-        {
-            Debug.LogError($"히트박스 {key}에 'SpawnPoint' 오브젝트가 없습니다.");
-            Destroy(temp);
-            return;
-        }
+    //    if (spawnPoint == null)
+    //    {
+    //        Debug.LogError($"히트박스 {key}에 'SpawnPoint' 오브젝트가 없습니다.");
+    //        Destroy(temp);
+    //        return;
+    //    }
 
-        // 4. SpawnPoint 기준 로컬 위치/회전을 월드 위치로 변환
-        Vector3 localOffset = spawnPoint.localPosition;
-        Quaternion localRotation = spawnPoint.localRotation;
+    //    // 4. SpawnPoint 기준 로컬 위치/회전을 월드 위치로 변환
+    //    Vector3 localOffset = spawnPoint.localPosition;
+    //    Quaternion localRotation = spawnPoint.localRotation;
 
-        Vector3 worldPosition = transform.position + transform.TransformDirection(localOffset);
+    //    Vector3 worldPosition = transform.position + transform.TransformDirection(localOffset);
 
-        Destroy(temp); // 임시 프리팹 제거 (SpawnPoint 용도 끝)
+    //    Destroy(temp); // 임시 프리팹 제거 (SpawnPoint 용도 끝)
 
-        worldPosition.y = 1.0f;
+    //    worldPosition.y = 1.0f;
 
-        Quaternion worldRotation = transform.rotation * localRotation;
+    //    Quaternion worldRotation = transform.rotation * localRotation;
 
-        // 히트박스 생성
-        GameObject hitbox = Instantiate(hitboxPrefab, worldPosition, worldRotation);
+    //    // 히트박스 생성
+    //    GameObject hitbox = Instantiate(hitboxPrefab, worldPosition, worldRotation);
         
-        // 6. 투사체 설정일 경우 → Rigidbody를 forward 방향으로 날려줌
-        if (hitboxData.isProjectile)
-        {
-            Rigidbody rb = hitbox.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = transform.forward * hitboxData.projectileSpeed;
-            }
-        }
+    //    // 6. 투사체 설정일 경우 → Rigidbody를 forward 방향으로 날려줌
+    //    //if (hitboxData.isProjectile)
+    //    //{
+    //    //    Rigidbody rb = hitbox.GetComponent<Rigidbody>();
+    //    //    if (rb != null)
+    //    //    {
+    //    //        rb.velocity = transform.forward * hitboxData.projectileSpeed;
+    //    //    }
+    //    //}
 
-        // 7. 히트박스 활성화
-        hitbox.SetActive(true);
+    //    // 7. 히트박스 활성화
+    //    hitbox.SetActive(true);
 
-        // 8. 이펙트 프리팹이 등록되어 있으면 같이 생성 (위치 동일)
-        if (effectPrefabs.ContainsKey(key))
-        {
-            GameObject effect = Instantiate(effectPrefabs[key], worldPosition, Quaternion.LookRotation(transform.forward));
-            Destroy(effect, 2f); // 2초 뒤 자동 제거
-        }
-    }
+    //    // 8. 이펙트 프리팹이 등록되어 있으면 같이 생성 (위치 동일)
+    //    if (effectPrefabs.ContainsKey(key))
+    //    {
+    //        GameObject effect = Instantiate(effectPrefabs[key], worldPosition, Quaternion.LookRotation(transform.forward));
+    //        Destroy(effect, 2f); // 2초 뒤 자동 제거
+    //    }
+    //}
 
     // 히트박스 일정 시간 후 비활성화
 

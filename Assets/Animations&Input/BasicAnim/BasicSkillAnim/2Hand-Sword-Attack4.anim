@@ -95814,7 +95814,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 1
   m_Events:
-  - time: 0.16666667
+  - time: 0.06666667
     functionName: ActivateHitbox
     data: E
     objectReferenceParameter: {fileID: 0}
@@ -95828,14 +95828,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.8
-    functionName: DestroyEffect
-    data: E
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1.1
+  - time: 1.2
     functionName: EndSkill
     data: 
     objectReferenceParameter: {fileID: 0}
