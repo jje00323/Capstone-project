@@ -13,8 +13,6 @@ public class PlayerAttack : MonoBehaviour
 
     private int comboIndex = 0;
     private bool isAttacking = false;
-    private bool canCombo = false;
-    private bool inputRegistered = false;
 
     private bool inputBuffered = false;
     private bool allowBufferedInput = false;
@@ -154,9 +152,7 @@ public class PlayerAttack : MonoBehaviour
     public void EndCombo()
     {     
         // 현재 상태와 comboIndex가 일치하면 정상 종료
-        inputRegistered = false;
         isAttacking = false;
-        canCombo = false;
         inputBuffered = false;
         allowBufferedInput = false;
         canExecuteImmediately = false;
