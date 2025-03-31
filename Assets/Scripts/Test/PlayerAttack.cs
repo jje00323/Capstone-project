@@ -38,7 +38,7 @@ public class PlayerAttack : MonoBehaviour
             movement.RotateToMouse();
             comboIndex++;
 
-            animator.ResetTrigger("NextCombo");
+            //animator.ResetTrigger("NextCombo");
             animator.SetTrigger("NextCombo");
         }
         else if (!isAttacking)
@@ -49,7 +49,7 @@ public class PlayerAttack : MonoBehaviour
             isAttacking = true;
             comboIndex = 1;
             stateMachine.ChangeState(PlayerState.Attacking);
-            animator.ResetTrigger("NextCombo");
+            //animator.ResetTrigger("NextCombo");
             animator.SetTrigger("NextCombo");
         }
     }
@@ -70,17 +70,30 @@ public class PlayerAttack : MonoBehaviour
 
     public void EndCombo()
     {
-        inputRegistered = false;
-        isAttacking = false;
-        canCombo = false;
-        comboIndex = 0;
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        movement.ResumeAgent();
+        if (stateInfo.IsName("BasicAttack_1") && comboIndex == 1 ||
+            stateInfo.IsName("BasicAttack_2") && comboIndex == 2 ||
+            stateInfo.IsName("BasicAttack_3") && comboIndex == 3 ||
+            comboIndex >= 4)
+        {
+            // 현재 상태와 comboIndex가 일치하면 정상 종료
+            inputRegistered = false;
+            isAttacking = false;
+            canCombo = false;
+            comboIndex = 0;
 
-        animator.ResetTrigger("NextCombo");  // 혹시라도 잔여 트리거 제거
-        animator.SetTrigger("endCombo");     // Animator 트리거 기반으로 상태 전이
-        Debug.Log($"공격 초기화");
+            movement.ResumeAgent();
 
-        stateMachine.ChangeState(PlayerState.Idle);
+            animator.SetTrigger("endCombo");
+            Debug.Log("공격 초기화");
+
+            stateMachine.ChangeState(PlayerState.Idle);
+        }
+        else
+        {
+            // 다음 콤보로 이미 넘어간 경우 EndCombo 무시
+            Debug.Log("EndCombo 무시됨 - 이미 다음 콤보 진행 중");
+        }
     }
 }
