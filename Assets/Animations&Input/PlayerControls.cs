@@ -62,6 +62,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Combat"",
+                    ""type"": ""Button"",
+                    ""id"": ""7491dfa4-a19b-415e-84aa-bff2be366497"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -141,6 +150,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""QWER"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1b2f3b6-2dd9-48b3-a006-f140092108e9"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Combat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -153,6 +173,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_DashSkill = m_Player.FindAction("DashSkill", throwIfNotFound: true);
         m_Player_OnLeftClick = m_Player.FindAction("OnLeftClick", throwIfNotFound: true);
         m_Player_QWER = m_Player.FindAction("QWER", throwIfNotFound: true);
+        m_Player_Combat = m_Player.FindAction("Combat", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -218,6 +239,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_DashSkill;
     private readonly InputAction m_Player_OnLeftClick;
     private readonly InputAction m_Player_QWER;
+    private readonly InputAction m_Player_Combat;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -226,6 +248,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @DashSkill => m_Wrapper.m_Player_DashSkill;
         public InputAction @OnLeftClick => m_Wrapper.m_Player_OnLeftClick;
         public InputAction @QWER => m_Wrapper.m_Player_QWER;
+        public InputAction @Combat => m_Wrapper.m_Player_Combat;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -247,6 +270,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @QWER.started += instance.OnQWER;
             @QWER.performed += instance.OnQWER;
             @QWER.canceled += instance.OnQWER;
+            @Combat.started += instance.OnCombat;
+            @Combat.performed += instance.OnCombat;
+            @Combat.canceled += instance.OnCombat;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -263,6 +289,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @QWER.started -= instance.OnQWER;
             @QWER.performed -= instance.OnQWER;
             @QWER.canceled -= instance.OnQWER;
+            @Combat.started -= instance.OnCombat;
+            @Combat.performed -= instance.OnCombat;
+            @Combat.canceled -= instance.OnCombat;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -286,5 +315,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnDashSkill(InputAction.CallbackContext context);
         void OnOnLeftClick(InputAction.CallbackContext context);
         void OnQWER(InputAction.CallbackContext context);
+        void OnCombat(InputAction.CallbackContext context);
     }
 }
