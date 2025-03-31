@@ -25,6 +25,12 @@ public class PlayerStatus : CharacterStatus
         playerUI.UpdateHP(currentHP, maxHP);
     }
 
+    public override void Heal(float amount)
+    {
+        base.Heal(amount); // 상위 클래스 기능 사용
+        playerUI?.UpdateHP(currentHP, maxHP); // UI 업데이트 등 플레이어 전용 처리
+    }
+
     public void UseMana(float amount)
     {
         currentMP = Mathf.Clamp(currentMP - amount, 0, maxMP);

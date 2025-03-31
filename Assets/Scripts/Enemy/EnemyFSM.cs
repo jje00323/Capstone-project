@@ -21,6 +21,15 @@ public class EnemyFSM : MonoBehaviour
         animator.runtimeAnimatorController = enemyData.animatorController;
         enemyStatus.Setup(enemyData);
 
+        if (enemyStatus.target == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                enemyStatus.target = playerObj.transform;
+            }
+        }
+
         idleState = new EnemyIdleState(this);
         detectState = new EnemyDetectState(this);
         attackState = new EnemyAttackState(this);
