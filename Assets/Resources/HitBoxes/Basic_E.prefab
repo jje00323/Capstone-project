@@ -101,7 +101,7 @@ MonoBehaviour:
   damage: 1
   duration: 0.2
   startDelay: 0.2
-  repeatCount: 5
+  repeatCount: 15
   repeatInterval: 0.15
   isProjectile: 0
   projectileSpeed: 10
