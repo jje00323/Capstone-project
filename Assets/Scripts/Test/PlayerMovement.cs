@@ -29,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!stateMachine.CanMove())
+            return;
+
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed); // 이건 항상 실행
 
