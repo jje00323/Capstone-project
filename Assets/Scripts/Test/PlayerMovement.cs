@@ -15,6 +15,16 @@ public class PlayerMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         stateMachine = GetComponent<PlayerStateMachine>();
+
+        agent = GetComponent<NavMeshAgent>();
+
+
+
+        agent.updateRotation = false;
+
+        agent.speed = 5f;
+        agent.acceleration = 999f;
+        agent.autoBraking = false;
     }
 
     void Update()

@@ -9,6 +9,7 @@ public class PlayerStateMachine : MonoBehaviour
         Idle,
         Moving,
         Attacking,
+        SkillCasting,
         Dodging,
         Damaged,
         Dead
@@ -37,4 +38,9 @@ public class PlayerStateMachine : MonoBehaviour
     {
         return CurrentState != PlayerState.Dodging && CurrentState != PlayerState.Dead;
     }
+    public bool CanSkill()
+    {
+        return CurrentState == PlayerState.Idle || CurrentState == PlayerState.Moving || CurrentState == PlayerState.Attacking || CurrentState == PlayerState.SkillCasting;
+    }
 }
+
