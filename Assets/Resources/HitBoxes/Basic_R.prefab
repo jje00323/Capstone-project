@@ -77,8 +77,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  duration: 0.5
-  startDelay: 0.2
+  duration: 0.2
+  followCaster: 0
+  startDelay: 0
   repeatCount: 1
   repeatInterval: 0.5
   shape: 2
@@ -86,8 +87,10 @@ MonoBehaviour:
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 45
   coneDistance: 10
-  offset: {x: 0, y: 0, z: 1}
+  offset: {x: 0, y: 0, z: 0}
+  isProjectile: 0
+  projectileSpeed: 10
+  projectileRigidbody: {fileID: 0}
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  followCaster: 1
   caster: {fileID: 0}
