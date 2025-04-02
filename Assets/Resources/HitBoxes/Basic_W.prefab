@@ -58,7 +58,7 @@ MonoBehaviour:
   coneAngle: 45
   coneDistance: 3
   offset: {x: 0, y: 0, z: 1}
-  isProjectile: 0
+  isProjectile: 1
   projectileSpeed: 8
   projectileRigidbody: {fileID: -7695004633106016108}
   drawGizmos: 1
