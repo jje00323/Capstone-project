@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static PlayerStateMachine;
 
 [RequireComponent(typeof(PlayerStateMachine))]
-public class PlayerSkillController : MonoBehaviour
+public class PlayerSkillSystem : MonoBehaviour
 {
     private PlayerStateMachine stateMachine;
     private PlayerMovement playerMovement;
@@ -16,9 +17,12 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, GameObject> hitboxPrefabs = new();
     private Dictionary<string, GameObject> effectPrefabs = new();
     private Dictionary<string, float> skillLastUsedTime = new();
+    private Dictionary<string, float> skillCooldowns = new();
+
+    private GameObject activeEffect;
 
     private bool isSkillActive = false;
-    private string currentJob = "Basic";
+    private string currentJob = "";
 
     private void Awake()
     {
@@ -27,12 +31,6 @@ public class PlayerSkillController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         LoadSkillsFromData();
-
-        if (skillData == null)
-        {
-            Debug.LogError(" skillData가 연결되지 않았습니다!");
-            return;
-        }
     }
 
     public void LoadSkillsFromData()
@@ -42,6 +40,7 @@ public class PlayerSkillController : MonoBehaviour
         hitboxPrefabs.Clear();
         effectPrefabs.Clear();
         skillLastUsedTime.Clear();
+        skillCooldowns.Clear();
 
         currentJob = skillData.jobType.ToString();
 
@@ -56,91 +55,108 @@ public class PlayerSkillController : MonoBehaviour
                 effectPrefabs[key] = skill.effectPrefab;
 
             skillLastUsedTime[skill.skillKey] = -999f;
+            skillCooldowns[skill.skillKey] = skill.cooldown;
         }
     }
 
     private void Update()
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame)
-        {
-            TryUseSkill("Q");
-        }
+        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkill("Q");
+        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkill("W");
+        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkill("E");
+        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
     private void TryUseSkill(string skillKey)
     {
-        Debug.Log("TryUseSkill 진입");
-
-        if (isSkillActive)
-        {
-            Debug.Log("스킬 이미 사용 중 (isSkillActive)");
-            return;
-        }
-
-        if (!stateMachine.CanSkill())
-        {
-            Debug.Log("스킬 사용 불가 상태 (FSM)");
-            return;
-        }
+        if (isSkillActive || !stateMachine.CanSkill()) return;
 
         string fullSkillKey = currentJob + "_" + skillKey;
 
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey))
-        {
-            Debug.Log("히트박스 없음: " + fullSkillKey);
-            return;
-        }
+        if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
 
         float cooldown = GetSkillCooldown(skillKey);
         float lastUsedTime = skillLastUsedTime.ContainsKey(skillKey) ? skillLastUsedTime[skillKey] : -999f;
-        if (Time.time - lastUsedTime < cooldown)
-        {
-            Debug.Log("쿨타임 적용 중");
-            return;
-        }
-
-        Debug.Log("▶ 애니메이션 트리거 Press_" + skillKey + " 실행됨");
+        if (Time.time - lastUsedTime < cooldown) return;
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
         playerMovement.RotateToMouse();
 
         string animTrigger = "Press_" + skillKey;
+        playerMovement.StopAgent();
         animator.SetTrigger(animTrigger);
 
         skillLastUsedTime[skillKey] = Time.time;
     }
+
     // 애니메이션 이벤트로 호출될 함수
     public void ActivateHitbox(string skillKey)
     {
+        Debug.Log($"[스킬 시스템] ActivateHitbox 호출됨! skillKey = {skillKey}");
+
         string fullSkillKey = currentJob + "_" + skillKey;
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
+        if (!hitboxPrefabs.ContainsKey(fullSkillKey))
+        {
+            Debug.LogWarning(" 히트박스 프리팹을 찾을 수 없음: " + fullSkillKey);
+            return;
+        }
 
         GameObject prefab = hitboxPrefabs[fullSkillKey];
-        GameObject instance = Instantiate(prefab);
+        GameObject instance;
 
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
-        if (spawnPoint != null)
-        {
-            Vector3 offset = spawnPoint.localPosition;
-            Vector3 worldOffset = transform.TransformDirection(offset);
-            instance.transform.position = transform.position + worldOffset;
-        }
-        else
-        {
-            instance.transform.position = transform.position + transform.forward;
-        }
 
-        instance.transform.rotation = transform.rotation;
+        Vector3 offset = spawnPoint.localPosition;
+        Vector3 worldOffset = transform.position + transform.TransformDirection(offset);
+        Quaternion localRotations = spawnPoint.localRotation;
+        worldOffset.y = 1.0f;
+        Quaternion worldRotations = transform.rotation * localRotations;
+        instance = Instantiate(prefab, worldOffset, worldRotations);
+
+        //  핵심: 생성 후 caster 지정
+        Hitbox hitbox = instance.GetComponent<Hitbox>();
+        if (hitbox != null)
+        {
+            hitbox.Initialize(transform); // 이 스크립트를 가진 플레이어 오브젝트
+        }
     }
 
     // 애니메이션 이벤트로 호출될 함수
     public void SpawnEffect(string skillKey)
     {
         string fullSkillKey = currentJob + "_" + skillKey;
-        if (effectPrefabs.ContainsKey(fullSkillKey) && effectPrefabs[fullSkillKey] != null)
+        if (!effectPrefabs.ContainsKey(fullSkillKey) || effectPrefabs[fullSkillKey] == null)
+            return;
+
+        activeEffect = Instantiate(effectPrefabs[fullSkillKey], transform.position + transform.forward, transform.rotation);
+
+        // 해당 스킬 데이터 가져와서 effectDuration 확인
+        SkillInfo skillInfo = GetSkillInfo(skillKey);
+        if (skillInfo != null && skillInfo.effectDuration > 0)
         {
-            Instantiate(effectPrefabs[fullSkillKey], transform.position + transform.forward, transform.rotation);
+            Destroy(activeEffect, skillInfo.effectDuration);
+            activeEffect = null;
         }
+    }
+
+    // 애니메이션 이벤트로 호출될 함수
+    public void DestroyEffect()
+    {
+        if (activeEffect != null)
+        {
+            Destroy(activeEffect);
+            activeEffect = null;
+        }
+    }
+
+    private SkillInfo GetSkillInfo(string skillKey)
+    {
+        foreach (var skill in skillData.skills)
+        {
+            if (skill.skillKey == skillKey)
+                return skill;
+        }
+        return null;
     }
 
     // 애니메이션 이벤트로 호출될 함수
@@ -148,22 +164,19 @@ public class PlayerSkillController : MonoBehaviour
     {
         isSkillActive = false;
         animator.SetTrigger("end_skill");
-
         playerMovement.ResumeAgent();
+
+        stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
     }
 
     private float GetSkillCooldown(string skillKey)
     {
-        foreach (var skill in skillData.skills)
-        {
-            if (skill.skillKey == skillKey)
-                return skill.cooldown;
-        }
-        return 0f;
+        return skillCooldowns.ContainsKey(skillKey) ? skillCooldowns[skillKey] : 0f;
     }
 
     public void UpdateCurrentJob(JobManager.JobType newJob)
     {
         currentJob = newJob.ToString();
+        LoadSkillsFromData();
     }
 }

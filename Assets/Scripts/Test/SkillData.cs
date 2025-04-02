@@ -17,4 +17,5 @@ public class SkillInfo
     public float cooldown;      // 쿨타임
     public GameObject hitboxPrefab; // 해당 스킬의 히트박스 프리팹 (선택적)
     public GameObject effectPrefab; // 스킬 이펙트 프리팹 (선택적)
+    public float effectDuration; // 이펙트 지속시간
 }

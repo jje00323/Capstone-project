@@ -4,60 +4,99 @@ using UnityEngine;
 
 public class Hitbox : MonoBehaviour
 {
-    [Header("히트박스 설정")]
-    public float damage = 10f;                   // 데미지
-    public float duration = 1f;                  // 마지막 반복 후 제거까지 시간
+    public enum ShapeType { Sphere, Box, Cone }
 
-    [Header("반복 생성 설정")]
-    public float startDelay = 0f;                // 첫 생성까지 대기 시간
-    public int repeatCount = 1;                  // 몇 번 반복할지
-    public float repeatInterval = 0.5f;          // 반복 간격
+    [Header("히트박스 설정")]
+    public float damage = 10f;
+    public float duration = 1f;
+
+    [Header("반복 판정 설정")]
+    public float startDelay = 0f;
+    public int repeatCount = 1;
+    public float repeatInterval = 0.5f;
+
+    [Header("범위 설정")]
+    public ShapeType shape = ShapeType.Sphere;
+    public float radius = 2f; // Sphere / Cone
+    public Vector3 boxSize = new Vector3(2f, 2f, 2f);
+    public float coneAngle = 45f; // degrees
+    public float coneDistance = 3f;
+    public Vector3 offset = Vector3.forward;
 
     [Header("투사체 설정")]
-    public bool isProjectile = false;            // 날아가는 형태인지
-    public float projectileSpeed = 10f;          // 투사체 속도
+    public bool isProjectile = false;
+    public float projectileSpeed = 10f;
+    public Rigidbody projectileRigidbody;
 
-    private Collider[] allColliders;
-    private bool hasLaunched = false;
+    [Header("디버그용")]
+    public bool drawGizmos = true;
 
-    void Awake()
+    private bool initialized = false;
+    public Color gizmoColor = Color.red;
+    public bool followCaster = true;
+    public Transform caster;
+
+    public void Initialize(Transform casterTransform)
     {
-        allColliders = GetComponents<Collider>();
-        DisableHit();
-
-        if (allColliders != null)
-        {
-            foreach (var col in allColliders)
-            {
-                col.isTrigger = true;
-            }
-        }
-    }
-
-    void OnEnable()
-    {
-        DisableHit(); //  처음엔 충돌 못 하도록 비활성화
+        caster = casterTransform;
+        initialized = true;
 
         if (isProjectile)
         {
-            TriggerProjectile(); // 투사체는 한 번만 날아감
+            LaunchProjectile();
         }
         else
         {
-            StartCoroutine(HandleSpawnSequence()); // 반복형 히트박스는 껐다 켰다 반복
+            StartCoroutine(HandleHitbox());
         }
     }
 
-    private IEnumerator HandleSpawnSequence()
+    private void LaunchProjectile()
+    {
+        if (projectileRigidbody == null)
+        {
+            projectileRigidbody = GetComponent<Rigidbody>();
+        }
+
+        if (projectileRigidbody != null)
+        {
+            projectileRigidbody.velocity = transform.forward * projectileSpeed;
+        }
+
+        // 간단한 단일 판정 후 일정 시간 뒤 제거
+        StartCoroutine(DestroyAfterDuration());
+    }
+
+    private void OnTriggerEnter(Collider other)//투사체만 colider사용
+    {
+        if (!isProjectile || !initialized) return;
+
+        if (other.CompareTag("Enemy"))
+        {
+            EnemyController enemy = other.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+                Debug.Log($"[Hitbox Projectile] 적 히트! 데미지: {damage}");
+            }
+
+            Destroy(gameObject); // 투사체는 맞고 사라짐
+        }
+    }
+
+    private IEnumerator DestroyAfterDuration()
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject);
+    }
+
+    private IEnumerator HandleHitbox()
     {
         yield return new WaitForSeconds(startDelay);
 
         for (int i = 0; i < repeatCount; i++)
         {
-            EnableHit();
-            yield return new WaitForSeconds(0.1f); // 잠깐 충돌 허용
-            DisableHit();
-
+            ApplyDamage();
             if (i < repeatCount - 1)
                 yield return new WaitForSeconds(repeatInterval);
         }
@@ -66,74 +105,81 @@ public class Hitbox : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void EnableHit()
+    private void ApplyDamage()
     {
-        foreach (var col in allColliders)
-            col.enabled = true;
-    }
+        if (!initialized || caster == null) return;
 
-    private void DisableHit()
-    {
-        foreach (var col in allColliders)
-            col.enabled = false;
-    }
+        Vector3 center = caster.position + caster.TransformDirection(offset);
+        Collider[] hits;
 
-
-
-    private void TriggerProjectile()
-    {
-
-        if (hasLaunched) return;
-
-        hasLaunched = true;
-
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
+        switch (shape)
         {
-            rb.velocity = transform.forward * projectileSpeed;
+            case ShapeType.Sphere:
+                hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy"));
+                break;
+
+            case ShapeType.Box:
+                hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask("Enemy"));
+                break;
+
+            case ShapeType.Cone:
+                hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask("Enemy"));
+                List<Collider> coneHits = new List<Collider>();
+                foreach (var col in hits)
+                {
+                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
+                    float angle = Vector3.Angle(caster.forward, dirToTarget);
+                    if (angle < coneAngle * 0.5f)
+                    {
+                        coneHits.Add(col);
+                    }
+                }
+                hits = coneHits.ToArray();
+                break;
+
+            default:
+                hits = new Collider[0];
+                break;
         }
 
-        EnableHit();
-
-        Destroy(gameObject, duration);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Enemy"))
+        foreach (Collider col in hits)
         {
-            EnemyController enemy = other.GetComponent<EnemyController>();
+            EnemyController enemy = col.GetComponent<EnemyController>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log($" 적이 공격당함! 데미지: {damage}");
-            }
-
-            if (isProjectile)
-            {
-                Destroy(gameObject); // 투사체는 충돌 시 제거
+                Debug.Log($"[Hitbox] 적 히트! 데미지: {damage}");
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        if (!Application.isPlaying) return;
+        if (!Application.isPlaying || !drawGizmos) return;
 
-        // collider가 꺼져있으면 Gizmo도 그리지 않음
-        foreach (var col in GetComponents<Collider>())
+        Vector3 center = transform.position + transform.TransformDirection(offset);
+
+        Gizmos.color = gizmoColor;
+
+        switch (shape)
         {
-            if (!col.enabled) continue;
+            case ShapeType.Sphere:
+                Gizmos.DrawWireSphere(center, radius);
+                break;
 
-            Gizmos.color = Color.red;
-            Gizmos.matrix = transform.localToWorldMatrix;
+            case ShapeType.Box:
+                Gizmos.matrix = Matrix4x4.TRS(center, transform.rotation, Vector3.one);
+                Gizmos.DrawWireCube(Vector3.zero, boxSize);
+                Gizmos.matrix = Matrix4x4.identity;
+                break;
 
-            if (col is BoxCollider box)
-                Gizmos.DrawWireCube(box.center, box.size);
-            else if (col is SphereCollider sphere)
-                Gizmos.DrawWireSphere(sphere.center, sphere.radius);
+            case ShapeType.Cone:
+                Gizmos.DrawRay(center, transform.forward * coneDistance);
+                Vector3 right = Quaternion.Euler(0, coneAngle * 0.5f, 0) * transform.forward;
+                Vector3 left = Quaternion.Euler(0, -coneAngle * 0.5f, 0) * transform.forward;
+                Gizmos.DrawRay(center, right * coneDistance);
+                Gizmos.DrawRay(center, left * coneDistance);
+                break;
         }
-
-        Gizmos.matrix = Matrix4x4.identity;
     }
 }

@@ -103,7 +103,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (comboIndex >= 4) return;
 
-        combatTimer = 0f;
         comboIndex++;
         animator.SetTrigger("NextCombo");
         movement.RotateToMouse();
@@ -111,11 +110,11 @@ public class PlayerAttack : MonoBehaviour
         inputBuffered = false;
         allowBufferedInput = false;
         canExecuteImmediately = false;
-        inputLocked = true; // 다시 잠금
-
+        inputLocked = true;
 
         Debug.Log($"콤보 {comboIndex}번째 실행됨");
     }
+
 
     // 애니메이션 이벤트로 호출될 함수
     public void EnableComboInput()
@@ -166,5 +165,21 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log("공격 초기화");
 
         stateMachine.ChangeState(PlayerState.Idle);
+    }
+
+    public void ActivateBasicHitbox()
+    {
+        string key = "Attack";
+
+        PlayerSkillSystem skillSystem = GetComponent<PlayerSkillSystem>();
+        if (skillSystem != null)
+        {
+            skillSystem.ActivateHitbox(key);
+            Debug.Log($"[기본공격] 히트박스 생성 요청: {key}");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerSkillSystem 컴포넌트가 없음!");
+        }
     }
 }
