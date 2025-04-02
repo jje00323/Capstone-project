@@ -4,62 +4,64 @@ using UnityEngine;
 
 public class EnemyIdleState : EnemyState
 {
-    private bool isReturning = false;
-    private float cooldownTimer = 0f;
+    private float idleTimer = 0f;
+    private float patrolCooldown = 3f;
 
     public EnemyIdleState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
     {
-        cooldownTimer = 0f;
+        idleTimer = 0f;
         enemy.animator.SetBool("IsMoving", false);
-
-        // 복귀 여부 판단
-        float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
-        isReturning = distanceFromSpawn > 0.5f;
     }
 
     public override void Update()
     {
-        cooldownTimer += Time.deltaTime;
-
         Transform target = enemy.enemyStatus.target;
-        if (target == null) return;
-
-        float distanceToTarget = Vector3.Distance(enemy.transform.position, target.position);
-        float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
-
-        // 쿨타임이 지난 후에만 탐지 전환 가능 (복귀 중이 아닐 때)
-        if (!isReturning && cooldownTimer >= enemy.enemyData.attackCooldown)
+        if (target != null)
         {
-            if (distanceToTarget <= enemy.enemyData.detectRadius)
+            float distance = Vector3.Distance(enemy.transform.position, target.position);
+
+            if (!enemy.hasDetectedPlayer && distance <= enemy.enemyData.detectRadius)
             {
                 enemy.ChangeState(enemy.detectState);
                 return;
             }
+
+            if (enemy.hasDetectedPlayer)
+            {
+                float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
+
+                if (distanceFromSpawn < enemy.enemyData.returnDistance)
+                {
+                    enemy.ChangeState(enemy.detectState); // 계속 추적
+                    return;
+                }
+                else
+                {
+                    enemy.hasDetectedPlayer = false;
+                    enemy.moveState.SetDestination(enemy.spawnPosition, true); // 복귀용
+                    enemy.ChangeState(enemy.moveState);
+                    return;
+                }
+            }
         }
 
-        // 복귀 로직 (기존 구조 유지)
-        if (isReturning)
+        idleTimer += Time.deltaTime;
+        if (idleTimer >= patrolCooldown)
         {
-            if (distanceFromSpawn <= 0.5f)
-            {
-                isReturning = false;
-                enemy.animator.SetBool("IsMoving", false);
-                return;
-            }
+            Vector3 randomOffset = new Vector3(
+                Random.Range(-3f, 3f),
+                0,
+                Random.Range(-3f, 3f)
+            );
 
-            enemy.animator.SetBool("IsMoving", true);
-
-            Vector3 dir = (enemy.spawnPosition - enemy.transform.position).normalized;
-
-            float moveSpeed = enemy.enemyData.moveSpeed * enemy.enemyData.returnSpeedMultiplier;
-            enemy.transform.position += dir * moveSpeed * Time.deltaTime;
-
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 360f * Time.deltaTime);
+            Vector3 patrolPoint = enemy.spawnPosition + randomOffset;
+            enemy.moveState.SetDestination(patrolPoint, false); // 순찰 이동
+            enemy.ChangeState(enemy.moveState);
         }
     }
 
     public override void Exit() { }
 }
+

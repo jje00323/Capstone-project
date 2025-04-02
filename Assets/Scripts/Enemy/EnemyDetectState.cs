@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class EnemyDetectState : EnemyState
 {
+
     public EnemyDetectState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
     {
         enemy.animator.SetBool("IsMoving", true);
+        enemy.hasDetectedPlayer = true; // 탐지 시작
     }
 
     public override void Update()
@@ -16,31 +18,32 @@ public class EnemyDetectState : EnemyState
         Transform target = enemy.enemyStatus.target;
         if (target == null) return;
 
-        float distance = Vector3.Distance(enemy.transform.position, target.position);
+        float distanceToTarget = Vector3.Distance(enemy.transform.position, target.position);
+        float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
 
-        // 공격 범위 안에 들어왔을 때 Attack으로 전환
-        if (distance <= enemy.enemyData.attackRange)
+        // 1. 복귀 거리 초과 시 → 모든 것 무시하고 MoveState 진입
+        if (distanceFromSpawn >= enemy.enemyData.returnDistance)
         {
-            // 공격 상태로 전환하여 회전 후 공격
-            Debug.Log("플레이어 공격 범위로 들어옴");
+            enemy.hasDetectedPlayer = false;
+            enemy.animator.SetBool("IsMoving", true);
+            enemy.moveState.SetDestination(enemy.spawnPosition, true); // 복귀
+            enemy.ChangeState(enemy.moveState);
+            return;
+        }
+
+        // 2. 공격 범위 안이면 공격
+        if (distanceToTarget <= enemy.enemyData.attackRange)
+        {
+            enemy.animator.SetBool("IsMoving", false);
             enemy.ChangeState(enemy.attackState);
             return;
         }
 
-        // 탐지 범위 내에서는 계속 이동
-        if (distance <= enemy.enemyData.detectRadius)
-        {
-            Vector3 dir = (target.position - enemy.transform.position).normalized;
-
-            enemy.transform.position += dir * enemy.enemyData.moveSpeed * Time.deltaTime;
-
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 360f * Time.deltaTime);
-        }
-        else
-        {
-            enemy.ChangeState(enemy.idleState);
-        }
+        // 3. 그 외에는 계속 추적
+        Vector3 dir = (target.position - enemy.transform.position).normalized;
+        enemy.transform.position += dir * enemy.enemyData.moveSpeed * Time.deltaTime;
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRot, 360f * Time.deltaTime);
     }
 
     public override void Exit()
