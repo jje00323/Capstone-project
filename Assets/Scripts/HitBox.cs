@@ -9,6 +9,7 @@ public class Hitbox : MonoBehaviour
     [Header("히트박스 설정")]
     public float damage = 10f;
     public float duration = 1f;
+    public bool followCaster = true;
 
     [Header("반복 판정 설정")]
     public float startDelay = 0f;
@@ -33,9 +34,18 @@ public class Hitbox : MonoBehaviour
 
     private bool initialized = false;
     public Color gizmoColor = Color.red;
-    public bool followCaster = true;
     public Transform caster;
+    private bool isHitboxActive = false;
 
+
+    private void Update()
+    {
+        if (followCaster && caster != null)
+        {
+            transform.position = caster.position + caster.TransformDirection(offset);
+        }
+
+    }
     public void Initialize(Transform casterTransform)
     {
         caster = casterTransform;
@@ -96,7 +106,11 @@ public class Hitbox : MonoBehaviour
 
         for (int i = 0; i < repeatCount; i++)
         {
+            isHitboxActive = true;        //  활성화 시작
             ApplyDamage();
+            yield return new WaitForSeconds(0.1f); // 판정 지속 시간 (디버깅용)
+            isHitboxActive = false;       //  비활성화
+
             if (i < repeatCount - 1)
                 yield return new WaitForSeconds(repeatInterval);
         }
@@ -129,7 +143,10 @@ public class Hitbox : MonoBehaviour
                 {
                     Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
                     float angle = Vector3.Angle(caster.forward, dirToTarget);
-                    if (angle < coneAngle * 0.5f)
+                    float distance = Vector3.Distance(caster.position, col.transform.position);
+
+                    //  아주 가까운 적은 방향 무시하고 무조건 포함
+                    if (distance <= 2f || angle < coneAngle * 0.7f)
                     {
                         coneHits.Add(col);
                     }
@@ -155,9 +172,22 @@ public class Hitbox : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (!Application.isPlaying || !drawGizmos) return;
+        if (!drawGizmos) return;
 
-        Vector3 center = transform.position + transform.TransformDirection(offset);
+        //  투사체가 아닌 일반 히트박스는 판정 중일 때만 보여줌
+        if (!isProjectile && Application.isPlaying && !isHitboxActive) return;
+
+
+        Vector3 center;
+
+        if (Application.isPlaying && caster != null && followCaster)
+        {
+            center = caster.position + caster.TransformDirection(offset);
+        }
+        else
+        {
+            center = transform.position + transform.TransformDirection(offset);
+        }
 
         Gizmos.color = gizmoColor;
 
@@ -182,4 +212,6 @@ public class Hitbox : MonoBehaviour
                 break;
         }
     }
+
+
 }

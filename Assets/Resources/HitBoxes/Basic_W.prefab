@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   duration: 1
+  followCaster: 0
   startDelay: 0
   repeatCount: 1
   repeatInterval: 0.5
@@ -63,7 +64,6 @@ MonoBehaviour:
   projectileRigidbody: {fileID: -7695004633106016108}
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  followCaster: 1
   caster: {fileID: 0}
 --- !u!54 &-7695004633106016108
 Rigidbody:
