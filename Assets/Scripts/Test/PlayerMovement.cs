@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
             RotateTowardsMovementDirection();
         }
 
-        CheckAgentStuck();
+        //CheckAgentStuck();
     }
 
     public void HandleRightClick()
@@ -78,18 +78,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckAgentStuck()
-    {
-        if (agent.isStopped || agent.velocity.magnitude < 0.01f)
-        {
-            if (!agent.pathPending && agent.remainingDistance > 0.1f)
-            {
-                Debug.LogWarning("[NavMeshAgent] 경로 오류 감지 → 복구 시도");
-                agent.ResetPath();
-                agent.SetDestination(transform.position + transform.forward * 1f);
-            }
-        }
-    }
+    //private void CheckAgentStuck()
+    //{
+    //    if (agent.isStopped || agent.velocity.magnitude < 0.01f)
+    //    {
+    //        if (!agent.pathPending && agent.remainingDistance > 0.1f)
+    //        {
+    //            Debug.LogWarning("[NavMeshAgent] 경로 오류 감지 → 복구 시도");
+    //            agent.ResetPath();
+    //            agent.SetDestination(transform.position + transform.forward * 1f);
+    //        }
+    //    }
+    //}
 
     private void RotateTowardsMovementDirection()
     {

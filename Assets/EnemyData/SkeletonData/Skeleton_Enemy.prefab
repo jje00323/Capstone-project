@@ -624,6 +624,7 @@ GameObject:
   - component: {fileID: 8831123260051781935}
   - component: {fileID: 7194687906034721334}
   - component: {fileID: 389069382719146760}
+  - component: {fileID: -345950005073107756}
   m_Layer: 0
   m_Name: Skeleton_Enemy
   m_TagString: Untagged
@@ -752,9 +753,19 @@ MonoBehaviour:
   enemyData: {fileID: 11400000, guid: e00ebb4fe6eb8fe4c980f824896a6266, type: 2}
   enemyStatus: {fileID: 7194687906034721334}
   animator: {fileID: 8831123260051781935}
-  detectRadius: 10
   spawnPosition: {x: 0, y: 0, z: 0}
-  returnDistance: 15
+--- !u!114 &-345950005073107756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529827291258060407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf01e75b61f065343a6a80920c411d23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1637199390260603415
 GameObject:
   m_ObjectHideFlags: 0

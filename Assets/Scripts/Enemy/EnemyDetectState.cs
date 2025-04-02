@@ -16,26 +16,26 @@ public class EnemyDetectState : EnemyState
         Transform target = enemy.enemyStatus.target;
         if (target == null) return;
 
-        float distanceToTarget = Vector3.Distance(enemy.transform.position, target.position);
-        float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
+        float distance = Vector3.Distance(enemy.transform.position, target.position);
 
-        if (distanceToTarget < enemy.detectRadius && distanceFromSpawn < enemy.returnDistance)
+        // 공격 범위 안에 들어왔을 때 Attack으로 전환
+        if (distance <= enemy.enemyData.attackRange)
         {
-            // 방향 벡터 계산
+            // 공격 상태로 전환하여 회전 후 공격
+            Debug.Log("플레이어 공격 범위로 들어옴");
+            enemy.ChangeState(enemy.attackState);
+            return;
+        }
+
+        // 탐지 범위 내에서는 계속 이동
+        if (distance <= enemy.enemyData.detectRadius)
+        {
             Vector3 dir = (target.position - enemy.transform.position).normalized;
 
-            // 이동
             enemy.transform.position += dir * enemy.enemyData.moveSpeed * Time.deltaTime;
 
-            // 부드럽게 회전
             Quaternion targetRotation = Quaternion.LookRotation(dir);
             enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 360f * Time.deltaTime);
-
-            // 공격 범위에 들어오면 공격 상태로 전환
-            if (distanceToTarget < 2f)
-            {
-                enemy.ChangeState(enemy.attackState);
-            }
         }
         else
         {
@@ -43,6 +43,8 @@ public class EnemyDetectState : EnemyState
         }
     }
 
-
-    public override void Exit() { }
+    public override void Exit()
+    {
+        enemy.animator.SetBool("IsMoving", false);
+    }
 }

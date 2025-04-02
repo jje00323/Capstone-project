@@ -4,60 +4,54 @@ using UnityEngine;
 
 public class EnemyAttackState : EnemyState
 {
-    private float attackCooldown = 1.2f;
-    private float timer = 0f;
-    private bool hasAttacked = false;
+    private bool hasStartedAttack = false;
+    private Quaternion targetRotation;
 
     public EnemyAttackState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
     {
-        timer = 0f;
-        hasAttacked = false;
+        hasStartedAttack = false;
 
-        // 공격 시작 시 한 번만 회전 (빠르게)
+        // 이 시점의 방향을 고정
         Vector3 dir = (enemy.enemyStatus.target.position - enemy.transform.position).normalized;
         if (dir != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 480f); // 빠르게 맞춤
+            targetRotation = Quaternion.LookRotation(dir);
         }
 
-        enemy.animator.SetTrigger("Attack");
+        enemy.animator.SetBool("IsMoving", false);
     }
-
 
     public override void Update()
     {
-        timer += Time.deltaTime;
 
-        float distance = Vector3.Distance(enemy.transform.position, enemy.enemyStatus.target.position);
-        if (distance > 2.5f)
+        // 회전 완료 전이라면 계속 회전
+        if (!hasStartedAttack)
         {
-            enemy.ChangeState(enemy.detectState);
+            enemy.transform.rotation = Quaternion.RotateTowards(
+                enemy.transform.rotation,
+                targetRotation,
+                480f * Time.deltaTime
+            );
+
+            if (Quaternion.Angle(enemy.transform.rotation, targetRotation) < 1f)
+            {
+                hasStartedAttack = true;
+                Debug.Log("플레이어 공격");
+                enemy.animator.SetTrigger("Attack");
+            }
+
             return;
         }
 
-        // 공격 딜 타이밍 (0.5초 후 한 번만 데미지 적용)
-        if (!hasAttacked && timer >= 0.5f)
-        {
-            hasAttacked = true;
-
-            PlayerStatus player = enemy.enemyStatus.target.GetComponent<PlayerStatus>();
-            if (player != null)
-            {
-                player.TakeDamage(enemy.enemyStatus.attackPower);
-            }
-        }
-
-        // 애니메이션 끝난 뒤 상태 복귀
-        if (timer >= attackCooldown)
-        {
-            enemy.ChangeState(enemy.detectState);
-        }
     }
 
     public override void Exit() { }
+
+    public void OnAttackAnimationComplete()
+    {
+        Debug.Log("애니메이션 이벤트로 공격 완료 → Idle 전환");
+        enemy.ChangeState(enemy.idleState);
+    }
 }
-
-

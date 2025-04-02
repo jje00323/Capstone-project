@@ -5,11 +5,13 @@ using UnityEngine;
 public class EnemyIdleState : EnemyState
 {
     private bool isReturning = false;
+    private float cooldownTimer = 0f;
 
     public EnemyIdleState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
     {
+        cooldownTimer = 0f;
         enemy.animator.SetBool("IsMoving", false);
 
         // 복귀 여부 판단
@@ -19,20 +21,25 @@ public class EnemyIdleState : EnemyState
 
     public override void Update()
     {
+        cooldownTimer += Time.deltaTime;
+
         Transform target = enemy.enemyStatus.target;
         if (target == null) return;
 
         float distanceToTarget = Vector3.Distance(enemy.transform.position, target.position);
         float distanceFromSpawn = Vector3.Distance(enemy.transform.position, enemy.spawnPosition);
 
-        // 플레이어가 탐지 범위에 있으면 다시 탐지 상태로 전환
-        if (distanceToTarget < enemy.detectRadius && !isReturning)
+        // 쿨타임이 지난 후에만 탐지 전환 가능 (복귀 중이 아닐 때)
+        if (!isReturning && cooldownTimer >= enemy.enemyData.attackCooldown)
         {
-            enemy.ChangeState(enemy.detectState);
-            return;
+            if (distanceToTarget <= enemy.enemyData.detectRadius)
+            {
+                enemy.ChangeState(enemy.detectState);
+                return;
+            }
         }
 
-        // 복귀 로직
+        // 복귀 로직 (기존 구조 유지)
         if (isReturning)
         {
             if (distanceFromSpawn <= 0.5f)
@@ -46,11 +53,9 @@ public class EnemyIdleState : EnemyState
 
             Vector3 dir = (enemy.spawnPosition - enemy.transform.position).normalized;
 
-            // 복귀 시 속도 증가
-            float moveSpeed = enemy.enemyData.moveSpeed * enemy.returnSpeedMultiplier;
+            float moveSpeed = enemy.enemyData.moveSpeed * enemy.enemyData.returnSpeedMultiplier;
             enemy.transform.position += dir * moveSpeed * Time.deltaTime;
 
-            // 부드럽게 회전
             Quaternion targetRotation = Quaternion.LookRotation(dir);
             enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, targetRotation, 360f * Time.deltaTime);
         }
