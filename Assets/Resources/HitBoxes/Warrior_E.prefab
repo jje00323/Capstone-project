@@ -100,12 +100,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 15
   duration: 0.5
-  followCaster: 0
+  followCaster: 1
   startDelay: 0
-  repeatCount: 1
-  repeatInterval: 0.5
+  repeatCount: 5
+  repeatInterval: 0.3
   shape: 0
-  radius: 2
+  radius: 3
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 45
   coneDistance: 3

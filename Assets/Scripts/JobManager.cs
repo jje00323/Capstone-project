@@ -126,27 +126,36 @@ public class JobManager : MonoBehaviour
         {
             playerAnimator.runtimeAnimatorController = res.animatorController;
             playerAnimator.avatar = res.avatar;
+
+            PlayerMovement movement = player.GetComponent<PlayerMovement>();
+            if (movement != null)
+                movement.UpdateAnimatorReference(playerAnimator);
         }
 
-        //PlayerSkill playerSkill = FindObjectOfType<PlayerSkill>();
-        //if (playerSkill != null)
-        //{
-        //    var skillData = GetSkillData(newJob);
-        //    if (skillData != null)
-        //    {
-        //        playerSkill.LoadSkillsFromData(skillData);
-        //    }
-        //}
 
-        //PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
-        //if (skillUI != null)
-        //{
-        //    var skillData = GetSkillData(newJob);
-        //    if (skillData != null)
-        //    {
-        //        skillUI.SetSkills(skillData);
-        //    }
-        //}
+        PlayerSkillController playerSkill = FindObjectOfType<PlayerSkillController>();
+        if (playerSkill != null)
+        {
+            var skillData = GetSkillData(newJob);
+            if (skillData != null)
+            {
+                playerSkill.LoadSkillsFromData(skillData);
+            }
+        }
+
+        // 2. 스킬 UI 갱신
+        PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
+        if (skillUI != null)
+        {
+            var skillData = GetSkillData(newJob);
+            if (skillData != null)
+            {
+                skillUI.ReloadUI(skillData);
+            }
+        }
+        var playerMovement = player.GetComponent<PlayerMovement>();
+        if (playerMovement != null)
+            playerMovement.UpdateAnimatorReference(playerAnimator);
 
         var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
         Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));

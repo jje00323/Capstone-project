@@ -9,6 +9,11 @@ public class PlayerMovement : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
     private PlayerStateMachine stateMachine;
+    private bool hasSpawnedEffect = false;
+
+    [Header("이동 이펙트")]
+    public GameObject moveClickEffectPrefab;
+
 
     void Awake()
     {
@@ -54,17 +59,38 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (stateMachine.CanMove() && Mouse.current.rightButton.isPressed)
+        if (stateMachine.CanMove())
         {
-            HandleRightClick();
+            if (Mouse.current.rightButton.wasPressedThisFrame && !hasSpawnedEffect)
+            {
+                HandleRightClick();                 // 이동 처리 + 이펙트 생성
+                hasSpawnedEffect = true;
+            }
+            else if (Mouse.current.rightButton.isPressed)
+            {
+                HandleRightClick();                 // 이동 처리만 (이펙트는 X)
+            }
+
+            if (Mouse.current.rightButton.wasReleasedThisFrame)
+            {
+                hasSpawnedEffect = false;          // 클릭 끝나면 다시 초기화
+            }
         }
+
 
         if (stateMachine.CurrentState != PlayerState.Attacking)
         {
             RotateTowardsMovementDirection();
         }
 
+
+
         //CheckAgentStuck();
+    }
+
+    public void UpdateAnimatorReference(Animator newAnimator)
+    {
+        animator = newAnimator;
     }
 
     public void HandleRightClick()
@@ -75,6 +101,11 @@ public class PlayerMovement : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             agent.SetDestination(hit.point);
+
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                SpawnMoveEffect(hit.point);
+            }
         }
     }
 
@@ -128,5 +159,25 @@ public class PlayerMovement : MonoBehaviour
     public void ResumeAgent()
     {
         agent.isStopped = false;
+    }
+
+    void SpawnMoveEffect(Vector3 position)
+    {
+        if (moveClickEffectPrefab != null)
+        {
+            GameObject fx = Instantiate(moveClickEffectPrefab, position + Vector3.up * 0.1f, Quaternion.identity);
+
+            fx.transform.localScale = Vector3.one * 0.7f;
+            Destroy(fx, 2f); // 1.5초 뒤 제거
+        }
+    }
+
+    void OnAnimatorMove()
+    {
+        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting)
+        {
+            transform.position += animator.deltaPosition;
+            transform.rotation *= animator.deltaRotation;
+        }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using static PlayerStateMachine;
 
 [RequireComponent(typeof(PlayerStateMachine))]
-public class PlayerSkillSystem : MonoBehaviour
+public class PlayerSkillController : MonoBehaviour
 {
     private PlayerStateMachine stateMachine;
     private PlayerMovement playerMovement;
@@ -30,13 +30,18 @@ public class PlayerSkillSystem : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
 
-        LoadSkillsFromData();
+        LoadSkillsFromData(skillData);
     }
 
-    public void LoadSkillsFromData()
+    public void LoadSkillsFromData(JobSkillData newData)
     {
-        if (skillData == null) return;
+        if (newData == null)
+        {
+            Debug.LogWarning("스킬 데이터가 없습니다.");
+            return;
+        }
 
+        skillData = newData;
         hitboxPrefabs.Clear();
         effectPrefabs.Clear();
         skillLastUsedTime.Clear();
@@ -57,6 +62,8 @@ public class PlayerSkillSystem : MonoBehaviour
             skillLastUsedTime[skill.skillKey] = -999f;
             skillCooldowns[skill.skillKey] = skill.cooldown;
         }
+
+        Debug.Log($"[SkillController] {currentJob} 스킬 데이터 로드 완료");
     }
 
     private void Update()
@@ -67,7 +74,7 @@ public class PlayerSkillSystem : MonoBehaviour
         if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
-    private void TryUseSkill(string skillKey)
+    public void TryUseSkill(string skillKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
 
@@ -87,6 +94,10 @@ public class PlayerSkillSystem : MonoBehaviour
         animator.SetTrigger(animTrigger);
 
         skillLastUsedTime[skillKey] = Time.time;
+        if (PlayerSkillUI.Instance != null)
+        {
+            PlayerSkillUI.Instance.StartUICooldown(skillKey, cooldown);
+        }
     }
 
     // 애니메이션 이벤트로 호출될 함수
@@ -177,6 +188,6 @@ public class PlayerSkillSystem : MonoBehaviour
     public void UpdateCurrentJob(JobManager.JobType newJob)
     {
         currentJob = newJob.ToString();
-        LoadSkillsFromData();
+        LoadSkillsFromData(skillData);
     }
 }

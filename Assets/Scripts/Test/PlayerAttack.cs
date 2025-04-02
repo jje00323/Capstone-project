@@ -171,7 +171,7 @@ public class PlayerAttack : MonoBehaviour
     {
         string key = "Attack";
 
-        PlayerSkillSystem skillSystem = GetComponent<PlayerSkillSystem>();
+        PlayerSkillController skillSystem = GetComponent<PlayerSkillController>();
         if (skillSystem != null)
         {
             skillSystem.ActivateHitbox(key);
