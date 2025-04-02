@@ -18,8 +18,8 @@ MonoBehaviour:
   attackPower: 10
   attackCooldown: 2
   attackRange: 1
-  detectRadius: 4
-  returnDistance: 8
+  detectRadius: 6
+  returnDistance: 15
   returnSpeedMultiplier: 3
   expDrop: 10
   animatorController: {fileID: 9100000, guid: 5574601b0409e2d4fa0347880fd051bb, type: 2}

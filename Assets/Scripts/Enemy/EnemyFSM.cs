@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyFSM : MonoBehaviour
 {
+    public bool hasDetectedPlayer = false;
+
     public EnemyData enemyData;
     public EnemyStatus enemyStatus;
     public Animator animator;
@@ -11,6 +13,7 @@ public class EnemyFSM : MonoBehaviour
     public EnemyState currentState;
 
     public EnemyIdleState idleState;
+    public EnemyMoveState moveState;
     public EnemyDetectState detectState;
     public EnemyAttackState attackState;
     public EnemyStunnedState stunnedState;
@@ -35,6 +38,7 @@ public class EnemyFSM : MonoBehaviour
         }
 
         idleState = new EnemyIdleState(this);
+        moveState = new EnemyMoveState(this);
         detectState = new EnemyDetectState(this);
         attackState = new EnemyAttackState(this);
         stunnedState = new EnemyStunnedState(this);
@@ -50,6 +54,10 @@ public class EnemyFSM : MonoBehaviour
 
     public void ChangeState(EnemyState newState)
     {
+        if (currentState == newState) return;
+
+        Debug.Log($"[Enemy FSM] 상태 변경: {currentState} → {newState}");
+
         currentState?.Exit();
         currentState = newState;
         currentState.Enter();
@@ -68,7 +76,12 @@ public class EnemyFSM : MonoBehaviour
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, enemyData.detectRadius);
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(spawnPosition, enemyData.returnDistance);
         }
+
+
     }
 
 }
