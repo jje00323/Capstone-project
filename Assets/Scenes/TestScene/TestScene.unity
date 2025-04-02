@@ -643,11 +643,12 @@ MonoBehaviour:
     avatar: {fileID: 9000000, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d, type: 3}
     modelPrefab: {fileID: 5019315028825407237, guid: e27a9c8375a34ad4b9025a2627468007, type: 3}
   - jobType: 1
-    animatorController: {fileID: 9100000, guid: 1ca0ec7d3e2db394f904bf536ecfd52e, type: 2}
+    animatorController: {fileID: 9100000, guid: e9c3d2c153daaa14f86cd90d11a61662, type: 2}
     avatar: {fileID: 9000000, guid: e53c0edb812c5344698949e4671d1a2c, type: 3}
     modelPrefab: {fileID: 1948535115976630, guid: f7902c99c75cad34f934860c6b6ddd9e, type: 3}
   allJobSkillData:
   - {fileID: 11400000, guid: b9487591046bc214f8a040ce1d323c2e, type: 2}
+  - {fileID: 11400000, guid: 8fc598f3ef90bd446a494d248d8e500e, type: 2}
   modelParent: {fileID: 2228435612166614133}
 --- !u!1001 &784483559
 PrefabInstance:
@@ -1108,11 +1109,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5304381545136876255, guid: f76f8dc887083f74281ba5a38607120e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -49.010193
+      value: -49.010315
       objectReference: {fileID: 0}
     - target: {fileID: 5304381545136876255, guid: f76f8dc887083f74281ba5a38607120e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.27526855
+      value: -0.27539062
       objectReference: {fileID: 0}
     - target: {fileID: 5304381545136876255, guid: f76f8dc887083f74281ba5a38607120e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2105,6 +2106,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1712113265573438659, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
+      propertyPath: moveClickEffectPrefab
+      value: 
+      objectReference: {fileID: 1195808797154278, guid: 47b105c1abea8c243b0d7d36e68f479a, type: 3}
     - target: {fileID: 3804641180752894480, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: playerUI
       value: 
