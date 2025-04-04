@@ -56,7 +56,7 @@ public class EnemyFSM : MonoBehaviour
     {
         if (currentState == newState) return;
 
-        Debug.Log($"[Enemy FSM] 상태 변경: {currentState} → {newState}");
+        //Debug.Log($"[Enemy FSM] 상태 변경: {currentState} → {newState}");
 
         currentState?.Exit();
         currentState = newState;

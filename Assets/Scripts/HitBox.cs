@@ -77,20 +77,33 @@ public class Hitbox : MonoBehaviour
         StartCoroutine(DestroyAfterDuration());
     }
 
-    private void OnTriggerEnter(Collider other)//투사체만 colider사용
+    private void OnTriggerEnter(Collider other)
     {
         if (!isProjectile || !initialized) return;
 
-        if (other.CompareTag("Enemy"))
+        // 히트박스가 플레이어 공격이면 적에게 적용
+        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
         {
             EnemyController enemy = other.GetComponent<EnemyController>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log($"[Hitbox Projectile] 적 히트! 데미지: {damage}");
+                Debug.Log($"[Hitbox Projectile] 적 피격! 데미지: {damage}");
             }
 
-            Destroy(gameObject); // 투사체는 맞고 사라짐
+            Destroy(gameObject);
+        }
+        // 히트박스가 몬스터 공격이면 플레이어에게 적용
+        else if (CompareTag("EnemyHitbox") && other.CompareTag("Player"))
+        {
+            PlayerStatus player = other.GetComponent<PlayerStatus>();
+            if (player != null)
+            {
+                player.TakeDamage(damage);
+                Debug.Log($"[Hitbox Projectile] 플레이어 피격! 데미지: {damage}");
+            }
+
+            Destroy(gameObject);
         }
     }
 
@@ -121,37 +134,77 @@ public class Hitbox : MonoBehaviour
 
     private void ApplyDamage()
     {
-        if (!initialized || caster == null) return;
+        if (!initialized || caster == null)
+        {
+            Debug.LogWarning("[HitBox] 초기화되지 않았거나 Caster 없음");
+            return;
+        }
+
+        Debug.Log($"[HitBox] {gameObject.name}, Tag: {gameObject.tag}, Layer: {LayerMask.LayerToName(gameObject.layer)}");
 
         Vector3 center = caster.position + caster.TransformDirection(offset);
         Collider[] hits;
 
+        string targetLayer = gameObject.CompareTag("PlayerHitbox") ? "Enemy" : "Player";
+        Debug.Log($"[HitBox] 타겟 레이어: {targetLayer}");
+
+        List<Collider> filteredHits = new List<Collider>();
+
         switch (shape)
         {
             case ShapeType.Sphere:
-                hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy"));
-                break;
-
-            case ShapeType.Box:
-                hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask("Enemy"));
-                break;
-
-            case ShapeType.Cone:
-                hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask("Enemy"));
-                List<Collider> coneHits = new List<Collider>();
+                hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask(targetLayer));
                 foreach (var col in hits)
                 {
                     Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
                     float angle = Vector3.Angle(caster.forward, dirToTarget);
                     float distance = Vector3.Distance(caster.position, col.transform.position);
 
-                    //  아주 가까운 적은 방향 무시하고 무조건 포함
-                    if (distance <= 2f || angle < coneAngle * 0.7f)
+                    Debug.Log($"[Sphere] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
+
+                    // 필터링 완화: 반경 이내 + 전방 120도 이내 허용
+                    if (distance <= radius && angle < 120f)
                     {
-                        coneHits.Add(col);
+                        filteredHits.Add(col);
+                        Debug.Log($"[Sphere] 감지됨 → {col.name}");
                     }
                 }
-                hits = coneHits.ToArray();
+                break;
+
+            case ShapeType.Box:
+                hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask(targetLayer));
+                foreach (var col in hits)
+                {
+                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
+                    float angle = Vector3.Angle(caster.forward, dirToTarget);
+                    float distance = Vector3.Distance(caster.position, col.transform.position);
+
+                    Debug.Log($"[Box] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
+
+                    if (distance <= radius && angle < 120f)
+                    {
+                        filteredHits.Add(col);
+                        Debug.Log($"[Box] 감지됨 → {col.name}");
+                    }
+                }
+                break;
+
+            case ShapeType.Cone:
+                hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask(targetLayer));
+                foreach (var col in hits)
+                {
+                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
+                    float angle = Vector3.Angle(caster.forward, dirToTarget);
+                    float distance = Vector3.Distance(caster.position, col.transform.position);
+
+                    Debug.Log($"[Cone] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
+
+                    if (distance <= 2f || angle < coneAngle * 0.7f)
+                    {
+                        filteredHits.Add(col);
+                        Debug.Log($"[Cone] 감지됨 → {col.name}");
+                    }
+                }
                 break;
 
             default:
@@ -159,13 +212,19 @@ public class Hitbox : MonoBehaviour
                 break;
         }
 
-        foreach (Collider col in hits)
+        // 데미지 처리
+        foreach (var col in filteredHits)
         {
-            EnemyController enemy = col.GetComponent<EnemyController>();
-            if (enemy != null)
+            if (gameObject.CompareTag("PlayerHitbox") && col.CompareTag("Enemy"))
             {
-                enemy.TakeDamage(damage);
-                Debug.Log($"[Hitbox] 적 히트! 데미지: {damage}");
+                var enemy = col.GetComponent<EnemyController>();
+                if (enemy != null) enemy.TakeDamage(damage);
+            }
+            else if (gameObject.CompareTag("EnemyHitbox") && col.CompareTag("Player"))
+            {
+                var player = col.GetComponent<PlayerStatus>();
+                if (player != null) player.TakeDamage(damage);
+                Debug.Log("[HitBox] 플레이어에게 데미지 적용 완료");
             }
         }
     }

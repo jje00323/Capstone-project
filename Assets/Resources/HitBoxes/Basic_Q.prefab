@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2072185349234563312}
   m_Layer: 6
   m_Name: Basic_Q
-  m_TagString: Untagged
+  m_TagString: PlayerHitBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
