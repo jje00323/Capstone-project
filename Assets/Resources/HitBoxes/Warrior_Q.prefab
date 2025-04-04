@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5086348225827032775}
   m_Layer: 6
   m_Name: Warrior_Q
-  m_TagString: PlayerHitBox
+  m_TagString: PlayerHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

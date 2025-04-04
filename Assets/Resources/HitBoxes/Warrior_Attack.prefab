@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 8484475733069476912}
   m_Layer: 6
   m_Name: Warrior_Attack
-  m_TagString: PlayerHitBox
+  m_TagString: PlayerHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
