@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("이동 이펙트")]
     public GameObject moveClickEffectPrefab;
 
-
+    [SerializeField] private float rootMotionMultiplier = 1.5f;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -171,13 +171,17 @@ public class PlayerMovement : MonoBehaviour
             Destroy(fx, 2f); // 1.5초 뒤 제거
         }
     }
-
     void OnAnimatorMove()
     {
-        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting)
+        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting ||
+            stateMachine.CurrentState == PlayerStateMachine.PlayerState.Attacking)
         {
-            transform.position += animator.deltaPosition;
+            Vector3 delta = animator.deltaPosition * rootMotionMultiplier;
+            delta.y = 0f; // 수직 이동 제거
+            transform.position += delta;
+
             transform.rotation *= animator.deltaRotation;
         }
     }
+
 }

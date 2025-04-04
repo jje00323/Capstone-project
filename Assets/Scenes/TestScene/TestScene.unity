@@ -639,7 +639,7 @@ MonoBehaviour:
   currentJob: 0
   jobResourcesList:
   - jobType: 0
-    animatorController: {fileID: 9100000, guid: 1ca0ec7d3e2db394f904bf536ecfd52e, type: 2}
+    animatorController: {fileID: 9100000, guid: e9c3d2c153daaa14f86cd90d11a61662, type: 2}
     avatar: {fileID: 9000000, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d, type: 3}
     modelPrefab: {fileID: 5019315028825407237, guid: e27a9c8375a34ad4b9025a2627468007, type: 3}
   - jobType: 1
@@ -1109,7 +1109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5304381545136876255, guid: f76f8dc887083f74281ba5a38607120e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -49.010315
+      value: -49.010986
       objectReference: {fileID: 0}
     - target: {fileID: 5304381545136876255, guid: f76f8dc887083f74281ba5a38607120e, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2122,6 +2122,14 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5493104356015394282, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
+      propertyPath: m_UpdateMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493104356015394282, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6104760139747125831, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2161,6 +2169,10 @@ PrefabInstance:
     - target: {fileID: 6104760139747125831, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8557810214408940225, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

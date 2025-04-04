@@ -142,7 +142,16 @@ public class JobManager : MonoBehaviour
                 playerSkill.LoadSkillsFromData(skillData);
             }
         }
-
+        var stateMachine = player.GetComponent<PlayerStateMachine>();
+        if (stateMachine != null)
+        {
+            stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+        }
+        var attack = player.GetComponent<PlayerAttack>();
+        if (attack != null)
+        {
+            attack.ForceEndCombo(); 
+        }
         // 2. 스킬 UI 갱신
         PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
         if (skillUI != null)

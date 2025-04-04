@@ -20,7 +20,7 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
-
+    GameObject player;
     private bool isSkillActive = false;
     private string currentJob = "";
 
@@ -29,7 +29,7 @@ public class PlayerSkillController : MonoBehaviour
         stateMachine = GetComponent<PlayerStateMachine>();
         playerMovement = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
-
+        player = GameObject.FindWithTag("Player");
         LoadSkillsFromData(skillData);
     }
 
@@ -77,7 +77,12 @@ public class PlayerSkillController : MonoBehaviour
     public void TryUseSkill(string skillKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
-
+        
+        var attack = player.GetComponent<PlayerAttack>();
+        if (attack != null)
+        {
+            attack.ForceEndCombo();
+        }
         string fullSkillKey = currentJob + "_" + skillKey;
 
         if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
@@ -88,7 +93,7 @@ public class PlayerSkillController : MonoBehaviour
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
         playerMovement.RotateToMouse();
-
+        animator.applyRootMotion = true;
         string animTrigger = "Press_" + skillKey;
         playerMovement.StopAgent();
         animator.SetTrigger(animTrigger);
@@ -176,7 +181,7 @@ public class PlayerSkillController : MonoBehaviour
         isSkillActive = false;
         animator.SetTrigger("end_skill");
         playerMovement.ResumeAgent();
-
+        animator.applyRootMotion = false;
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
     }
 
