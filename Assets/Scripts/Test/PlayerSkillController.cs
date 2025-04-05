@@ -118,22 +118,23 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         GameObject prefab = hitboxPrefabs[fullSkillKey];
-        GameObject instance;
-
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
 
         Vector3 offset = spawnPoint.localPosition;
         Vector3 worldOffset = transform.position + transform.TransformDirection(offset);
-        Quaternion localRotations = spawnPoint.localRotation;
         worldOffset.y = 1.0f;
-        Quaternion worldRotations = transform.rotation * localRotations;
-        instance = Instantiate(prefab, worldOffset, worldRotations);
+        Quaternion worldRotations = transform.rotation * spawnPoint.localRotation;
 
-        //  핵심: 생성 후 caster 지정
+        GameObject instance = Instantiate(prefab, worldOffset, worldRotations);
         Hitbox hitbox = instance.GetComponent<Hitbox>();
+
+        // 핵심: 스킬 데이터에서 followCaster 여부 참조
+        SkillInfo skillInfo = GetSkillInfo(skillKey);
+        bool shouldFollow = skillInfo != null ? skillInfo.followCaster : true;
+
         if (hitbox != null)
         {
-            hitbox.Initialize(transform); // 이 스크립트를 가진 플레이어 오브젝트
+            hitbox.Initialize(transform, shouldFollow);
         }
     }
 

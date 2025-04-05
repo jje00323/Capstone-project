@@ -25,7 +25,7 @@ public class EnemySkillController : MonoBehaviour
         Hitbox hitbox = instance.GetComponent<Hitbox>();
         if (hitbox != null)
         {
-            hitbox.Initialize(transform);
+            hitbox.Initialize(transform, false);
             instance.tag = "EnemyHitbox";
         }
     }

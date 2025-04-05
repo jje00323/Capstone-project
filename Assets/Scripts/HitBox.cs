@@ -46,9 +46,10 @@ public class Hitbox : MonoBehaviour
         }
 
     }
-    public void Initialize(Transform casterTransform)
+    public void Initialize(Transform casterTransform, bool shouldFollowCaster)
     {
         caster = casterTransform;
+        followCaster = shouldFollowCaster;
         initialized = true;
 
         if (isProjectile)
@@ -132,49 +133,48 @@ public class Hitbox : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     private void ApplyDamage()
     {
-        if (!initialized || caster == null)
+        if (!initialized)
         {
-            Debug.LogWarning("[HitBox] 초기화되지 않았거나 Caster 없음");
+            Debug.LogWarning("[HitBox] 초기화되지 않음");
             return;
         }
 
-        Vector3 center = caster.position + caster.TransformDirection(offset);
+        Vector3 center = followCaster && caster != null
+            ? caster.position + caster.TransformDirection(offset)
+            : transform.position + transform.TransformDirection(offset);
+
         Collider[] hits = null;
         List<Collider> filteredHits = new List<Collider>();
-
         string targetLayer = gameObject.CompareTag("PlayerHitbox") ? "Enemy" : "Player";
 
         switch (shape)
         {
             case ShapeType.Sphere:
                 hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask(targetLayer));
-                filteredHits.AddRange(hits); // 필터 없이 바로 추가
+                filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Box:
-                hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask(targetLayer));
-                filteredHits.AddRange(hits); // 필터 없이 바로 추가
+                hits = Physics.OverlapBox(center, boxSize * 0.5f, transform.rotation, LayerMask.GetMask(targetLayer));
+                filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Cone:
                 hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask(targetLayer));
                 foreach (var col in hits)
                 {
-                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
-                    float angle = Vector3.Angle(caster.forward, dirToTarget);
-                    float distance = Vector3.Distance(caster.position, col.transform.position);
+                    Vector3 dirToTarget = (col.transform.position - center).normalized;
+                    float angle = Vector3.Angle(transform.forward, dirToTarget);
+                    float distance = Vector3.Distance(center, col.transform.position);
 
                     if (distance <= 2f || angle < coneAngle * 0.7f)
                     {
                         filteredHits.Add(col);
                     }
                 }
-                break;
-
-            default:
-                hits = new Collider[0];
                 break;
         }
 

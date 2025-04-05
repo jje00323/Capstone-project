@@ -16,7 +16,7 @@ public class EnemyAttackController : MonoBehaviour
 
         if (hitbox != null)
         {
-            hitbox.Initialize(transform); // SpawnPoint가 아닌 enemy.transform 기준
+            hitbox.Initialize(transform, true); // SpawnPoint가 아닌 enemy.transform 기준
             instance.tag = "EnemyHitbox";
         }
     }
