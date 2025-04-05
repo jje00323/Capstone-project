@@ -24,6 +24,7 @@ public class JobManager : MonoBehaviour
         public RuntimeAnimatorController animatorController;
         public Avatar avatar;
         public GameObject modelPrefab;
+        public Transform rightHandBone;
     }
 
     [Header("모델이 붙을 위치")]
@@ -167,7 +168,22 @@ public class JobManager : MonoBehaviour
             playerMovement.UpdateAnimatorReference(playerAnimator);
 
         var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
-        Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
+        //Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
+
+
+        Transform instanceRightHand = currentModel.transform.Find(res.rightHandBone.name);
+        if (instanceRightHand == null)
+        {
+            Debug.LogError("[JobManager] 인스턴스에서 손 본을 찾을 수 없습니다!");
+        }
+        else
+        {
+            var equipmentSystem = player.GetComponent<WeaponEquipSystem>();
+            if (equipmentSystem != null)
+            {
+                equipmentSystem.SetRightHand(instanceRightHand);
+            }
+        }
         Debug.Log($"[직업 변경 완료] {newJob}");
     }
 
