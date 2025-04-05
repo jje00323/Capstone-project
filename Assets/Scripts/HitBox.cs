@@ -9,7 +9,6 @@ public class Hitbox : MonoBehaviour
     [Header("히트박스 설정")]
     public float damage = 10f;
     public float duration = 1f;
-    public bool followCaster = false;
 
     [Header("반복 판정 설정")]
     public float startDelay = 0f;
@@ -18,9 +17,9 @@ public class Hitbox : MonoBehaviour
 
     [Header("범위 설정")]
     public ShapeType shape = ShapeType.Sphere;
-    public float radius = 2f; // Sphere / Cone
+    public float radius = 2f;
     public Vector3 boxSize = new Vector3(2f, 2f, 2f);
-    public float coneAngle = 45f; // degrees
+    public float coneAngle = 45f;
     public float coneDistance = 3f;
     public Vector3 offset = Vector3.forward;
 
@@ -29,37 +28,34 @@ public class Hitbox : MonoBehaviour
     public float projectileSpeed = 10f;
     public Rigidbody projectileRigidbody;
 
-    [Header("디버그용")]
+    [Header("디버그")]
     public bool drawGizmos = true;
-
-    private bool initialized = false;
     public Color gizmoColor = Color.red;
-    public Transform caster;
+
+    [SerializeField] private bool followCaster = false;
+
+    private Transform caster;
+    private bool initialized = false;
     private bool isHitboxActive = false;
 
-
-    private void Update()
-    {
-        if (followCaster && caster != null)
-        {
-            transform.position = caster.position + caster.TransformDirection(offset);
-        }
-
-    }
-    public void Initialize(Transform casterTransform, bool shouldFollowCaster)
+    public void Initialize(Transform casterTransform, bool shouldFollow)
     {
         caster = casterTransform;
-        followCaster = shouldFollowCaster;
+        followCaster = shouldFollow; // 외부 설정 가능하게 반영
         initialized = true;
 
         if (isProjectile)
-        {
             LaunchProjectile();
-        }
         else
-        {
             StartCoroutine(HandleHitbox());
-        }
+    }
+
+    private void Update()
+    {
+        if (!initialized || caster == null || !followCaster) return;
+
+        transform.position = caster.position + caster.rotation * offset;
+        transform.rotation = caster.rotation;
     }
 
     private void LaunchProjectile()
