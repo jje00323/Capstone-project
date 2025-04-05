@@ -24,6 +24,7 @@ public class EnemyStatus : CharacterStatus
     {
         base.TakeDamage(damage);
         enemyUI?.ShowHP(currentHP, maxHP);
+        Debug.Log($"Enemy 현재 체력: {currentHP}");
     }
 
     protected override void OnDeath()

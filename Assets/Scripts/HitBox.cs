@@ -9,7 +9,7 @@ public class Hitbox : MonoBehaviour
     [Header("히트박스 설정")]
     public float damage = 10f;
     public float duration = 1f;
-    public bool followCaster = true;
+    public bool followCaster = false;
 
     [Header("반복 판정 설정")]
     public float startDelay = 0f;
@@ -84,7 +84,7 @@ public class Hitbox : MonoBehaviour
         // 히트박스가 플레이어 공격이면 적에게 적용
         if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
         {
-            EnemyController enemy = other.GetComponent<EnemyController>();
+            EnemyStatus enemy = other.GetComponent<EnemyStatus>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
@@ -140,53 +140,22 @@ public class Hitbox : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[HitBox] {gameObject.name}, Tag: {gameObject.tag}, Layer: {LayerMask.LayerToName(gameObject.layer)}");
-
         Vector3 center = caster.position + caster.TransformDirection(offset);
-        Collider[] hits;
+        Collider[] hits = null;
+        List<Collider> filteredHits = new List<Collider>();
 
         string targetLayer = gameObject.CompareTag("PlayerHitbox") ? "Enemy" : "Player";
-        Debug.Log($"[HitBox] 타겟 레이어: {targetLayer}");
-
-        List<Collider> filteredHits = new List<Collider>();
 
         switch (shape)
         {
             case ShapeType.Sphere:
                 hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask(targetLayer));
-                foreach (var col in hits)
-                {
-                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
-                    float angle = Vector3.Angle(caster.forward, dirToTarget);
-                    float distance = Vector3.Distance(caster.position, col.transform.position);
-
-                    Debug.Log($"[Sphere] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
-
-                    // 필터링 완화: 반경 이내 + 전방 120도 이내 허용
-                    if (distance <= radius && angle < 120f)
-                    {
-                        filteredHits.Add(col);
-                        Debug.Log($"[Sphere] 감지됨 → {col.name}");
-                    }
-                }
+                filteredHits.AddRange(hits); // 필터 없이 바로 추가
                 break;
 
             case ShapeType.Box:
                 hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask(targetLayer));
-                foreach (var col in hits)
-                {
-                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
-                    float angle = Vector3.Angle(caster.forward, dirToTarget);
-                    float distance = Vector3.Distance(caster.position, col.transform.position);
-
-                    Debug.Log($"[Box] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
-
-                    if (distance <= radius && angle < 120f)
-                    {
-                        filteredHits.Add(col);
-                        Debug.Log($"[Box] 감지됨 → {col.name}");
-                    }
-                }
+                filteredHits.AddRange(hits); // 필터 없이 바로 추가
                 break;
 
             case ShapeType.Cone:
@@ -197,12 +166,9 @@ public class Hitbox : MonoBehaviour
                     float angle = Vector3.Angle(caster.forward, dirToTarget);
                     float distance = Vector3.Distance(caster.position, col.transform.position);
 
-                    Debug.Log($"[Cone] 대상: {col.name}, 거리: {distance}, 각도: {angle}");
-
                     if (distance <= 2f || angle < coneAngle * 0.7f)
                     {
                         filteredHits.Add(col);
-                        Debug.Log($"[Cone] 감지됨 → {col.name}");
                     }
                 }
                 break;
@@ -212,19 +178,17 @@ public class Hitbox : MonoBehaviour
                 break;
         }
 
-        // 데미지 처리
         foreach (var col in filteredHits)
         {
             if (gameObject.CompareTag("PlayerHitbox") && col.CompareTag("Enemy"))
             {
-                var enemy = col.GetComponent<EnemyController>();
+                var enemy = col.GetComponent<EnemyStatus>();
                 if (enemy != null) enemy.TakeDamage(damage);
             }
             else if (gameObject.CompareTag("EnemyHitbox") && col.CompareTag("Player"))
             {
                 var player = col.GetComponent<PlayerStatus>();
                 if (player != null) player.TakeDamage(damage);
-                Debug.Log("[HitBox] 플레이어에게 데미지 적용 완료");
             }
         }
     }
