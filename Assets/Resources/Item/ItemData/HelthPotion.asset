@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Helth_Potion
   description: heal 50 Helth
-  icon: {fileID: 21300000, guid: 7be05f413925ca24197aecf7f7e84cec, type: 3}
+  icon: {fileID: 21300000, guid: 5930331e7a0a26e4a864cedf00bb4cc3, type: 3}
   itemType: 2
   isStackable: 1
   maxStack: 99

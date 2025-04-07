@@ -2,23 +2,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class QuickSlotUI : MonoBehaviour, IDropHandler
 {
+    [Header("슬롯 설정")]
     [SerializeField] private int slotIndex;
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI countText;
-    [SerializeField] private QuickSlotUI[] slots;
+
+    [Header("입력 액션 연결")]
+    [SerializeField] private InputActionReference useSlotAction;
 
     private ItemData currentItem;
     private int currentAmount;
+    private InventorySlot linkedSlot;
 
-    void Update()
+    private System.Action<InputAction.CallbackContext> cachedCallback;
+
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) slots[0].UseItem();
-        if (Input.GetKeyDown(KeyCode.Alpha2)) slots[1].UseItem();
-        if (Input.GetKeyDown(KeyCode.Alpha3)) slots[2].UseItem();
-        if (Input.GetKeyDown(KeyCode.Alpha4)) slots[3].UseItem();
+        if (useSlotAction != null)
+        {
+            cachedCallback = ctx => UseItem();
+            useSlotAction.action.performed += cachedCallback;
+            useSlotAction.action.Enable();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (useSlotAction != null && cachedCallback != null)
+        {
+            useSlotAction.action.performed -= cachedCallback;
+            useSlotAction.action.Disable();
+        }
     }
 
     public void SetItem(ItemData item, int amount)
@@ -31,6 +49,22 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
         countText.text = amount > 1 ? amount.ToString() : "";
     }
 
+    public void SetSlot(InventorySlot slot)
+    {
+        linkedSlot = slot;
+
+        if (slot != null && slot.item != null)
+        {
+            iconImage.sprite = slot.item.icon;
+            iconImage.enabled = true;
+            countText.text = slot.quantity > 1 ? slot.quantity.ToString() : "";
+        }
+        else
+        {
+            ClearSlot();
+        }
+    }
+
     public void ClearSlot()
     {
         currentItem = null;
@@ -40,27 +74,31 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
 
     public void UseItem()
     {
-        if (currentItem != null)
-        {
-            Debug.Log($"[퀵슬롯 {slotIndex}] {currentItem.itemName} 사용됨!");
-            // 여기서 실제 효과 처리 가능
-            currentAmount--;
+        Debug.Log($"[퀵슬롯 사용] 슬롯 {slotIndex} 시도");
 
-            if (currentAmount <= 0)
+        if (linkedSlot != null && linkedSlot.item != null)
+        {
+            Debug.Log($"[퀵슬롯 사용] {linkedSlot.item.itemName} 사용");
+
+            linkedSlot.quantity--;
+
+            if (linkedSlot.quantity <= 0)
             {
+                linkedSlot.item = null;
                 ClearSlot();
             }
             else
             {
-                countText.text = currentAmount.ToString();
+                countText.text = linkedSlot.quantity.ToString();
             }
+
+            InventoryUI.Instance.RefreshAllSlots();
         }
     }
 
     public ItemData GetItem() => currentItem;
     public int GetAmount() => currentAmount;
 
-    // 드래그 앤 드롭 처리
     public void OnDrop(PointerEventData eventData)
     {
         var draggedItem = InventorySlotUI.draggedItem;
@@ -71,14 +109,37 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
             return;
         }
 
-        // 소비 아이템만 등록 가능
         if (draggedItem.itemType != ItemType.Consumable)
         {
-            Debug.Log("이 슬롯에는 소비 아이템만 등록할 수 있습니다!");
+            Debug.Log("소비 아이템만 등록 가능");
             return;
         }
 
         Debug.Log($"[퀵슬롯 등록] {draggedItem.itemName} → 슬롯 {slotIndex}");
-        SetItem(draggedItem, 1); // 기본 수량 1개로 등록
+
+        foreach (var slot in InventoryManager.Instance.slots)
+        {
+            if (slot.item == draggedItem)
+            {
+                SetSlot(slot);
+                return;
+            }
+        }
+
+        Debug.LogWarning("[퀵슬롯 등록 실패] 인벤토리에 해당 아이템 슬롯을 찾을 수 없음");
+    }
+
+    public void RefreshSlotUI()
+    {
+        if (linkedSlot != null && linkedSlot.item != null)
+        {
+            iconImage.sprite = linkedSlot.item.icon;
+            iconImage.enabled = true;
+            countText.text = linkedSlot.quantity > 1 ? linkedSlot.quantity.ToString() : "";
+        }
+        else
+        {
+            ClearSlot();
+        }
     }
 }

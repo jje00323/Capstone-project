@@ -13,7 +13,7 @@ public class InventorySlotUI : MonoBehaviour,
 
     private InventorySlot slotData;
     private int _slotIndex;
-
+    public static InventorySlot draggedSlotData;
     // 전역 드래그용 아이템 참조
     public static ItemData draggedItem;
 
@@ -74,17 +74,8 @@ public class InventorySlotUI : MonoBehaviour,
         if (slotData != null && slotData.item != null)
         {
             draggedItem = slotData.item;
-            Debug.Log($"[InventorySlotUI] 드래그 시작: {draggedItem.itemName}");
-
-            if (DragIconUI.Instance != null)
-            {
-                DragIconUI.Instance.Show(slotData.item.icon);
-                Debug.Log("[InventorySlotUI] DragIconUI 호출됨");
-            }
-            else
-            {
-                Debug.LogError("[InventorySlotUI] DragIconUI.Instance 가 null임!");
-            }
+            draggedSlotData = slotData; // 슬롯도 기억
+            DragIconUI.Instance.Show(slotData.item.icon);
         }
     }
 
@@ -98,6 +89,7 @@ public class InventorySlotUI : MonoBehaviour,
     public void OnEndDrag(PointerEventData eventData)
     {
         draggedItem = null;
+        draggedSlotData = null;
         DragIconUI.Instance.Hide();
     }
 }

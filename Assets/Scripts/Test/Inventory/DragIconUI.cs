@@ -7,35 +7,49 @@ public class DragIconUI : MonoBehaviour
 
     [SerializeField] private Image iconImage;
     private RectTransform rectTransform;
+    private Canvas canvas;
+
+    private bool isDragging = false;
 
     private void Awake()
     {
         Instance = this;
         rectTransform = GetComponent<RectTransform>();
-        Hide();
+        canvas = GetComponentInParent<Canvas>();
+        iconImage.enabled = false; // 이미지 비활성화만으로 숨김 처리
     }
 
     private void Update()
     {
-        if (!gameObject.activeSelf) return;
+        if (!isDragging) return;
 
-        // 마우스 위치에 드래그 아이콘 따라가게
-        Vector3 mousePos = Input.mousePosition;
-        rectTransform.position = mousePos + new Vector3(32f, -32f, 0f);  // 아이콘이 마우스에서 살짝 오른쪽 아래
+        Vector2 mousePos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvas.transform as RectTransform,
+            Input.mousePosition,
+            null, // Overlay는 반드시 null
+            out mousePos
+        );
+        rectTransform.anchoredPosition = mousePos;
+
+        // 디버그 확인
+        Debug.Log($"[DragIconUI] 마우스 좌표: {Input.mousePosition}, Anchored: {mousePos}");
     }
 
     public void Show(Sprite icon)
     {
-        Debug.Log("[DragIconUI] Show 호출됨");
+        if (icon == null) return;
+        isDragging = true;
         iconImage.sprite = icon;
         iconImage.enabled = true;
-        gameObject.SetActive(true);
+        Debug.Log("[DragIconUI] Show() 호출됨");
     }
 
     public void Hide()
     {
+        isDragging = false;
         iconImage.sprite = null;
         iconImage.enabled = false;
-        gameObject.SetActive(false);
+        Debug.Log("[DragIconUI] Hide() 호출됨");
     }
 }

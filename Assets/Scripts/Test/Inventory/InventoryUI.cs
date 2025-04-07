@@ -22,7 +22,18 @@ public class InventoryUI : MonoBehaviour
     private List<InventorySlotUI> _slotUIList;
 
 
-   
+    public static InventoryUI Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Debug.LogWarning("InventoryUI: 중복 인스턴스 발견됨. 기존 인스턴스를 유지합니다.");
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         InitSlots();
@@ -112,7 +123,11 @@ public class InventoryUI : MonoBehaviour
     public void AddItemAndRefresh(ItemData item, int amount = 1)
     {
         bool success = InventoryManager.Instance.AddItem(item, amount);
-        if (success) RefreshAllSlots();
+        if (success)
+        {
+            RefreshAllSlots();
+            RefreshQuickSlots();  //  퀵슬롯도 같이 갱신
+        }
     }
 
     public void CloseInventory()
@@ -120,8 +135,15 @@ public class InventoryUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    
+    public void RefreshQuickSlots()
+    {
+        var quickSlots = FindObjectsOfType<QuickSlotUI>();
+        foreach (var slot in quickSlots)
+        {
+            slot.RefreshSlotUI();
+        }
+    }
 
     // 기존의 Close 버튼용 함수도 같이 유지 가능
-    
+
 }

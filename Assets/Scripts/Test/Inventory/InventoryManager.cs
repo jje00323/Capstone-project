@@ -41,7 +41,7 @@ public class InventoryManager : MonoBehaviour
     {
         Debug.Log($" [AddItem] {item.itemName} x{amount} √ﬂ∞° Ω√µµ");
 
-        // Ω∫≈√ ∞°¥… ΩΩ∑‘
+        // 1. Ω∫≈√ ∞°¥…«— ΩΩ∑‘ø° √ﬂ∞°
         foreach (var slot in slots)
         {
             if (slot.item != null && slot.item == item && item.isStackable && slot.quantity < item.maxStack)
@@ -54,11 +54,14 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log($" [AddItem] Ω∫≈√µ» ΩΩ∑‘ø° {addAmount} √ﬂ∞°µ  (≥≤¿∫ ºˆ∑Æ: {amount})");
 
                 if (amount <= 0)
+                {
+                    RefreshQuickSlots(); //  ƒ¸ΩΩ∑‘ ∞ªΩ≈
                     return true;
+                }
             }
         }
 
-        // ∫Û ΩΩ∑‘
+        // 2. ∫Û ΩΩ∑‘ø° ªı∑Œ √ﬂ∞°
         foreach (var slot in slots)
         {
             if (slot.item == null)
@@ -66,6 +69,8 @@ public class InventoryManager : MonoBehaviour
                 slot.item = item;
                 slot.quantity = amount;
                 Debug.Log($" [AddItem] ∫Û ΩΩ∑‘ø° {item.itemName} x{amount} √ﬂ∞°µ ");
+
+                RefreshQuickSlots(); //  ƒ¸ΩΩ∑‘ ∞ªΩ≈
                 return true;
             }
         }
@@ -91,6 +96,15 @@ public class InventoryManager : MonoBehaviour
 
                 return;
             }
+        }
+    }
+
+    private void RefreshQuickSlots()
+    {
+        QuickSlotUI[] quickSlots = GameObject.FindObjectsOfType<QuickSlotUI>();
+        foreach (var qs in quickSlots)
+        {
+            qs.RefreshSlotUI();
         }
     }
 }
