@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dissolve_Mat_UPR
+  m_Name: Dissolve_Mat_URP
   m_Shader: {fileID: -6465566751694194690, guid: 47c9cb080ac35a841bfee525e1dfb1a4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

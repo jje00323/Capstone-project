@@ -9,6 +9,9 @@ public class EnemyFSM : MonoBehaviour
     public EnemyData enemyData;
     public EnemyStatus enemyStatus;
     public Animator animator;
+    public Rigidbody Rigidbody { get; private set; }
+    public Collider Collider { get; private set; }
+    public Animator Animator { get; private set; }
 
     public EnemyState currentState;
 
@@ -20,6 +23,13 @@ public class EnemyFSM : MonoBehaviour
     public EnemyDeadState deadState;
 
     [HideInInspector] public Vector3 spawnPosition;
+
+    private void Awake()
+    {
+        Rigidbody = GetComponent<Rigidbody>();
+        Collider = GetComponent<Collider>();
+        Animator = GetComponent<Animator>();
+    }
 
     private void Start()
     {

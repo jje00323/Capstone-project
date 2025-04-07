@@ -3281,8 +3281,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4270661057608279833}
   - {fileID: 5377354167814816131}
+  - {fileID: 4270661057608279833}
   - {fileID: 8216698253355142665}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3439,7 +3439,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 92fc3cab0a1f1dd42bdd46a803eba9d3, type: 2}
+  - {fileID: 2100000, guid: 777267bd4fa789d439e3a9f1ce5d8eee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4013,6 +4013,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8843755518075579397}
     m_Modifications:
+    - target: {fileID: 2717537962258721564, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2926045250810976360, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
