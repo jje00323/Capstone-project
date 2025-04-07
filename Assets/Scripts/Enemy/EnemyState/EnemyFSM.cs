@@ -23,7 +23,10 @@ public class EnemyFSM : MonoBehaviour
 
     private void Start()
     {
-        animator.runtimeAnimatorController = enemyData.animatorController;
+        if (animator != null)
+        {
+            animator.runtimeAnimatorController = enemyData.animatorController;
+        }
         enemyStatus.Setup(enemyData);
 
         spawnPosition = transform.position;

@@ -170,6 +170,11 @@ public class JobManager : MonoBehaviour
         var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
         //Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
 
+        if (res.rightHandBone == null)
+        {
+            Debug.LogError($"[JobManager] '{newJob}' 직업의 rightHandBone이 설정되지 않았습니다!");
+            return;
+        }
 
         Transform instanceRightHand = currentModel.transform.Find(res.rightHandBone.name);
         if (instanceRightHand == null)

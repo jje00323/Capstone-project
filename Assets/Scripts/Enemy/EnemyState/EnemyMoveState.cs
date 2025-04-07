@@ -7,6 +7,7 @@ public class EnemyMoveState : EnemyState
     private Vector3 destination;
     private float stoppingDistance = 0.2f;
     private bool isReturning = false;
+    public bool IsReturning => isReturning;
 
     public EnemyMoveState(EnemyFSM enemy) : base(enemy) { }
 

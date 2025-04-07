@@ -51,7 +51,9 @@ public class EnemyAttackState : EnemyState
 
     public void OnAttackAnimationComplete()
     {
-        Debug.Log("애니메이션 이벤트로 공격 완료 → Idle 전환");
-        enemy.ChangeState(enemy.idleState);
+        if (enemy.currentState == this)
+        {
+            enemy.ChangeState(enemy.idleState);
+        }
     }
 }
