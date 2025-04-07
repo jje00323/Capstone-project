@@ -71,6 +71,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UI"",
+                    ""type"": ""Button"",
+                    ""id"": ""02938d0a-7562-40eb-a738-55d51f33aa2c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -161,6 +170,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Combat"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ed1e004-85a0-4da2-a2e2-d663bffa4c2d"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -174,6 +194,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_OnLeftClick = m_Player.FindAction("OnLeftClick", throwIfNotFound: true);
         m_Player_QWER = m_Player.FindAction("QWER", throwIfNotFound: true);
         m_Player_Combat = m_Player.FindAction("Combat", throwIfNotFound: true);
+        m_Player_UI = m_Player.FindAction("UI", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -240,6 +261,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_OnLeftClick;
     private readonly InputAction m_Player_QWER;
     private readonly InputAction m_Player_Combat;
+    private readonly InputAction m_Player_UI;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -249,6 +271,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @OnLeftClick => m_Wrapper.m_Player_OnLeftClick;
         public InputAction @QWER => m_Wrapper.m_Player_QWER;
         public InputAction @Combat => m_Wrapper.m_Player_Combat;
+        public InputAction @UI => m_Wrapper.m_Player_UI;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -273,6 +296,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Combat.started += instance.OnCombat;
             @Combat.performed += instance.OnCombat;
             @Combat.canceled += instance.OnCombat;
+            @UI.started += instance.OnUI;
+            @UI.performed += instance.OnUI;
+            @UI.canceled += instance.OnUI;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -292,6 +318,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Combat.started -= instance.OnCombat;
             @Combat.performed -= instance.OnCombat;
             @Combat.canceled -= instance.OnCombat;
+            @UI.started -= instance.OnUI;
+            @UI.performed -= instance.OnUI;
+            @UI.canceled -= instance.OnUI;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -316,5 +345,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnOnLeftClick(InputAction.CallbackContext context);
         void OnQWER(InputAction.CallbackContext context);
         void OnCombat(InputAction.CallbackContext context);
+        void OnUI(InputAction.CallbackContext context);
     }
 }
