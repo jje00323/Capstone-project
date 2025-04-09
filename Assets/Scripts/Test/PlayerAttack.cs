@@ -35,6 +35,8 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         CombatSystem();
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
     }
 
 
