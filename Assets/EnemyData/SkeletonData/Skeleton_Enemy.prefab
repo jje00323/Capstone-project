@@ -3283,7 +3283,7 @@ Transform:
   m_Children:
   - {fileID: 5377354167814816131}
   - {fileID: 4270661057608279833}
-  - {fileID: 8216698253355142665}
+  - {fileID: 6421287255279974908}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &-5855253743122420095
@@ -4005,7 +4005,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8999742377590657582, guid: 157b902885fbd5c43bd96e5f2bad9ec5, type: 3}
   m_PrefabInstance: {fileID: 5161667887727375671}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5292952319734514148
+--- !u!1001 &7092946404928255505
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -4013,22 +4013,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8843755518075579397}
     m_Modifications:
-    - target: {fileID: 2717537962258721564, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926045250810976360, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926045250810976360, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926045250810976360, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4095,7 +4079,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.25
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4113,17 +4097,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: WorldCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 9068890470921888222, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-      propertyPath: m_text
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
---- !u!224 &8216698253355142665 stripped
+--- !u!224 &6421287255279974908 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
-  m_PrefabInstance: {fileID: 5292952319734514148}
+  m_PrefabInstance: {fileID: 7092946404928255505}
   m_PrefabAsset: {fileID: 0}
