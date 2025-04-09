@@ -3376,7 +3376,7 @@ MonoBehaviour:
   target: {fileID: 0}
   attackPower: 0
   damageTextPrefab: {fileID: 7771436953267269725, guid: f5f5977d791bc284394f85a8d169ea27, type: 3}
-  damageTextParent: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
+  damageTextParent: {fileID: 0}
 --- !u!114 &-5462568944276962098
 MonoBehaviour:
   m_ObjectHideFlags: 0
