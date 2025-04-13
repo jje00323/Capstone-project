@@ -28,7 +28,7 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 10
     isUnlocked: 0
-    Feature: 
+    Feature: Normal
   - skillKey: W
     skillName: W
     skillIcon: {fileID: 21300000, guid: f674fc3820f76d74ea84b1190da62bb1, type: 3}
@@ -40,10 +40,10 @@ MonoBehaviour:
     followCaster: 0
     manaCost: 0
     requiredLevel: 0
-    currentLevel: 1
-    maxLevel: 5
+    currentLevel: 2
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: Normal
   - skillKey: E
     skillName: EEE
     skillIcon: {fileID: 21300000, guid: f0987846435e1474781a21274c269bdf, type: 3}
@@ -56,9 +56,9 @@ MonoBehaviour:
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 5
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: Normal
   - skillKey: R
     skillName: RRR
     skillIcon: {fileID: 21300000, guid: ad10465a97cce9c44aabefdaeccd1f45, type: 3}
@@ -71,9 +71,9 @@ MonoBehaviour:
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 5
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: Normal
   - skillKey: Attack
     skillName: P
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
@@ -86,9 +86,9 @@ MonoBehaviour:
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 5
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: Attack
   - skillKey: dash
     skillName: dash
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
@@ -101,6 +101,6 @@ MonoBehaviour:
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 5
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: Dash

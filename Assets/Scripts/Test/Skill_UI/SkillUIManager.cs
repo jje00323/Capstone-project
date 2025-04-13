@@ -1,55 +1,59 @@
-using TMPro;
 using UnityEngine;
 
 public class SkillUIManager : MonoBehaviour
 {
-    [SerializeField] private Transform skillListParent;
-    [SerializeField] private GameObject skillSlotPrefab;
-    [SerializeField] public JobSkillData skillData; // 모든 직업 스킬 데이터들
+    [Header("스킬 데이터")]
+    [SerializeField] private JobSkillData[] allJobSkills; // 직업별 스킬데이터들
+
+    [Header("UI 연결")]
+    [SerializeField] private Transform skillListArea;       // Skill_List_Area 오브젝트
+    [SerializeField] private GameObject skillSlotPrefab;    // Skill_Slot_Area 프리팹
 
     private void Start()
     {
-        JobManager.JobType currentJob = JobManager.Instance.GetCurrentJob();
-        skillData = GetJobSkillData(skillData);
-
+        LoadSkillListForCurrentJob();
     }
 
-    public void GetJobSkillData(JobSkillData data)
+    public void LoadSkillListForCurrentJob()
     {
-        foreach (SkillInfo skill in data.skills)
+        // 현재 직업 확인
+        var currentJob = JobManager.Instance.GetCurrentJob();
+
+        // 해당 직업의 스킬 데이터 찾기
+        JobSkillData jobData = null;
+        foreach (var data in allJobSkills)
         {
-            GameObject btnObj = Instantiate(skillButtonPrefab, skillButtonParent);
-            btnObj.SetActive(true);
-
-            Image btnImage = btnObj.GetComponent<Image>();
-            if (btnImage != null && skill.skillIcon != null)
-                btnImage.sprite = skill.skillIcon;
-
-            Image cooldownOverlay = btnObj.transform.Find("CooldownOverlay")?.GetComponent<Image>();
-            TextMeshProUGUI cooldownText = btnObj.transform.Find("CooldownText")?.GetComponent<TextMeshProUGUI>();
-
-            if (cooldownOverlay != null) cooldownOverlay.gameObject.SetActive(false);
-            if (cooldownText != null) cooldownText.gameObject.SetActive(false);
-
-            uiElements[skill.skillKey] = (cooldownOverlay, cooldownText);
-
-            btnObj.GetComponent<Button>().onClick.AddListener(() =>
+            if (data.jobType == currentJob)
             {
-                skillController?.TryUseSkill(skill.skillKey);
-                StartUICooldown(skill.skillKey, skill.cooldown);
-            });
+                jobData = data;
+                break;
+            }
         }
-    }
 
-    public void LoadSkillList(JobSkillData data)
-    {
-        foreach (Transform child in skillListParent)
-            Destroy(child.gameObject);
-
-        foreach (SkillInfo skill in data.skills)
+        if (jobData == null)
         {
-            GameObject slotObj = Instantiate(skillSlotPrefab, skillListParent);
+            Debug.LogWarning("[SkillUIManager] 해당 직업의 스킬 데이터를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 기존 스킬 슬롯 제거
+        foreach (Transform child in skillListArea)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 슬롯 생성
+        foreach (var skill in jobData.skills)
+        {
+            GameObject slotObj = Instantiate(skillSlotPrefab, skillListArea);
             SkillSlotUI slotUI = slotObj.GetComponent<SkillSlotUI>();
+
+            if (slotUI == null)
+            {
+                Debug.LogError("[SkillUIManager] SkillSlotUI 컴포넌트가 없습니다.");
+                continue;
+            }
+
             slotUI.SetSlot(skill);
         }
     }
