@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     public GameObject moveClickEffectPrefab;
 
     [SerializeField] private float rootMotionMultiplier = 1.5f;
+
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private float approachDistance = 1.5f;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -100,7 +103,33 @@ public class PlayerMovement : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            agent.SetDestination(hit.point);
+            bool isEnemy = ((1 << hit.collider.gameObject.layer) & enemyLayer) != 0;
+
+            if (isEnemy && hit.collider.CompareTag("Enemy"))
+            {
+                Vector3 enemyPos = hit.collider.transform.position;
+                float currentDistance = Vector3.Distance(transform.position, enemyPos);
+
+                if (currentDistance < 1.2f) // 겹쳐 있는 경우만
+                {
+                    Vector3 dir = transform.forward;
+                    Vector3 escapePos = enemyPos - dir * approachDistance;
+
+                    if (NavMesh.SamplePosition(escapePos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                    {
+                        agent.SetDestination(navHit.position);
+                    }
+                }
+                else
+                {
+                    // 겹쳐 있지 않으면 제자리 유지
+                    agent.ResetPath();
+                }
+            }
+            else
+            {
+                agent.SetDestination(hit.point); // 일반 이동
+            }
 
             if (Mouse.current.rightButton.wasPressedThisFrame)
             {
@@ -108,19 +137,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    //private void CheckAgentStuck()
-    //{
-    //    if (agent.isStopped || agent.velocity.magnitude < 0.01f)
-    //    {
-    //        if (!agent.pathPending && agent.remainingDistance > 0.1f)
-    //        {
-    //            Debug.LogWarning("[NavMeshAgent] 경로 오류 감지 → 복구 시도");
-    //            agent.ResetPath();
-    //            agent.SetDestination(transform.position + transform.forward * 1f);
-    //        }
-    //    }
-    //}
 
     private void RotateTowardsMovementDirection()
     {
@@ -182,6 +198,17 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation *= animator.deltaRotation;
         }
+    }
+
+    private Vector3 GetClosestPointNearEnemy(Vector3 enemyPos)
+    {
+        Vector3 dir = (transform.position - enemyPos).normalized;
+        Vector3 desiredPos = enemyPos + dir * approachDistance;
+
+        if (NavMesh.SamplePosition(desiredPos, out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
+            return hit.position;
+
+        return transform.position; // fallback
     }
 
 }
