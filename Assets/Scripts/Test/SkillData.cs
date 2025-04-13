@@ -19,4 +19,13 @@ public class SkillInfo
     public GameObject effectPrefab; // 스킬 이펙트 프리팹 (선택적)
     public float effectDuration; // 이펙트 지속시간
     public bool followCaster;
+
+    public int manaCost;             // 마나 소모량
+    public int requiredLevel;        // 스킬 사용 가능 레벨
+    public int currentLevel = 1;     // 현재 스킬 레벨
+    public int maxLevel = 5;         // 최대 스킬 레벨
+    public bool isUnlocked = true;   // 잠금 여부 (기본 스킬 or 해금 필요 여부)
+    public string Feature; //특징(Ex 홀딩, 차징, 버프)
+
+
 }
