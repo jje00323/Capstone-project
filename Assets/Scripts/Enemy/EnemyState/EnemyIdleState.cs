@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyIdleState : EnemyState
 {
@@ -13,6 +14,16 @@ public class EnemyIdleState : EnemyState
     {
         idleTimer = 0f;
         enemy.animator.SetBool("IsMoving", false);
+
+        // 복귀 완료 → 충돌 다시 활성화
+        enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+
+        // 복귀 완료 → NavMeshObstacle carving 다시 켜기
+        var obstacle = enemy.GetComponent<NavMeshObstacle>();
+        if (obstacle != null)
+        {
+            obstacle.carving = true;
+        }
     }
 
     public override void Update()

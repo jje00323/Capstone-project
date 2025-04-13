@@ -144,22 +144,22 @@ public class Hitbox : MonoBehaviour
 
         Collider[] hits = null;
         List<Collider> filteredHits = new List<Collider>();
-        string targetLayer = gameObject.CompareTag("PlayerHitbox") ? "Enemy" : "Player";
+        LayerMask targetLayer = GetTargetLayerMask();
 
         switch (shape)
         {
             case ShapeType.Sphere:
-                hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask(targetLayer));
+                hits = Physics.OverlapSphere(center, radius, targetLayer);
                 filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Box:
-                hits = Physics.OverlapBox(center, boxSize * 0.5f, transform.rotation, LayerMask.GetMask(targetLayer));
+                hits = Physics.OverlapBox(center, boxSize * 0.5f, transform.rotation, targetLayer);
                 filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Cone:
-                hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask(targetLayer));
+                hits = Physics.OverlapSphere(center, coneDistance, targetLayer);
                 foreach (var col in hits)
                 {
                     Vector3 dirToTarget = (col.transform.position - center).normalized;
@@ -187,6 +187,21 @@ public class Hitbox : MonoBehaviour
                 if (player != null) player.TakeDamage(damage);
             }
         }
+    }
+    private LayerMask GetTargetLayerMask()
+    {
+        if (CompareTag("PlayerHitbox"))
+        {
+            // 플레이어가 적을 때릴 때 → 복귀 중 적 포함
+            return LayerMask.GetMask("Enemy", "EnemyIgnorePlayer");
+        }
+        else if (CompareTag("EnemyHitbox"))
+        {
+            // 적이 플레이어를 때릴 때 → 관통 상태까지 고려
+            return LayerMask.GetMask("Player", "PlayerIgnoreEnemy");
+        }
+
+        return 0;
     }
 
     private void OnDrawGizmos()

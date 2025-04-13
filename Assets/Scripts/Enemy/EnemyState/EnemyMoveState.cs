@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyMoveState : EnemyState
 {
@@ -20,6 +21,21 @@ public class EnemyMoveState : EnemyState
     public override void Enter()
     {
         enemy.animator.SetBool("IsMoving", true);
+
+        if (isReturning)
+        {
+            enemy.gameObject.layer = LayerMask.NameToLayer("EnemyIgnorePlayer");
+
+            var obstacle = enemy.GetComponent<NavMeshObstacle>();
+            if (obstacle != null)
+            {
+                obstacle.carving = false; // 복귀 중엔 NavMesh 방해 안 함
+            }
+        }
+        else
+        {
+            enemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+        }
     }
 
     public override void Update()

@@ -1091,7 +1091,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -1131,11 +1131,11 @@ MonoBehaviour:
   maxHP: 50
   currentHP: 50
   enemyData: {fileID: 11400000, guid: 6551637484c55684daa6fd288c5cc85a, type: 2}
-  enemyUI: {fileID: 5373619522193887534, guid: 157b902885fbd5c43bd96e5f2bad9ec5, type: 3}
+  enemyUI: {fileID: 329598082777169093}
   target: {fileID: 0}
   attackPower: 10
   damageTextPrefab: {fileID: 7771436953267269725, guid: f5f5977d791bc284394f85a8d169ea27, type: 3}
-  damageTextParent: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
+  damageTextParent: {fileID: 1046461780468183724}
 --- !u!114 &-5105417285176305353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2128,7 +2128,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 5
+      value: 2.4
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2265,6 +2265,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 157b902885fbd5c43bd96e5f2bad9ec5, type: 3}
+--- !u!114 &329598082777169093 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5373619522193887534, guid: 157b902885fbd5c43bd96e5f2bad9ec5, type: 3}
+  m_PrefabInstance: {fileID: 5620520689676955115}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cd6ead35e8440946ab2f5d7cde88ae9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3667508770541387717 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8999742377590657582, guid: 157b902885fbd5c43bd96e5f2bad9ec5, type: 3}

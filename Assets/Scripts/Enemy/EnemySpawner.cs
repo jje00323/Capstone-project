@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("적 프리팹 및 스폰 위치")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
+
+    private void Start()
+    {
+        SpawnAll();
+    }
     public void SpawnAll()
     {
         foreach (Transform spawn in spawnPoints)
         {
             GameObject enemy = Instantiate(enemyPrefab, spawn.position, Quaternion.identity);
+
             SetupNavMeshObstacle(enemy);
         }
     }
@@ -28,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
         obstacle.carving = true;
         obstacle.carveOnlyStationary = false;
         obstacle.shape = NavMeshObstacleShape.Capsule;
-        obstacle.radius = 0.5f;
+        obstacle.radius = 0.3f;
         obstacle.height = 2.0f;
     }
 }

@@ -10,7 +10,7 @@ public class EnemyStatus : CharacterStatus
     public float attackPower;
 
     [SerializeField] private GameObject damageTextPrefab;
-    [SerializeField] private Transform damageTextParent;
+    [SerializeField] public Transform damageTextParent;
 
     private FloatingText currentFloatingText;
 
