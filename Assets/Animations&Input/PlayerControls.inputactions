@@ -51,15 +51,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UI",
-                    "type": "Button",
-                    "id": "02938d0a-7562-40eb-a738-55d51f33aa2c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "QuickSlot1",
                     "type": "Button",
                     "id": "1b32ae80-b870-4139-a16a-8d74905f598d",
@@ -187,17 +178,6 @@
                 },
                 {
                     "name": "",
-                    "id": "1ed1e004-85a0-4da2-a2e2-d663bffa4c2d",
-                    "path": "<Keyboard>/i",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "UI",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "4b63c2ba-e69f-41c1-bb3f-12632ffc48de",
                     "path": "<Keyboard>/1",
                     "interactions": "",
@@ -237,6 +217,74 @@
                     "processors": "",
                     "groups": "",
                     "action": "QuickSlot4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "95cadc7b-977c-4046-ae7c-d7ea2e90e007",
+            "actions": [
+                {
+                    "name": "Inventory",
+                    "type": "Button",
+                    "id": "ae852993-d0d9-4a88-84b3-dd90886650cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill",
+                    "type": "Button",
+                    "id": "9f0904fb-acde-476b-b1e8-83c71636efcf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "State",
+                    "type": "Button",
+                    "id": "3ddb7587-5226-43e1-b031-e5e9b50b4b5f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "db524773-8984-4614-9a62-4c52c37361d6",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44ae8a94-1b17-431b-843d-4dbdf9d8dfec",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17dc8aa0-e0d1-49d6-96e6-db07e7a935d5",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "State",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

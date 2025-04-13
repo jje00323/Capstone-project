@@ -73,15 +73,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UI"",
-                    ""type"": ""Button"",
-                    ""id"": ""02938d0a-7562-40eb-a738-55d51f33aa2c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""QuickSlot1"",
                     ""type"": ""Button"",
                     ""id"": ""1b32ae80-b870-4139-a16a-8d74905f598d"",
@@ -209,17 +200,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""1ed1e004-85a0-4da2-a2e2-d663bffa4c2d"",
-                    ""path"": ""<Keyboard>/i"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""UI"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""4b63c2ba-e69f-41c1-bb3f-12632ffc48de"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
@@ -263,6 +243,74 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""95cadc7b-977c-4046-ae7c-d7ea2e90e007"",
+            ""actions"": [
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae852993-d0d9-4a88-84b3-dd90886650cf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f0904fb-acde-476b-b1e8-83c71636efcf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""State"",
+                    ""type"": ""Button"",
+                    ""id"": ""3ddb7587-5226-43e1-b031-e5e9b50b4b5f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""db524773-8984-4614-9a62-4c52c37361d6"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44ae8a94-1b17-431b-843d-4dbdf9d8dfec"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""17dc8aa0-e0d1-49d6-96e6-db07e7a935d5"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""State"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -274,11 +322,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_OnLeftClick = m_Player.FindAction("OnLeftClick", throwIfNotFound: true);
         m_Player_QWER = m_Player.FindAction("QWER", throwIfNotFound: true);
         m_Player_Combat = m_Player.FindAction("Combat", throwIfNotFound: true);
-        m_Player_UI = m_Player.FindAction("UI", throwIfNotFound: true);
         m_Player_QuickSlot1 = m_Player.FindAction("QuickSlot1", throwIfNotFound: true);
         m_Player_QuickSlot2 = m_Player.FindAction("QuickSlot2", throwIfNotFound: true);
         m_Player_QuickSlot3 = m_Player.FindAction("QuickSlot3", throwIfNotFound: true);
         m_Player_QuickSlot4 = m_Player.FindAction("QuickSlot4", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
+        m_UI_Skill = m_UI.FindAction("Skill", throwIfNotFound: true);
+        m_UI_State = m_UI.FindAction("State", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -345,7 +397,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_OnLeftClick;
     private readonly InputAction m_Player_QWER;
     private readonly InputAction m_Player_Combat;
-    private readonly InputAction m_Player_UI;
     private readonly InputAction m_Player_QuickSlot1;
     private readonly InputAction m_Player_QuickSlot2;
     private readonly InputAction m_Player_QuickSlot3;
@@ -359,7 +410,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @OnLeftClick => m_Wrapper.m_Player_OnLeftClick;
         public InputAction @QWER => m_Wrapper.m_Player_QWER;
         public InputAction @Combat => m_Wrapper.m_Player_Combat;
-        public InputAction @UI => m_Wrapper.m_Player_UI;
         public InputAction @QuickSlot1 => m_Wrapper.m_Player_QuickSlot1;
         public InputAction @QuickSlot2 => m_Wrapper.m_Player_QuickSlot2;
         public InputAction @QuickSlot3 => m_Wrapper.m_Player_QuickSlot3;
@@ -388,9 +438,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Combat.started += instance.OnCombat;
             @Combat.performed += instance.OnCombat;
             @Combat.canceled += instance.OnCombat;
-            @UI.started += instance.OnUI;
-            @UI.performed += instance.OnUI;
-            @UI.canceled += instance.OnUI;
             @QuickSlot1.started += instance.OnQuickSlot1;
             @QuickSlot1.performed += instance.OnQuickSlot1;
             @QuickSlot1.canceled += instance.OnQuickSlot1;
@@ -422,9 +469,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Combat.started -= instance.OnCombat;
             @Combat.performed -= instance.OnCombat;
             @Combat.canceled -= instance.OnCombat;
-            @UI.started -= instance.OnUI;
-            @UI.performed -= instance.OnUI;
-            @UI.canceled -= instance.OnUI;
             @QuickSlot1.started -= instance.OnQuickSlot1;
             @QuickSlot1.performed -= instance.OnQuickSlot1;
             @QuickSlot1.canceled -= instance.OnQuickSlot1;
@@ -454,6 +498,68 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_Inventory;
+    private readonly InputAction m_UI_Skill;
+    private readonly InputAction m_UI_State;
+    public struct UIActions
+    {
+        private @PlayerControls m_Wrapper;
+        public UIActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
+        public InputAction @Skill => m_Wrapper.m_UI_Skill;
+        public InputAction @State => m_Wrapper.m_UI_State;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @Inventory.started += instance.OnInventory;
+            @Inventory.performed += instance.OnInventory;
+            @Inventory.canceled += instance.OnInventory;
+            @Skill.started += instance.OnSkill;
+            @Skill.performed += instance.OnSkill;
+            @Skill.canceled += instance.OnSkill;
+            @State.started += instance.OnState;
+            @State.performed += instance.OnState;
+            @State.canceled += instance.OnState;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @Inventory.started -= instance.OnInventory;
+            @Inventory.performed -= instance.OnInventory;
+            @Inventory.canceled -= instance.OnInventory;
+            @Skill.started -= instance.OnSkill;
+            @Skill.performed -= instance.OnSkill;
+            @Skill.canceled -= instance.OnSkill;
+            @State.started -= instance.OnState;
+            @State.performed -= instance.OnState;
+            @State.canceled -= instance.OnState;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     public interface IPlayerActions
     {
         void OnOnRightClick(InputAction.CallbackContext context);
@@ -461,10 +567,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnOnLeftClick(InputAction.CallbackContext context);
         void OnQWER(InputAction.CallbackContext context);
         void OnCombat(InputAction.CallbackContext context);
-        void OnUI(InputAction.CallbackContext context);
         void OnQuickSlot1(InputAction.CallbackContext context);
         void OnQuickSlot2(InputAction.CallbackContext context);
         void OnQuickSlot3(InputAction.CallbackContext context);
         void OnQuickSlot4(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnInventory(InputAction.CallbackContext context);
+        void OnSkill(InputAction.CallbackContext context);
+        void OnState(InputAction.CallbackContext context);
     }
 }
