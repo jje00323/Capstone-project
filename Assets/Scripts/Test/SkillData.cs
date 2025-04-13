@@ -5,6 +5,8 @@ public class JobSkillData : ScriptableObject
 {
     public JobManager.JobType jobType;   // 직업 유형 (Warrior, Mage 등)
     public SkillInfo[] skills;           // 직업이 가진 모든 스킬
+
+
 }
 
 [System.Serializable]
@@ -27,5 +29,11 @@ public class SkillInfo
     public bool isUnlocked = true;   // 잠금 여부 (기본 스킬 or 해금 필요 여부)
     public string Feature; //특징(Ex 홀딩, 차징, 버프)
 
+    [HideInInspector] public SkillInfo originalSkill; // 업그레이드 전 원본
+    public SkillInfo[] upgradeOptions; // 최대 3개, 업그레이드 1단계까지만 구성 (내부는 null)
 
+    // Unity 직렬화 방지 (보호용, 에디터에서도 작동할 수 있음)
+    public bool HasUpgradeOptions() => upgradeOptions != null && upgradeOptions.Length > 0;
 }
+
+
