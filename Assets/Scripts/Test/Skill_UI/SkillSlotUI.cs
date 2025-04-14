@@ -9,11 +9,20 @@ public class SkillSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillNameText;
     [SerializeField] private TextMeshProUGUI featureText;
     [SerializeField] private TextMeshProUGUI currentLevel;
-   
 
-    private SkillInfo skillData;
+    private SkillInfo skillData;  // 현재 적용 중인 스킬
+    private SkillInfo baseSkill;  // 원본 스킬 (업그레이드 이전)
 
-    private void UpdateUI()
+    public void SetSlot(SkillInfo skill)
+    {
+        baseSkill = skill.originalSkill == null ? skill : skill.originalSkill; // 항상 원본 기억
+        skillData = skill;
+        UpdateUI();
+    }
+
+    public SkillInfo GetCurrentSkill() => skillData;
+
+    public void UpdateUI()
     {
         if (skillData == null) return;
 
@@ -23,44 +32,35 @@ public class SkillSlotUI : MonoBehaviour
         currentLevel.text = skillData.currentLevel.ToString();
     }
 
-    public void SetSlot(SkillInfo skill)
-    {
-        skillData = skill;
-        UpdateUI();
-
-    }
-
     public void LevelUp()
     {
-        Debug.Log($"Level_Up!");
-        if (skillData == null) return;
-
-        if (skillData.currentLevel < skillData.maxLevel)
-        {
-            skillData.currentLevel++;
-            Debug.Log($"[레벨업] {skillData.skillName} → {skillData.currentLevel}");
-            UpdateUI();
-        }
-        else
-        {
-            Debug.Log($"[레벨업 차단] {skillData.skillName}은 최대레벨입니다.");
-        }
+        if (skillData == null || skillData.currentLevel >= skillData.maxLevel) return;
+        skillData.currentLevel++;
+        UpdateUI();
     }
 
     public void LevelDown()
     {
-        Debug.Log($"Level_Down!");
-        if (skillData == null) return;
+        if (skillData == null || skillData.currentLevel <= 1) return;
+        skillData.currentLevel--;
+        UpdateUI();
+    }
 
-        if (skillData.currentLevel > 1)
-        {
-            skillData.currentLevel--;
-            Debug.Log($"[레벨다운] {skillData.skillName} → {skillData.currentLevel}");
-            UpdateUI();
-        }
-        else
-        {
-            Debug.Log($"[레벨다운 차단] {skillData.skillName}은 최소레벨입니다.");
-        }
+    public void UpgradeSkill(SkillInfo upgraded)
+    {
+        skillData = upgraded;
+        UpdateUI();
+    }
+
+    public void ResetToOriginal()
+    {
+        skillData = baseSkill;
+        UpdateUI();
+    }
+
+    public void OnClickSlot()
+    {
+        // Upgrade UI에는 항상 baseSkill 기준 전달
+        SkillUpgradeUI.Instance.ShowSkillDetail(baseSkill, this);
     }
 }
