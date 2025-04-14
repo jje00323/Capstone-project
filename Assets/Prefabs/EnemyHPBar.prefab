@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4462486586865788937}
   - component: {fileID: 122096075885274305}
   - component: {fileID: 4421484204714157879}
-  m_Layer: 0
+  - component: {fileID: 5373619522193887534}
+  m_Layer: 5
   m_Name: EnemyHPBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,6 +103,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5373619522193887534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2525426487679098249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cd6ead35e8440946ab2f5d7cde88ae9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBarGroup: {fileID: 0}
+  hpSlider: {fileID: 449560723034292048}
 --- !u!1 &4615966690663034275
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,7 +128,7 @@ GameObject:
   - component: {fileID: 5898529860726528687}
   - component: {fileID: 3187690820672679864}
   - component: {fileID: 355469803090179383}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +152,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3187690820672679864
 CanvasRenderer:
@@ -187,7 +202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1547315278509155275}
   - component: {fileID: 449560723034292048}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +292,7 @@ GameObject:
   - component: {fileID: 2064965506306609237}
   - component: {fileID: 3148476149012144471}
   - component: {fileID: 1190246137762510195}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +365,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5104687369715887449}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -374,6 +389,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

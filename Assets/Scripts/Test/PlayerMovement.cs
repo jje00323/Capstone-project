@@ -9,11 +9,17 @@ public class PlayerMovement : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
     private PlayerStateMachine stateMachine;
-    private bool hasSpawnedEffect = false;
 
     [Header("이동 이펙트")]
     public GameObject moveClickEffectPrefab;
 
+    [SerializeField] private float rootMotionMultiplier = 1.5f;
+    [SerializeField] private LayerMask enemyLayer;
+
+    private bool hasSpawnedEffect = false;
+    private bool isRightClickActive = false;
+    private float rightClickTimer = 0f;
+    [SerializeField] private float rightClickThreshold = 0.1f;
 
     void Awake()
     {
@@ -21,111 +27,91 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         stateMachine = GetComponent<PlayerStateMachine>();
 
-        agent = GetComponent<NavMeshAgent>();
-
-
-
         agent.updateRotation = false;
-
         agent.speed = 5f;
         agent.acceleration = 999f;
         agent.autoBraking = false;
-
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
     }
 
     void Update()
     {
-        if (!stateMachine.CanMove())
-            return;
+        if (!stateMachine.CanMove()) return;
 
         float speed = agent.velocity.magnitude;
-        animator.SetFloat("Speed", speed); // 이건 항상 실행
+        animator.SetFloat("Speed", speed);
 
         bool isMoving = !agent.pathPending &&
                         agent.remainingDistance > agent.stoppingDistance &&
                         agent.velocity.sqrMagnitude > 0.05f;
 
-        // FSM 상태가 Attacking일 땐 상태 전환 막기만!
         if (stateMachine.CurrentState != PlayerState.Attacking)
         {
             if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
-            {
                 stateMachine.ChangeState(PlayerState.Moving);
-            }
             else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
-            {
                 stateMachine.ChangeState(PlayerState.Idle);
-            }
         }
 
-        if (stateMachine.CanMove())
+        // 우클릭 입력 처리
+        if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            if (Mouse.current.rightButton.wasPressedThisFrame && !hasSpawnedEffect)
+            isRightClickActive = true;
+            rightClickTimer = 0f;
+            HandleRightClick(true); // 이펙트 포함
+            hasSpawnedEffect = true;
+        }
+        else if (Mouse.current.rightButton.isPressed && isRightClickActive)
+        {
+            rightClickTimer += Time.deltaTime;
+            if (rightClickTimer > rightClickThreshold)
             {
-                HandleRightClick();                 // 이동 처리 + 이펙트 생성
-                hasSpawnedEffect = true;
-            }
-            else if (Mouse.current.rightButton.isPressed)
-            {
-                HandleRightClick();                 // 이동 처리만 (이펙트는 X)
-            }
-
-            if (Mouse.current.rightButton.wasReleasedThisFrame)
-            {
-                hasSpawnedEffect = false;          // 클릭 끝나면 다시 초기화
+                HandleRightClick(false); // 이동만 처리, 이펙트 없음
             }
         }
 
+        if (Mouse.current.rightButton.wasReleasedThisFrame)
+        {
+            isRightClickActive = false;
+            hasSpawnedEffect = false;
+        }
 
         if (stateMachine.CurrentState != PlayerState.Attacking)
         {
             RotateTowardsMovementDirection();
         }
-
-
-
-        //CheckAgentStuck();
     }
 
-    public void UpdateAnimatorReference(Animator newAnimator)
-    {
-        animator = newAnimator;
-    }
-
-    public void HandleRightClick()
+    public void HandleRightClick(bool spawnEffect)
     {
         if (!stateMachine.CanMove()) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            agent.SetDestination(hit.point);
+            Vector3 desiredPoint = hit.point;
 
-            if (Mouse.current.rightButton.wasPressedThisFrame)
+            if (NavMesh.SamplePosition(desiredPoint, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                SpawnMoveEffect(hit.point);
+                Vector3 targetPosition = navHit.position;
+                agent.SetDestination(targetPosition);
+
+                if (spawnEffect && !hasSpawnedEffect)
+                {
+                    SpawnMoveEffect(targetPosition);
+                }
+            }
+            else
+            {
+                agent.ResetPath();
             }
         }
     }
 
-    //private void CheckAgentStuck()
-    //{
-    //    if (agent.isStopped || agent.velocity.magnitude < 0.01f)
-    //    {
-    //        if (!agent.pathPending && agent.remainingDistance > 0.1f)
-    //        {
-    //            Debug.LogWarning("[NavMeshAgent] 경로 오류 감지 → 복구 시도");
-    //            agent.ResetPath();
-    //            agent.SetDestination(transform.position + transform.forward * 1f);
-    //        }
-    //    }
-    //}
-
     private void RotateTowardsMovementDirection()
     {
         Vector3 velocity = agent.velocity;
-        velocity.y = 0f; // 수직 회전 방지
+        velocity.y = 0f;
 
         if (velocity.sqrMagnitude > 0.1f)
         {
@@ -134,14 +120,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // 플레이어 공격 시 캐릭터 회전
     public void RotateToMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 lookPoint = hit.point;
-            lookPoint.y = transform.position.y; // y값 고정해서 수평 회전만
+            lookPoint.y = transform.position.y;
 
             Vector3 direction = (lookPoint - transform.position).normalized;
             if (direction.sqrMagnitude > 0.01f)
@@ -150,10 +135,11 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     public void StopAgent()
     {
         agent.isStopped = true;
-        agent.ResetPath(); // 이동 중이던 경로 제거
+        agent.ResetPath();
     }
 
     public void ResumeAgent()
@@ -166,18 +152,25 @@ public class PlayerMovement : MonoBehaviour
         if (moveClickEffectPrefab != null)
         {
             GameObject fx = Instantiate(moveClickEffectPrefab, position + Vector3.up * 0.1f, Quaternion.identity);
-
             fx.transform.localScale = Vector3.one * 0.7f;
-            Destroy(fx, 2f); // 1.5초 뒤 제거
+            Destroy(fx, 2f);
         }
     }
 
     void OnAnimatorMove()
     {
-        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting)
+        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting ||
+            stateMachine.CurrentState == PlayerStateMachine.PlayerState.Attacking)
         {
-            transform.position += animator.deltaPosition;
+            Vector3 delta = animator.deltaPosition * rootMotionMultiplier;
+            delta.y = 0f;
+            transform.position += delta;
             transform.rotation *= animator.deltaRotation;
         }
+    }
+
+    public void UpdateAnimatorReference(Animator newAnimator)
+    {
+        animator = newAnimator;
     }
 }

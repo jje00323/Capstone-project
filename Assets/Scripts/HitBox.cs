@@ -9,7 +9,6 @@ public class Hitbox : MonoBehaviour
     [Header("히트박스 설정")]
     public float damage = 10f;
     public float duration = 1f;
-    public bool followCaster = true;
 
     [Header("반복 판정 설정")]
     public float startDelay = 0f;
@@ -18,9 +17,9 @@ public class Hitbox : MonoBehaviour
 
     [Header("범위 설정")]
     public ShapeType shape = ShapeType.Sphere;
-    public float radius = 2f; // Sphere / Cone
+    public float radius = 2f;
     public Vector3 boxSize = new Vector3(2f, 2f, 2f);
-    public float coneAngle = 45f; // degrees
+    public float coneAngle = 45f;
     public float coneDistance = 3f;
     public Vector3 offset = Vector3.forward;
 
@@ -29,36 +28,34 @@ public class Hitbox : MonoBehaviour
     public float projectileSpeed = 10f;
     public Rigidbody projectileRigidbody;
 
-    [Header("디버그용")]
+    [Header("디버그")]
     public bool drawGizmos = true;
-
-    private bool initialized = false;
     public Color gizmoColor = Color.red;
-    public Transform caster;
+
+    [SerializeField] private bool followCaster = false;
+
+    private Transform caster;
+    private bool initialized = false;
     private bool isHitboxActive = false;
 
-
-    private void Update()
-    {
-        if (followCaster && caster != null)
-        {
-            transform.position = caster.position + caster.TransformDirection(offset);
-        }
-
-    }
-    public void Initialize(Transform casterTransform)
+    public void Initialize(Transform casterTransform, bool shouldFollow)
     {
         caster = casterTransform;
+        followCaster = shouldFollow; // 외부 설정 가능하게 반영
         initialized = true;
 
         if (isProjectile)
-        {
             LaunchProjectile();
-        }
         else
-        {
             StartCoroutine(HandleHitbox());
-        }
+    }
+
+    private void Update()
+    {
+        if (!initialized || caster == null || !followCaster) return;
+
+        transform.position = caster.position + caster.rotation * offset;
+        transform.rotation = caster.rotation;
     }
 
     private void LaunchProjectile()
@@ -77,20 +74,33 @@ public class Hitbox : MonoBehaviour
         StartCoroutine(DestroyAfterDuration());
     }
 
-    private void OnTriggerEnter(Collider other)//투사체만 colider사용
+    private void OnTriggerEnter(Collider other)
     {
         if (!isProjectile || !initialized) return;
 
-        if (other.CompareTag("Enemy"))
+        // 히트박스가 플레이어 공격이면 적에게 적용
+        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
         {
-            EnemyController enemy = other.GetComponent<EnemyController>();
+            EnemyStatus enemy = other.GetComponent<EnemyStatus>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log($"[Hitbox Projectile] 적 히트! 데미지: {damage}");
+                Debug.Log($"[Hitbox Projectile] 적 피격! 데미지: {damage}");
             }
 
-            Destroy(gameObject); // 투사체는 맞고 사라짐
+            Destroy(gameObject);
+        }
+        // 히트박스가 몬스터 공격이면 플레이어에게 적용
+        else if (CompareTag("EnemyHitbox") && other.CompareTag("Player"))
+        {
+            PlayerStatus player = other.GetComponent<PlayerStatus>();
+            if (player != null)
+            {
+                player.TakeDamage(damage);
+                Debug.Log($"[Hitbox Projectile] 플레이어 피격! 데미지: {damage}");
+            }
+
+            Destroy(gameObject);
         }
     }
 
@@ -119,55 +129,79 @@ public class Hitbox : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     private void ApplyDamage()
     {
-        if (!initialized || caster == null) return;
+        if (!initialized)
+        {
+            Debug.LogWarning("[HitBox] 초기화되지 않음");
+            return;
+        }
 
-        Vector3 center = caster.position + caster.TransformDirection(offset);
-        Collider[] hits;
+        Vector3 center = followCaster && caster != null
+            ? caster.position + caster.TransformDirection(offset)
+            : transform.position + transform.TransformDirection(offset);
+
+        Collider[] hits = null;
+        List<Collider> filteredHits = new List<Collider>();
+        LayerMask targetLayer = GetTargetLayerMask();
 
         switch (shape)
         {
             case ShapeType.Sphere:
-                hits = Physics.OverlapSphere(center, radius, LayerMask.GetMask("Enemy"));
+                hits = Physics.OverlapSphere(center, radius, targetLayer);
+                filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Box:
-                hits = Physics.OverlapBox(center, boxSize * 0.5f, caster.rotation, LayerMask.GetMask("Enemy"));
+                hits = Physics.OverlapBox(center, boxSize * 0.5f, transform.rotation, targetLayer);
+                filteredHits.AddRange(hits);
                 break;
 
             case ShapeType.Cone:
-                hits = Physics.OverlapSphere(center, coneDistance, LayerMask.GetMask("Enemy"));
-                List<Collider> coneHits = new List<Collider>();
+                hits = Physics.OverlapSphere(center, coneDistance, targetLayer);
                 foreach (var col in hits)
                 {
-                    Vector3 dirToTarget = (col.transform.position - caster.position).normalized;
-                    float angle = Vector3.Angle(caster.forward, dirToTarget);
-                    float distance = Vector3.Distance(caster.position, col.transform.position);
+                    Vector3 dirToTarget = (col.transform.position - center).normalized;
+                    float angle = Vector3.Angle(transform.forward, dirToTarget);
+                    float distance = Vector3.Distance(center, col.transform.position);
 
-                    //  아주 가까운 적은 방향 무시하고 무조건 포함
                     if (distance <= 2f || angle < coneAngle * 0.7f)
                     {
-                        coneHits.Add(col);
+                        filteredHits.Add(col);
                     }
                 }
-                hits = coneHits.ToArray();
-                break;
-
-            default:
-                hits = new Collider[0];
                 break;
         }
 
-        foreach (Collider col in hits)
+        foreach (var col in filteredHits)
         {
-            EnemyController enemy = col.GetComponent<EnemyController>();
-            if (enemy != null)
+            if (gameObject.CompareTag("PlayerHitbox") && col.CompareTag("Enemy"))
             {
-                enemy.TakeDamage(damage);
-                Debug.Log($"[Hitbox] 적 히트! 데미지: {damage}");
+                var enemy = col.GetComponent<EnemyStatus>();
+                if (enemy != null) enemy.TakeDamage(damage);
+            }
+            else if (gameObject.CompareTag("EnemyHitbox") && col.CompareTag("Player"))
+            {
+                var player = col.GetComponent<PlayerStatus>();
+                if (player != null) player.TakeDamage(damage);
             }
         }
+    }
+    private LayerMask GetTargetLayerMask()
+    {
+        if (CompareTag("PlayerHitbox"))
+        {
+            // 플레이어가 적을 때릴 때 → 복귀 중 적 포함
+            return LayerMask.GetMask("Enemy", "EnemyIgnorePlayer");
+        }
+        else if (CompareTag("EnemyHitbox"))
+        {
+            // 적이 플레이어를 때릴 때 → 관통 상태까지 고려
+            return LayerMask.GetMask("Player", "PlayerIgnoreEnemy");
+        }
+
+        return 0;
     }
 
     private void OnDrawGizmos()

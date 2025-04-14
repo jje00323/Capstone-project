@@ -51,6 +51,7 @@ MonoBehaviour:
   skillData: {fileID: 11400000, guid: b9487591046bc214f8a040ce1d323c2e, type: 2}
   skillButtonPrefab: {fileID: 4539525156826694376}
   skillButtonParent: {fileID: 7511421874414528240}
+  skillController: {fileID: 0}
 --- !u!1 &2821602506820519424
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,7 +631,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6659676922648465582
 MonoBehaviour:
   m_ObjectHideFlags: 0

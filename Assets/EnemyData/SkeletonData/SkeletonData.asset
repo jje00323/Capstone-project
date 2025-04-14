@@ -20,6 +20,6 @@ MonoBehaviour:
   attackRange: 1
   detectRadius: 6
   returnDistance: 15
-  returnSpeedMultiplier: 3
+  returnSpeedMultiplier: 0.1
   expDrop: 10
   animatorController: {fileID: 9100000, guid: 5574601b0409e2d4fa0347880fd051bb, type: 2}

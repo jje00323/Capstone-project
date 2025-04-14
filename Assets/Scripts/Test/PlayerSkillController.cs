@@ -20,7 +20,7 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
-
+    GameObject player;
     private bool isSkillActive = false;
     private string currentJob = "";
 
@@ -29,7 +29,7 @@ public class PlayerSkillController : MonoBehaviour
         stateMachine = GetComponent<PlayerStateMachine>();
         playerMovement = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
-
+        player = GameObject.FindWithTag("Player");
         LoadSkillsFromData(skillData);
     }
 
@@ -77,7 +77,12 @@ public class PlayerSkillController : MonoBehaviour
     public void TryUseSkill(string skillKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
-
+        
+        var attack = player.GetComponent<PlayerAttack>();
+        if (attack != null)
+        {
+            attack.ForceEndCombo();
+        }
         string fullSkillKey = currentJob + "_" + skillKey;
 
         if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
@@ -88,7 +93,7 @@ public class PlayerSkillController : MonoBehaviour
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
         playerMovement.RotateToMouse();
-
+        animator.applyRootMotion = true;
         string animTrigger = "Press_" + skillKey;
         playerMovement.StopAgent();
         animator.SetTrigger(animTrigger);
@@ -113,22 +118,23 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         GameObject prefab = hitboxPrefabs[fullSkillKey];
-        GameObject instance;
-
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
 
         Vector3 offset = spawnPoint.localPosition;
         Vector3 worldOffset = transform.position + transform.TransformDirection(offset);
-        Quaternion localRotations = spawnPoint.localRotation;
         worldOffset.y = 1.0f;
-        Quaternion worldRotations = transform.rotation * localRotations;
-        instance = Instantiate(prefab, worldOffset, worldRotations);
+        Quaternion worldRotations = transform.rotation * spawnPoint.localRotation;
 
-        //  핵심: 생성 후 caster 지정
+        GameObject instance = Instantiate(prefab, worldOffset, worldRotations);
         Hitbox hitbox = instance.GetComponent<Hitbox>();
+
+        // 핵심: 스킬 데이터에서 followCaster 여부 참조
+        SkillInfo skillInfo = GetSkillInfo(skillKey);
+        bool shouldFollow = skillInfo != null ? skillInfo.followCaster : true;
+
         if (hitbox != null)
         {
-            hitbox.Initialize(transform); // 이 스크립트를 가진 플레이어 오브젝트
+            hitbox.Initialize(transform, shouldFollow);
         }
     }
 
@@ -176,7 +182,7 @@ public class PlayerSkillController : MonoBehaviour
         isSkillActive = false;
         animator.SetTrigger("end_skill");
         playerMovement.ResumeAgent();
-
+        animator.applyRootMotion = false;
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
     }
 

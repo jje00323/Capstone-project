@@ -33,15 +33,15 @@ public class EnemyUI : MonoBehaviour
 
     public void ShowHP(float current, float max)
     {
-        if (hpBarGroup == null || hpSlider == null) return;
+        Debug.Log($"[EnemyUI] ShowHP È£ÃâµÊ: {current}/{max}");
 
-        hpBarGroup.SetActive(true);
+        if (hpSlider == null)
+        {
+            Debug.LogWarning("EnemyUI: ÄÄÆ÷³ÍÆ® ´©¶ô");
+            return;
+        }
+
         hpSlider.value = current / max;
-
-        if (hideCoroutine != null)
-            StopCoroutine(hideCoroutine);
-
-        hideCoroutine = StartCoroutine(HideAfterDelay(3f));
     }
 
     private IEnumerator HideAfterDelay(float delay)

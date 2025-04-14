@@ -24,6 +24,7 @@ public class JobManager : MonoBehaviour
         public RuntimeAnimatorController animatorController;
         public Avatar avatar;
         public GameObject modelPrefab;
+        public Transform rightHandBone;
     }
 
     [Header("모델이 붙을 위치")]
@@ -142,7 +143,16 @@ public class JobManager : MonoBehaviour
                 playerSkill.LoadSkillsFromData(skillData);
             }
         }
-
+        var stateMachine = player.GetComponent<PlayerStateMachine>();
+        if (stateMachine != null)
+        {
+            stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+        }
+        var attack = player.GetComponent<PlayerAttack>();
+        if (attack != null)
+        {
+            attack.ForceEndCombo(); 
+        }
         // 2. 스킬 UI 갱신
         PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
         if (skillUI != null)
@@ -158,7 +168,27 @@ public class JobManager : MonoBehaviour
             playerMovement.UpdateAnimatorReference(playerAnimator);
 
         var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
-        Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
+        //Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
+
+        if (res.rightHandBone == null)
+        {
+            Debug.LogError($"[JobManager] '{newJob}' 직업의 rightHandBone이 설정되지 않았습니다!");
+            return;
+        }
+
+        Transform instanceRightHand = currentModel.transform.Find(res.rightHandBone.name);
+        if (instanceRightHand == null)
+        {
+            Debug.LogError("[JobManager] 인스턴스에서 손 본을 찾을 수 없습니다!");
+        }
+        else
+        {
+            var equipmentSystem = player.GetComponent<WeaponEquipSystem>();
+            if (equipmentSystem != null)
+            {
+                equipmentSystem.SetRightHand(instanceRightHand);
+            }
+        }
         Debug.Log($"[직업 변경 완료] {newJob}");
     }
 

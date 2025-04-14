@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using static PlayerStateMachine;
 [RequireComponent(typeof(PlayerStateMachine))]
@@ -34,6 +35,8 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         CombatSystem();
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
     }
 
 
@@ -58,6 +61,11 @@ public class PlayerAttack : MonoBehaviour
     public void HandleAttackInput()
     {
         if (!stateMachine.CanAttack()) return;
+
+        //if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        //    return;
+
+
         if (inputLocked) return; // 입력 락 걸렸으면 무시
 
         if (isAttacking)
@@ -88,7 +96,7 @@ public class PlayerAttack : MonoBehaviour
             isAttacking = true;
             comboIndex = 1;
             inputLocked = true; // 잠금 시작
-
+            animator.applyRootMotion = true;
             movement.StopAgent();
             movement.RotateToMouse();
 
@@ -157,10 +165,10 @@ public class PlayerAttack : MonoBehaviour
         canExecuteImmediately = false;
         inputLocked = false; //  중요: 입력 잠금 해제
         comboIndex = 0;
+        animator.applyRootMotion = false;
 
         //animator.SetTrigger("endCombo");
         movement.ResumeAgent();
-
 
         Debug.Log("공격 초기화");
 
@@ -181,5 +189,24 @@ public class PlayerAttack : MonoBehaviour
         {
             Debug.LogWarning("PlayerSkillSystem 컴포넌트가 없음!");
         }
+    }
+
+    public void ForceEndCombo()
+    {
+        // 현재 상태와 comboIndex가 일치하면 정상 종료
+        isAttacking = false;
+        inputBuffered = false;
+        allowBufferedInput = false;
+        canExecuteImmediately = false;
+        inputLocked = false; //  중요: 입력 잠금 해제
+        comboIndex = 0;
+        animator.applyRootMotion = false;
+
+        //animator.SetTrigger("endCombo");
+        movement.ResumeAgent();
+
+        Debug.Log("공격 초기화");
+
+        stateMachine.ChangeState(PlayerState.Idle);
     }
 }

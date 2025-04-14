@@ -23,6 +23,7 @@ public class PlayerStatus : CharacterStatus
     {
         base.TakeDamage(damage);
         playerUI.UpdateHP(currentHP, maxHP);
+        Debug.Log($"player 현재 체력: {currentHP}");
     }
 
     public override void Heal(float amount)
