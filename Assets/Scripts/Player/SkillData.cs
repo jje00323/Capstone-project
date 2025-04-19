@@ -22,6 +22,8 @@ public class SkillInfo
     public float effectDuration;
     public bool followCaster;
 
+    public AnimationClip skillAnimation;
+
     public int manaCost;
     public int requiredLevel;
     public int currentLevel = 1;

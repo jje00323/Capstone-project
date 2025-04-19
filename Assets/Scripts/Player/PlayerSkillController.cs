@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static PlayerStateMachine;
 
 [RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerSkillController : MonoBehaviour
@@ -20,7 +18,7 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
-    GameObject player;
+    private GameObject player;
     private bool isSkillActive = false;
     private string currentJob = "";
 
@@ -74,67 +72,43 @@ public class PlayerSkillController : MonoBehaviour
         if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
-    public void TryUseSkill(string slotKey)
+    public void TryUseSkill(string skillKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
 
-        // 1. 장착된 스킬 가져오기
-        SkillInfo skill = SkillEquipManager.Instance.GetEquippedSkill(slotKey);
-        if (skill == null)
-        {
-            Debug.LogWarning($"[{slotKey}] 슬롯에 장착된 스킬이 없습니다.");
-            return;
-        }
+        SkillInfo skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        if (skill == null || skill.skillAnimation == null) return;
 
-        // 2. 애니메이션 트리거 키
-        string animTrigger = "Press_" + slotKey;
-
-        // 3. 히트박스 프리팹 불러오기용 키
-        string fullSkillKey = currentJob + "_" + skill.skillKey;
-
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey))
-        {
-            Debug.LogWarning($"[TryUseSkill] 히트박스 프리팹이 없습니다: {fullSkillKey}");
-            return;
-        }
-
-        // 4. 쿨타임 체크
-        float cooldown = skill.cooldown;
-        float lastUsedTime = skillLastUsedTime.ContainsKey(slotKey) ? skillLastUsedTime[slotKey] : -999f;
-        if (Time.time - lastUsedTime < cooldown) return;
-
-        // 5. 스킬 실행
-        var attack = player.GetComponent<PlayerAttack>();
-        if (attack != null) attack.ForceEndCombo();
+        float cooldown = GetSkillCooldown(skillKey);
+        if (Time.time - GetLastUsedTime(skillKey) < cooldown) return;
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
         playerMovement.RotateToMouse();
-        animator.applyRootMotion = true;
         playerMovement.StopAgent();
-        animator.SetTrigger(animTrigger);
+        animator.applyRootMotion = true;
 
-        // 6. 쿨타임 및 UI 시작
-        skillLastUsedTime[slotKey] = Time.time;
+        // 핵심: 직접 애니메이션 재생
+        animator.Play(skill.skillAnimation.name);
 
-        if (PlayerSkillUI.Instance != null)
+        skillLastUsedTime[skillKey] = Time.time;
+        isSkillActive = true;
+
+        PlayerSkillUI.Instance?.StartUICooldown(skillKey, cooldown);
+
+       
+
+        // 전투 상태 진입
+        var attackSystem = GetComponent<PlayerAttack>();
+        if (attackSystem != null)
         {
-            PlayerSkillUI.Instance.StartUICooldown(slotKey, cooldown);
+            attackSystem.EnterCombatMode(); // 이 메서드를 PlayerAttack에 추가할 거야
         }
-
-        Debug.Log($"[스킬 사용] 슬롯 {slotKey} → {skill.skillName} 사용됨");
     }
 
-    // 애니메이션 이벤트로 호출될 함수
     public void ActivateHitbox(string skillKey)
     {
-        Debug.Log($"[스킬 시스템] ActivateHitbox 호출됨! skillKey = {skillKey}");
-
         string fullSkillKey = currentJob + "_" + skillKey;
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey))
-        {
-            Debug.LogWarning(" 히트박스 프리팹을 찾을 수 없음: " + fullSkillKey);
-            return;
-        }
+        if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
 
         GameObject prefab = hitboxPrefabs[fullSkillKey];
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
@@ -147,26 +121,20 @@ public class PlayerSkillController : MonoBehaviour
         GameObject instance = Instantiate(prefab, worldOffset, worldRotations);
         Hitbox hitbox = instance.GetComponent<Hitbox>();
 
-        // 핵심: 스킬 데이터에서 followCaster 여부 참조
         SkillInfo skillInfo = GetSkillInfo(skillKey);
-        bool shouldFollow = skillInfo != null ? skillInfo.followCaster : true;
+        bool shouldFollow = skillInfo != null && skillInfo.followCaster;
 
         if (hitbox != null)
-        {
             hitbox.Initialize(transform, shouldFollow);
-        }
     }
 
-    // 애니메이션 이벤트로 호출될 함수
     public void SpawnEffect(string skillKey)
     {
         string fullSkillKey = currentJob + "_" + skillKey;
-        if (!effectPrefabs.ContainsKey(fullSkillKey) || effectPrefabs[fullSkillKey] == null)
-            return;
+        if (!effectPrefabs.ContainsKey(fullSkillKey)) return;
 
         activeEffect = Instantiate(effectPrefabs[fullSkillKey], transform.position + transform.forward, transform.rotation);
 
-        // 해당 스킬 데이터 가져와서 effectDuration 확인
         SkillInfo skillInfo = GetSkillInfo(skillKey);
         if (skillInfo != null && skillInfo.effectDuration > 0)
         {
@@ -175,7 +143,6 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
-    // 애니메이션 이벤트로 호출될 함수
     public void DestroyEffect()
     {
         if (activeEffect != null)
@@ -183,6 +150,32 @@ public class PlayerSkillController : MonoBehaviour
             Destroy(activeEffect);
             activeEffect = null;
         }
+    }
+
+    public void EndSkill()
+    {
+        isSkillActive = false;
+        animator.applyRootMotion = false;
+        playerMovement.ResumeAgent();
+
+        animator.SetTrigger("EndSkill");
+        stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+    }
+
+    private float GetSkillCooldown(string skillKey)
+    {
+        return skillCooldowns.TryGetValue(skillKey, out float cooldown) ? cooldown : 0f;
+    }
+
+    private float GetLastUsedTime(string skillKey)
+    {
+        return skillLastUsedTime.TryGetValue(skillKey, out float lastTime) ? lastTime : -999f;
+    }
+
+    public void UpdateCurrentJob(JobManager.JobType newJob)
+    {
+        currentJob = newJob.ToString();
+        LoadSkillsFromData(skillData);
     }
 
     private SkillInfo GetSkillInfo(string skillKey)
@@ -193,26 +186,5 @@ public class PlayerSkillController : MonoBehaviour
                 return skill;
         }
         return null;
-    }
-
-    // 애니메이션 이벤트로 호출될 함수
-    public void EndSkill()
-    {
-        isSkillActive = false;
-        animator.SetTrigger("end_skill");
-        playerMovement.ResumeAgent();
-        animator.applyRootMotion = false;
-        stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
-    }
-
-    private float GetSkillCooldown(string skillKey)
-    {
-        return skillCooldowns.ContainsKey(skillKey) ? skillCooldowns[skillKey] : 0f;
-    }
-
-    public void UpdateCurrentJob(JobManager.JobType newJob)
-    {
-        currentJob = newJob.ToString();
-        LoadSkillsFromData(skillData);
     }
 }
