@@ -88,7 +88,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
   maxEXP: 100
   currentEXP: 0
   level: 1
-  playerUI: {fileID: 0}
+  playerUI: {fileID: 6114571172120931262, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
 --- !u!114 &3630029256496200324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +180,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveClickEffectPrefab: {fileID: 1195808797154278, guid: 47b105c1abea8c243b0d7d36e68f479a, type: 3}
+  rootMotionMultiplier: 1.5
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  rightClickThreshold: 0.1
 --- !u!114 &1211336223281180775
 MonoBehaviour:
   m_ObjectHideFlags: 0
