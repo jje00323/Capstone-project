@@ -74,35 +74,54 @@ public class PlayerSkillController : MonoBehaviour
         if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
-    public void TryUseSkill(string skillKey)
+    public void TryUseSkill(string slotKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
-        
-        var attack = player.GetComponent<PlayerAttack>();
-        if (attack != null)
+
+        // 1. 장착된 스킬 가져오기
+        SkillInfo skill = SkillEquipManager.Instance.GetEquippedSkill(slotKey);
+        if (skill == null)
         {
-            attack.ForceEndCombo();
+            Debug.LogWarning($"[{slotKey}] 슬롯에 장착된 스킬이 없습니다.");
+            return;
         }
-        string fullSkillKey = currentJob + "_" + skillKey;
 
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
+        // 2. 애니메이션 트리거 키
+        string animTrigger = "Press_" + slotKey;
 
-        float cooldown = GetSkillCooldown(skillKey);
-        float lastUsedTime = skillLastUsedTime.ContainsKey(skillKey) ? skillLastUsedTime[skillKey] : -999f;
+        // 3. 히트박스 프리팹 불러오기용 키
+        string fullSkillKey = currentJob + "_" + skill.skillKey;
+
+        if (!hitboxPrefabs.ContainsKey(fullSkillKey))
+        {
+            Debug.LogWarning($"[TryUseSkill] 히트박스 프리팹이 없습니다: {fullSkillKey}");
+            return;
+        }
+
+        // 4. 쿨타임 체크
+        float cooldown = skill.cooldown;
+        float lastUsedTime = skillLastUsedTime.ContainsKey(slotKey) ? skillLastUsedTime[slotKey] : -999f;
         if (Time.time - lastUsedTime < cooldown) return;
+
+        // 5. 스킬 실행
+        var attack = player.GetComponent<PlayerAttack>();
+        if (attack != null) attack.ForceEndCombo();
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
         playerMovement.RotateToMouse();
         animator.applyRootMotion = true;
-        string animTrigger = "Press_" + skillKey;
         playerMovement.StopAgent();
         animator.SetTrigger(animTrigger);
 
-        skillLastUsedTime[skillKey] = Time.time;
+        // 6. 쿨타임 및 UI 시작
+        skillLastUsedTime[slotKey] = Time.time;
+
         if (PlayerSkillUI.Instance != null)
         {
-            PlayerSkillUI.Instance.StartUICooldown(skillKey, cooldown);
+            PlayerSkillUI.Instance.StartUICooldown(slotKey, cooldown);
         }
+
+        Debug.Log($"[스킬 사용] 슬롯 {slotKey} → {skill.skillName} 사용됨");
     }
 
     // 애니메이션 이벤트로 호출될 함수

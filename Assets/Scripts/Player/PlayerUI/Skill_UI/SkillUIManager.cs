@@ -16,10 +16,8 @@ public class SkillUIManager : MonoBehaviour
 
     public void LoadSkillListForCurrentJob()
     {
-        // 현재 직업 확인
         var currentJob = JobManager.Instance.GetCurrentJob();
 
-        // 해당 직업의 스킬 데이터 찾기
         JobSkillData jobData = null;
         foreach (var data in allJobSkills)
         {
@@ -42,6 +40,8 @@ public class SkillUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        SkillSlotUI firstSlot = null; // 첫 스킬 슬롯 추적
+
         // 슬롯 생성
         foreach (var skill in jobData.skills)
         {
@@ -55,6 +55,13 @@ public class SkillUIManager : MonoBehaviour
             }
 
             slotUI.SetSlot(skill);
+
+            if (firstSlot == null)
+                firstSlot = slotUI; // 가장 첫 번째 슬롯 저장
         }
+
+        // 게임 시작 시 첫 스킬 자동 선택
+        if (firstSlot != null)
+            firstSlot.OnClickSlot();
     }
 }

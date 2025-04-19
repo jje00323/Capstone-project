@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class SkillSlotUI : MonoBehaviour
+public class SkillSlotUI : MonoBehaviour,
+    IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("UI Components")]
     [SerializeField] private Image skillIcon;
@@ -14,7 +15,7 @@ public class SkillSlotUI : MonoBehaviour
     private SkillInfo skillData;  // 현재 적용 중인 스킬
     private SkillInfo baseSkill;  // 원본 스킬 (업그레이드 이전)
 
-
+    public static SkillInfo draggedSkill;
     public void SetSlot(SkillInfo skill)
     {
         skillData = skill;
@@ -75,5 +76,24 @@ public class SkillSlotUI : MonoBehaviour
         SkillUpgradeUI.Instance.ShowSkillDetail(baseSkill, this);
     }
 
+    //  여기부터 드래그 관련 인터페이스 구현 
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        draggedSkill = skillData;
+        if (draggedSkill != null)
+        {
+            DragIconUI.Instance.Show(draggedSkill.skillIcon);
+        }
+    }
 
+    public void OnDrag(PointerEventData eventData)
+    {
+        // 마우스를 따라오게 하려면 DragIconUI가 Update로 처리 중이어야 함
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        draggedSkill = null;
+        DragIconUI.Instance.Hide();
+    }
 }

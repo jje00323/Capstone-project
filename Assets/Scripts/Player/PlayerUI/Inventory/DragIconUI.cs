@@ -33,7 +33,6 @@ public class DragIconUI : MonoBehaviour
         rectTransform.anchoredPosition = mousePos;
 
         // 디버그 확인
-        Debug.Log($"[DragIconUI] 마우스 좌표: {Input.mousePosition}, Anchored: {mousePos}");
     }
 
     public void Show(Sprite icon)

@@ -14,7 +14,10 @@ public class SkillSlotDragHandler : MonoBehaviour,
 
         draggedSkill = slotUI.GetCurrentSkill();
 
-        if (draggedSkill != null && DragIconUI.Instance != null)
+        //  드래그 시작 시 업그레이드 UI에 현재 슬롯 등록
+        SkillUpgradeUI.Instance.SetCurrentSlot(slotUI);
+
+        if (draggedSkill != null)
         {
             DragIconUI.Instance.Show(draggedSkill.skillIcon);
         }
@@ -22,16 +25,12 @@ public class SkillSlotDragHandler : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        // DragIconUI는 자체적으로 Update에서 마우스를 따라가기 때문에
-        // 여기에 따로 호출할 함수는 없음.
+        // Optional: 아이콘 움직임은 DragIconUI에서 처리 중
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         draggedSkill = null;
-        if (DragIconUI.Instance != null)
-        {
-            DragIconUI.Instance.Hide();
-        }
+        DragIconUI.Instance.Hide();
     }
 }
