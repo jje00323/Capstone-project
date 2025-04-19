@@ -102,4 +102,9 @@ public class SkillUpgradeUI : MonoBehaviour
         cooldownText.text = $"재사용 대기시간: {skill.cooldown}초";
         manaText.text = $"MP: {skill.manaCost}";
     }
+
+    public void SetCurrentSlot(SkillSlotUI slot)
+    {
+        currentSlot = slot;
+    }
 }
