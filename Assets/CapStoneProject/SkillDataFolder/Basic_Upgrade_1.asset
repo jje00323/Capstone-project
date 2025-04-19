@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f51ba17d3161a43bdfe1c6adc4d83b, type: 3}
+  m_Name: Basic_Upgrade_1
+  m_EditorClassIdentifier: 
+  skillName: "\uC8FC\uBA39\uCE58\uAE30"
+  upgradeOptions:
+  - skillKey: Q
+    skillName: "\uB0B4\uB824\uCE58\uAE30"
+    skillIcon: {fileID: 21300000, guid: 29aca89fdb97d4d4587bf59dd57468e7, type: 3}
+    description: "\uC5B4\uCA4C\uAD6C\uC800\uCA4C\uAD6C"
+    cooldown: 1
+    hitboxPrefab: {fileID: 0}
+    effectPrefab: {fileID: 0}
+    effectDuration: 0
+    followCaster: 0
+    manaCost: 11
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"
+  - skillKey: Q
+    skillName: "\uC62C\uB824\uCE58\uAE30"
+    skillIcon: {fileID: 21300000, guid: 2d972814256c47d488d38af0cc7a7ded, type: 3}
+    description: "\uC774\uB7EC\uCFF5\uC800\uB7EC\uCFF5"
+    cooldown: 2
+    hitboxPrefab: {fileID: 0}
+    effectPrefab: {fileID: 0}
+    effectDuration: 0
+    followCaster: 0
+    manaCost: 22
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"
+  - skillKey: Q
+    skillName: "\uB3CC\uB824\uCE58\uAE30"
+    skillIcon: {fileID: 21300000, guid: faab10c2bbbfc8a4e8bd69253a4edccf, type: 3}
+    description: "\uC774\uB807\uAC8C\uC800\uB807\uAC8C"
+    cooldown: 3
+    hitboxPrefab: {fileID: 0}
+    effectPrefab: {fileID: 0}
+    effectDuration: 0
+    followCaster: 0
+    manaCost: 33
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"

@@ -794,6 +794,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8029773597690982829, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029773597690982829, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
@@ -806,6 +810,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+--- !u!1 &547190397 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6963966808756436514, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+  m_PrefabInstance: {fileID: 457118964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &655262609 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6114571172120931262, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
@@ -1179,6 +1188,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1243057205 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6980228684200136143, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+  m_PrefabInstance: {fileID: 457118964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1343470255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,8 +1645,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleUIs:
   - name: inventory
-    toggleAction: {fileID: -7787288452458489474, guid: 0091d9cd3e9c28642853f84950dd9326, type: 3}
-    uiObject: {fileID: 0}
+    toggleAction: {fileID: 4690146785673046326, guid: 0091d9cd3e9c28642853f84950dd9326, type: 3}
+    uiObject: {fileID: 547190397}
+  - name: Skill
+    toggleAction: {fileID: 4609393385201948951, guid: 0091d9cd3e9c28642853f84950dd9326, type: 3}
+    uiObject: {fileID: 1243057205}
 --- !u!114 &1910868102
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -28,25 +28,35 @@ public class SkillUpgradeUI : MonoBehaviour
         Instance = this;
     }
 
-    public void ShowSkillDetail(SkillInfo original, SkillSlotUI slot)
+    public void ShowSkillDetail(SkillInfo skill, SkillSlotUI slot)
     {
-        baseSkill = original;
+        baseSkill = skill;
         currentSlot = slot;
 
-        // 설명은 현재 슬롯이 가지고 있는 스킬 기준
-        UpdateDescription(currentSlot.GetCurrentSkill());
+        UpdateDescription(slot.GetCurrentSkill());
 
-        // 업그레이드 버튼은 baseSkill 기준
-        AssignUpgradeButton(originalButton, baseSkill, isOriginal: true);
-        AssignUpgradeButton(upgrade1Button, GetUpgradeOption(0));
-        AssignUpgradeButton(upgrade2Button, GetUpgradeOption(1));
-        AssignUpgradeButton(upgrade3Button, GetUpgradeOption(2));
+        var upgradeData = SkillUpgradeManager.Instance.GetUpgradeDataFor(skill);
+
+        if (upgradeData == null)
+        {
+            Debug.LogWarning($"[업그레이드 데이터 없음] {skill.skillName}");
+            AssignUpgradeButton(originalButton, skill, true);
+            AssignUpgradeButton(upgrade1Button, null);
+            AssignUpgradeButton(upgrade2Button, null);
+            AssignUpgradeButton(upgrade3Button, null);
+            return;
+        }
+
+        AssignUpgradeButton(originalButton, skill, true);
+        AssignUpgradeButton(upgrade1Button, GetUpgradeOption(upgradeData, 0));
+        AssignUpgradeButton(upgrade2Button, GetUpgradeOption(upgradeData, 1));
+        AssignUpgradeButton(upgrade3Button, GetUpgradeOption(upgradeData, 2));
     }
 
-    private SkillInfo GetUpgradeOption(int index)
+    private SkillInfo GetUpgradeOption(SkillUpgradeData data, int index)
     {
-        if (baseSkill.upgradeOptions != null && baseSkill.upgradeOptions.Length > index)
-            return baseSkill.upgradeOptions[index];
+        if (data.upgradeOptions != null && data.upgradeOptions.Length > index)
+            return data.upgradeOptions[index];
         return null;
     }
 
@@ -66,16 +76,19 @@ public class SkillUpgradeUI : MonoBehaviour
 
             btn.onClick.AddListener(() =>
             {
-                Debug.Log($"[SkillUpgradeUI] {skill.skillName} 선택됨");
-
                 if (currentSlot != null)
                 {
-                    currentSlot.UpgradeSkill(skill);           // 스킬 적용
-                    UpdateDescription(skill);                 // 오른쪽 설명 갱신
+                    if (isOriginal)
+                    {
+                        currentSlot.ResetToOriginal();
+                        UpdateDescription(baseSkill);
+                    }
+                    else
+                    {
+                        currentSlot.UpgradeSkill(skill);
+                        UpdateDescription(skill);
+                    }
                 }
-
-                // 업그레이드 버튼은 baseSkill 기준으로 유지
-                // original 버튼 클릭 시에도 upgrade UI는 바꾸지 않음
             });
         }
     }
