@@ -2,16 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFSM : MonoBehaviour
+public class EnemyFSM : BaseEnemyFSM
 {
     public bool hasDetectedPlayer = false;
 
     public EnemyData enemyData;
     public EnemyStatus enemyStatus;
     public Animator animator;
-    public Rigidbody Rigidbody { get; private set; }
-    public Collider Collider { get; private set; }
-    public Animator Animator { get; private set; }
 
     public EnemyState currentState;
 
@@ -24,11 +21,9 @@ public class EnemyFSM : MonoBehaviour
 
     [HideInInspector] public Vector3 spawnPosition;
 
-    private void Awake()
+    protected override void Awake()
     {
-        Rigidbody = GetComponent<Rigidbody>();
-        Collider = GetComponent<Collider>();
-        Animator = GetComponent<Animator>();
+        base.Awake();
     }
 
     private void Start()
@@ -37,8 +32,8 @@ public class EnemyFSM : MonoBehaviour
         {
             animator.runtimeAnimatorController = enemyData.animatorController;
         }
-        enemyStatus.Setup(enemyData);
 
+        enemyStatus.Setup(enemyData);
         spawnPosition = transform.position;
 
         if (enemyStatus.target == null)
@@ -69,14 +64,12 @@ public class EnemyFSM : MonoBehaviour
     {
         if (currentState == newState) return;
 
-        //Debug.Log($"[Enemy FSM] 상태 변경: {currentState} → {newState}");
-
         currentState?.Exit();
         currentState = newState;
         currentState.Enter();
     }
 
-    public void Die()
+    public override void Die()
     {
         ChangeState(deadState);
         animator.SetTrigger("Die");
@@ -93,8 +86,6 @@ public class EnemyFSM : MonoBehaviour
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(spawnPosition, enemyData.returnDistance);
         }
-
-
     }
-
 }
+
