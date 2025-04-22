@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 238dafa487a98dc45b68cd5911f93308, type: 3}
+  m_Name: Skeleton_soldier_Boss_Data
+  m_EditorClassIdentifier: 
+  bossName: SkeletonSoldier
+  bossLevel: 10
+  portrait: {fileID: 0}
+  maxHP: 1000
+  hpBarCount: 10
+  moveSpeed: 5
+  attackPower: 10
+  animatorController: {fileID: 9100000, guid: f7b1c1b410a88544cadb6f9a323de88f, type: 2}
+  phaseThresholds: []
+  cutsceneDialogues: []
+  cutsceneVoiceClips: []
+  cutsceneVFXPrefab: {fileID: 0}
+  cutsceneDuration: 4
+  expReward: 0
+  goldReward: 0
+  itemDrops: []
+  bossThemeMusic: {fileID: 0}

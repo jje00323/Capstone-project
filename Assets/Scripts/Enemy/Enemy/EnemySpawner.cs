@@ -16,8 +16,7 @@ public class EnemySpawner : MonoBehaviour
     {
         foreach (Transform spawn in spawnPoints)
         {
-            GameObject enemy = Instantiate(enemyPrefab, spawn.position, Quaternion.identity);
-
+            GameObject enemy = Instantiate(enemyPrefab, spawn.position, spawn.rotation);
             SetupNavMeshObstacle(enemy);
         }
     }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossEnemyDeadState : BossEnemyState
@@ -8,9 +6,12 @@ public class BossEnemyDeadState : BossEnemyState
 
     public override void Enter()
     {
-        boss.animator.SetTrigger("Die");
+        boss.Animator.SetTrigger("Die");
+        boss.Animator.SetBool("IsMoving", false);
         boss.enabled = false;
-        boss.GetComponent<Collider>().enabled = false;
+
+        if (boss.TryGetComponent<Collider>(out var col))
+            col.enabled = false;
     }
 
     public override void Update() { }

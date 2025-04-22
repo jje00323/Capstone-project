@@ -1,20 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossEnemyIdleState : BossEnemyState
 {
+    private float delay;
+    private float timer;
+
     public BossEnemyIdleState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
     {
-        boss.animator.SetTrigger("Idle");
+        boss.Animator.SetTrigger("Idle");
+        delay = Random.Range(0.5f, 1.5f);
+        timer = 0f;
     }
 
     public override void Update()
     {
-        // 바로 전투 시작 (졸업작품이므로 단순화)
-        boss.ChangeState(boss.patternState);
+        timer += Time.deltaTime;
+        if (timer >= delay)
+        {
+            boss.ChangeState(boss.moveState);
+        }
     }
 
     public override void Exit() { }

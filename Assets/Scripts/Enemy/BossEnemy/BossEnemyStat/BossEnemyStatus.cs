@@ -5,6 +5,14 @@ using UnityEngine;
 public class BossEnemyStatus : CharacterStatus
 {
     public Transform target;
+    public float moveSpeed;
+
+    public void Setup(BossEnemyData data)
+    {
+        maxHP = data.maxHP;
+        currentHP = maxHP;
+        moveSpeed = data.moveSpeed;
+    }
 
     private void Start()
     {
