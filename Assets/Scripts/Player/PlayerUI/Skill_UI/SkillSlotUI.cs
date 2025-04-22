@@ -12,8 +12,8 @@ public class SkillSlotUI : MonoBehaviour,
     [SerializeField] private TextMeshProUGUI featureText;
     [SerializeField] private TextMeshProUGUI currentLevel;
 
-    private SkillInfo skillData;  // 현재 적용 중인 스킬
-    private SkillInfo baseSkill;  // 원본 스킬 (업그레이드 이전)
+    public SkillInfo skillData;  // 현재 적용 중인 스킬
+    public SkillInfo baseSkill;  // 원본 스킬 (업그레이드 이전)
 
     public static SkillInfo draggedSkill;
     public void SetSlot(SkillInfo skill)
@@ -47,14 +47,16 @@ public class SkillSlotUI : MonoBehaviour,
     public void LevelUp()
     {
         if (skillData == null || skillData.currentLevel >= skillData.maxLevel) return;
-        skillData.currentLevel++;
+
+        skillData.SyncLevelRecursive(skillData.currentLevel + 1); //  핵심
         UpdateUI();
     }
 
     public void LevelDown()
     {
         if (skillData == null || skillData.currentLevel <= 1) return;
-        skillData.currentLevel--;
+
+        skillData.SyncLevelRecursive(skillData.currentLevel - 1); //  핵심
         UpdateUI();
     }
 

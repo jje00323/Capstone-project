@@ -47,7 +47,14 @@ public class UIONOFF : MonoBehaviour
     {
         if (ui != null)
         {
-            ui.SetActive(!ui.activeSelf);
+            bool isNowActive = !ui.activeSelf;
+            ui.SetActive(isNowActive);
+
+            //  UI가 켜질 때 가장 위로 올리기
+            if (isNowActive)
+            {
+                ui.transform.SetAsLastSibling();
+            }
         }
     }
 }

@@ -130,10 +130,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void CloseInventory()
-    {
-        gameObject.SetActive(false);
-    }
+    
 
     public void RefreshQuickSlots()
     {

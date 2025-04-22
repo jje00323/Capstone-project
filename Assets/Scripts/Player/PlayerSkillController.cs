@@ -7,6 +7,7 @@ public class PlayerSkillController : MonoBehaviour
 {
     private PlayerStateMachine stateMachine;
     private PlayerMovement playerMovement;
+    private PlayerAttack playerattack;
     private Animator animator;
 
     [Header("스킬 데이터 (ScriptableObject)")]
@@ -83,8 +84,9 @@ public class PlayerSkillController : MonoBehaviour
         if (Time.time - GetLastUsedTime(skillKey) < cooldown) return;
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
-        playerMovement.RotateToMouse();
+        
         playerMovement.StopAgent();
+        playerMovement.RotateToMouse();
         animator.applyRootMotion = true;
 
         // 핵심: 직접 애니메이션 재생
@@ -95,23 +97,45 @@ public class PlayerSkillController : MonoBehaviour
 
         PlayerSkillUI.Instance?.StartUICooldown(skillKey, cooldown);
 
-       
 
-        // 전투 상태 진입
+       
+        // 전투 상태 진입 및 기본공격 초기화3
         var attackSystem = GetComponent<PlayerAttack>();
         if (attackSystem != null)
         {
             attackSystem.EnterCombatMode(); // 이 메서드를 PlayerAttack에 추가할 거야
         }
+        attackSystem.ForceEndCombo();
     }
 
-    public void ActivateHitbox(string skillKey)
+    public void ActivateHitbox(string skillName)
     {
-        string fullSkillKey = currentJob + "_" + skillKey;
-        if (!hitboxPrefabs.ContainsKey(fullSkillKey)) return;
+        SkillInfo skillInfo = null;
 
-        GameObject prefab = hitboxPrefabs[fullSkillKey];
+        foreach (var s in skillData.skills)
+        {
+            if (s.skillName == skillName)
+            {
+                skillInfo = s;
+                break;
+            }
+        }
+
+        if (skillInfo == null || skillInfo.hitboxPrefab == null)
+        {
+            Debug.LogWarning($"[Hitbox] 이름이 {skillName}인 스킬이 없거나 히트박스 프리팹이 지정되지 않음.");
+            return;
+        }
+
+        string fullSkillKey = currentJob + "_" + skillInfo.skillKey;
+        GameObject prefab = skillInfo.hitboxPrefab;
+
         Transform spawnPoint = prefab.transform.Find("SpawnPoint");
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬의 프리팹에 'SpawnPoint'가 없음.");
+            return;
+        }
 
         Vector3 offset = spawnPoint.localPosition;
         Vector3 worldOffset = transform.position + transform.TransformDirection(offset);
@@ -121,26 +145,33 @@ public class PlayerSkillController : MonoBehaviour
         GameObject instance = Instantiate(prefab, worldOffset, worldRotations);
         Hitbox hitbox = instance.GetComponent<Hitbox>();
 
-        SkillInfo skillInfo = GetSkillInfo(skillKey);
-        bool shouldFollow = skillInfo != null && skillInfo.followCaster;
-
         if (hitbox != null)
-            hitbox.Initialize(transform, shouldFollow);
+            hitbox.Initialize(transform, skillInfo.followCaster);
     }
 
-    public void SpawnEffect(string skillKey)
+    public void SpawnEffect(string skillName)
     {
-        string fullSkillKey = currentJob + "_" + skillKey;
-        if (!effectPrefabs.ContainsKey(fullSkillKey)) return;
+        SkillInfo skill = null;
 
-        activeEffect = Instantiate(effectPrefabs[fullSkillKey], transform.position + transform.forward, transform.rotation);
-
-        SkillInfo skillInfo = GetSkillInfo(skillKey);
-        if (skillInfo != null && skillInfo.effectDuration > 0)
+        foreach (var s in skillData.skills)
         {
-            Destroy(activeEffect, skillInfo.effectDuration);
-            activeEffect = null;
+            if (s.skillName == skillName)
+            {
+                skill = s;
+                break;
+            }
         }
+
+        if (skill == null || skill.effectPrefab == null)
+        {
+            Debug.LogWarning($"[SkillEffect] 이름이 {skillName}인 스킬이 없거나 이펙트가 지정되지 않음.");
+            return;
+        }
+
+        activeEffect = Instantiate(skill.effectPrefab, transform.position + transform.forward, transform.rotation);
+
+        if (skill.effectDuration > 0f)
+            Destroy(activeEffect, skill.effectDuration);
     }
 
     public void DestroyEffect()
@@ -160,6 +191,8 @@ public class PlayerSkillController : MonoBehaviour
 
         animator.SetTrigger("EndSkill");
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+
+
     }
 
     private float GetSkillCooldown(string skillKey)

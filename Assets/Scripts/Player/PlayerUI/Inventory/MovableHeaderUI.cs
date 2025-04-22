@@ -12,4 +12,12 @@ public class MovableHeaderUI : MonoBehaviour, IDragHandler
             targetToMove.anchoredPosition += eventData.delta;
         }
     }
+
+    public GameObject inventoryUIRoot;
+
+    public void CloseUI()
+    {
+        if (inventoryUIRoot != null)
+            inventoryUIRoot.SetActive(false);
+    }
 }
