@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jobType: 0
   skills:
-  - skillKey: Q
+  - skillKey: W
     skillName: "\uC8FC\uBA39\uCE58\uAE30"
     skillIcon: {fileID: 21300000, guid: f656d804daeaddf409ad1ab6fa5041bd, type: 3}
     description: "\uC190\uC744 \uC55E\uC73C\uB85C \uD718\uB450\uB978 \uB4A4 \uC804\uBC29\uC758
@@ -24,13 +24,14 @@ MonoBehaviour:
     effectPrefab: {fileID: 3153472991145048103, guid: 98cca0cb5acfe2d4596f67fbc14eb39a, type: 3}
     effectDuration: 1
     followCaster: 1
+    skillAnimation: {fileID: 7400000, guid: 4d28259bd131bff47b2246d14862024b, type: 2}
     manaCost: 10
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
     isUnlocked: 0
     Feature: "\uC77C\uBC18"
-  - skillKey: W
+  - skillKey: Q
     skillName: "\uCDA9\uACA9\uD30C"
     skillIcon: {fileID: 21300000, guid: f674fc3820f76d74ea84b1190da62bb1, type: 3}
     description: "\uBAB0\uB77C"
@@ -39,13 +40,14 @@ MonoBehaviour:
     effectPrefab: {fileID: 3367314013316085171, guid: 98239e513041822448eb7ad1f7e91ce9, type: 3}
     effectDuration: 1
     followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: f3f36071cc3587840806a9265dbb493c, type: 2}
     manaCost: 15
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: E
+  - skillKey: R
     skillName: "\uB9C8\uBC95\uC9C4"
     skillIcon: {fileID: 21300000, guid: f0987846435e1474781a21274c269bdf, type: 3}
     description: "\uBAB0\uB77C"
@@ -54,13 +56,14 @@ MonoBehaviour:
     effectPrefab: {fileID: 7478731271839673279, guid: b1301aa781b99f340983902b98e82ced, type: 3}
     effectDuration: 5
     followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: 0ce1e0445fef1cc49a39e3ccda2b89b3, type: 2}
     manaCost: 20
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: R
+  - skillKey: E
     skillName: "\uC274\uB4DC"
     skillIcon: {fileID: 21300000, guid: ad10465a97cce9c44aabefdaeccd1f45, type: 3}
     description: "\uBAB0\uB77C"
@@ -69,6 +72,7 @@ MonoBehaviour:
     effectPrefab: {fileID: 1289543790355709915, guid: 4373cfbb035de044a822add98363a3f0, type: 3}
     effectDuration: 1
     followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: f3dd00059f0b52549ba54eb6e9c9bee1, type: 2}
     manaCost: 12
     requiredLevel: 0
     currentLevel: 1
@@ -84,6 +88,7 @@ MonoBehaviour:
     effectPrefab: {fileID: 0}
     effectDuration: 0
     followCaster: 0
+    skillAnimation: {fileID: 0}
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
@@ -99,6 +104,7 @@ MonoBehaviour:
     effectPrefab: {fileID: 0}
     effectDuration: 0
     followCaster: 0
+    skillAnimation: {fileID: 0}
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1

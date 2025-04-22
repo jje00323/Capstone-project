@@ -22,7 +22,7 @@ public class PlayerAttack : MonoBehaviour
 
     private bool isCombat = false;
     private float combatTimer = 0f;
-    private float combatDuration = 4f; // 8초 유지
+    private float combatDuration = 6f; // 8초 유지
 
 
     void Awake()
@@ -208,5 +208,15 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log("공격 초기화");
 
         stateMachine.ChangeState(PlayerState.Idle);
+    }
+
+    public void EnterCombatMode()
+    {
+        if (!isCombat)
+        {
+            isCombat = true;
+            animator.SetBool("IsCombat", true);
+        }
+        combatTimer = 0f; // 타이머 초기화
     }
 }
