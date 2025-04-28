@@ -173,11 +173,13 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log("공격 초기화");
 
         stateMachine.ChangeState(PlayerState.Idle);
+
+
     }
 
     public void ActivateBasicHitbox()
     {
-        string key = "Attack";
+        string key = "기본공격";
 
         PlayerSkillController skillSystem = GetComponent<PlayerSkillController>();
         if (skillSystem != null)

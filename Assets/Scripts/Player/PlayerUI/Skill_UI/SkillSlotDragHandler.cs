@@ -17,6 +17,8 @@ public class SkillSlotDragHandler : MonoBehaviour,
         //  드래그 시작 시 업그레이드 UI에 현재 슬롯 등록
         SkillUpgradeUI.Instance.SetCurrentSlot(slotUI);
 
+        SkillUpgradeUI.Instance.ShowSkillDetail(draggedSkill.originalSkill ?? draggedSkill, slotUI);
+
         if (draggedSkill != null)
         {
             DragIconUI.Instance.Show(draggedSkill.skillIcon);

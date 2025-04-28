@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jobType: 0
   skills:
-  - skillKey: W
+  - skillKey: Q
     skillName: "\uC8FC\uBA39\uCE58\uAE30"
     skillIcon: {fileID: 21300000, guid: f656d804daeaddf409ad1ab6fa5041bd, type: 3}
     description: "\uC190\uC744 \uC55E\uC73C\uB85C \uD718\uB450\uB978 \uB4A4 \uC804\uBC29\uC758
@@ -31,7 +31,7 @@ MonoBehaviour:
     maxLevel: 10
     isUnlocked: 0
     Feature: "\uC77C\uBC18"
-  - skillKey: Q
+  - skillKey: W
     skillName: "\uCDA9\uACA9\uD30C"
     skillIcon: {fileID: 21300000, guid: f674fc3820f76d74ea84b1190da62bb1, type: 3}
     description: "\uBAB0\uB77C"
@@ -47,7 +47,7 @@ MonoBehaviour:
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: R
+  - skillKey: E
     skillName: "\uB9C8\uBC95\uC9C4"
     skillIcon: {fileID: 21300000, guid: f0987846435e1474781a21274c269bdf, type: 3}
     description: "\uBAB0\uB77C"
@@ -63,7 +63,7 @@ MonoBehaviour:
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: E
+  - skillKey: R
     skillName: "\uC274\uB4DC"
     skillIcon: {fileID: 21300000, guid: ad10465a97cce9c44aabefdaeccd1f45, type: 3}
     description: "\uBAB0\uB77C"
@@ -80,7 +80,7 @@ MonoBehaviour:
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
   - skillKey: Attack
-    skillName: "\uD380\uCE58"
+    skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
     description: "\uBAB0\uB77C"
     cooldown: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 10
     isUnlocked: 1
-    Feature: "\uAE30\uBCF8\uACF5\uACA9"
+    Feature: "\uC77C\uBC18"
   - skillKey: dash
     skillName: "\uC55E\uAD6C\uB974\uAE30"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}

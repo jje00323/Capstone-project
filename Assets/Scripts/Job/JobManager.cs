@@ -17,6 +17,8 @@ public class JobManager : MonoBehaviour
     public JobSkillData[] allJobSkillData;
     private Dictionary<JobType, JobSkillData> skillDataDict;
 
+
+    public event System.Action<JobType> OnJobChanged;
     [System.Serializable]
     public class JobResources
     {
@@ -132,7 +134,6 @@ public class JobManager : MonoBehaviour
                 movement.UpdateAnimatorReference(playerAnimator);
         }
 
-
         PlayerSkillController playerSkill = FindObjectOfType<PlayerSkillController>();
         if (playerSkill != null)
         {
@@ -142,17 +143,19 @@ public class JobManager : MonoBehaviour
                 playerSkill.LoadSkillsFromData(skillData);
             }
         }
+
         var stateMachine = player.GetComponent<PlayerStateMachine>();
         if (stateMachine != null)
         {
             stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
         }
+
         var attack = player.GetComponent<PlayerAttack>();
         if (attack != null)
         {
-            attack.ForceEndCombo(); 
+            attack.ForceEndCombo();
         }
-        // 2. 스킬 UI 갱신
+
         PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
         if (skillUI != null)
         {
@@ -162,16 +165,21 @@ public class JobManager : MonoBehaviour
                 skillUI.ReloadUI(skillData);
             }
         }
+
         var playerMovement = player.GetComponent<PlayerMovement>();
         if (playerMovement != null)
             playerMovement.UpdateAnimatorReference(playerAnimator);
 
-        var hips = playerAnimator.GetBoneTransform(HumanBodyBones.Hips);
-        //Debug.Log("Hips 찾았는가? → " + (hips != null ? hips.name : "null"));
-
-        
-        
         Debug.Log($"[직업 변경 완료] {newJob}");
+
+        //  이벤트를 다음 프레임에 호출
+        StartCoroutine(InvokeJobChangedDelayed(newJob));
+    }
+
+    private IEnumerator InvokeJobChangedDelayed(JobType newJob)
+    {
+        yield return null; // 한 프레임 대기
+        OnJobChanged?.Invoke(newJob);
     }
 
     public DashSettings GetDashSettings()

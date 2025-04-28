@@ -95816,14 +95816,14 @@ AnimationClip:
   m_Events:
   - time: 0.1
     functionName: SpawnEffect
-    data: W
+    data: "\uCDA9\uACA9\uD30C"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.26666668
     functionName: ActivateHitbox
-    data: W
+    data: "\uCDA9\uACA9\uD30C"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

@@ -63,5 +63,7 @@ public class SkillUIManager : MonoBehaviour
         // 게임 시작 시 첫 스킬 자동 선택
         if (firstSlot != null)
             firstSlot.OnClickSlot();
+
+        SkillUpgradeManager.Instance.AutoLinkUpgradeToBase(allJobSkills);
     }
 }
