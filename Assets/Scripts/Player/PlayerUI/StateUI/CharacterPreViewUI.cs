@@ -3,15 +3,11 @@ using System.Collections;
 
 public class CharacterPreviewUI : MonoBehaviour
 {
-    [Header("모델 생성 위치")]
-    public Transform previewParent;
+    [Header("프리뷰 카메라 참조")]
+    public Transform previewCameraTargetParent; // 프리뷰 전용 부모
 
-    [Header("Animator (UI 오브젝트에 고정)")]
+    [Header("Animator")]
     public Animator previewAnimator;
-
-    [Header("스케일 및 위치 보정")]
-    public float previewScale = 100f;
-    public float yOffset = 0f;
 
     private GameObject currentPreviewModel;
     private JobManager.JobType lastJobType;
@@ -21,7 +17,6 @@ public class CharacterPreviewUI : MonoBehaviour
         if (JobManager.Instance != null)
             JobManager.Instance.OnJobChanged += OnJobChanged;
 
-        previewAnimator.enabled = true;
         StartCoroutine(LoadPreviewDelayed());
     }
 
@@ -38,15 +33,15 @@ public class CharacterPreviewUI : MonoBehaviour
 
     private IEnumerator LoadPreviewDelayed()
     {
-        yield return null; // 한 프레임 대기
+        yield return null;
         LoadCurrentJobModel();
     }
 
     public void LoadCurrentJobModel()
     {
-        if (previewParent == null || previewAnimator == null)
+        if (previewCameraTargetParent == null)
         {
-            Debug.LogError("[CharacterPreviewUI] previewParent 또는 previewAnimator 누락");
+            Debug.LogError("[CharacterPreviewUI] previewCameraTargetParent 누락");
             return;
         }
 
@@ -58,45 +53,42 @@ public class CharacterPreviewUI : MonoBehaviour
             return;
         }
 
-        // 직업이 바뀌었을 때만 새로 생성
-        if (currentPreviewModel == null || lastJobType != job)
+        if (currentPreviewModel != null)
+            Destroy(currentPreviewModel);
+
+        currentPreviewModel = Instantiate(resources.modelPrefab, previewCameraTargetParent);
+        currentPreviewModel.transform.localPosition = new Vector3(0, -2.6f, 10);
+        currentPreviewModel.transform.localRotation = Quaternion.Euler(0, 180f, 0);
+        currentPreviewModel.transform.localScale = Vector3.one * 2.8f;
+
+        int layer = LayerMask.NameToLayer("PreviewModel");
+        currentPreviewModel.layer = layer;
+        foreach (Transform t in currentPreviewModel.GetComponentsInChildren<Transform>(true))
+            t.gameObject.layer = layer;
+
+        // 여기 추가!!
+        Animator modelAnimator = currentPreviewModel.GetComponent<Animator>();
+        if (modelAnimator != null)
         {
-            if (currentPreviewModel != null)
-                Destroy(currentPreviewModel);
-
-            currentPreviewModel = Instantiate(resources.modelPrefab, previewParent);
-            currentPreviewModel.transform.localPosition = new Vector3(0, yOffset, 0);
-            currentPreviewModel.transform.localRotation = Quaternion.Euler(0, 180f, 0);
-            currentPreviewModel.transform.localScale = Vector3.one * previewScale;
-
-            int layer = LayerMask.NameToLayer("PreviewModel");
-            currentPreviewModel.layer = layer;
-            foreach (Transform t in currentPreviewModel.GetComponentsInChildren<Transform>(true))
-                t.gameObject.layer = layer;
-
-            lastJobType = job;
+            modelAnimator.runtimeAnimatorController = resources.animatorController;
+            modelAnimator.avatar = resources.avatar;
+            modelAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            modelAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterPreviewUI] 생성된 모델에 Animator가 없습니다.");
         }
 
-        // Animator에 Avatar 적용만 (모델 새로 생성 안 해도)
-        previewAnimator.avatar = resources.avatar;
-        previewAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        previewAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-
-        string idleState = GetIdleStateName(job);
-        StartCoroutine(PlayIdleNextFrame(idleState));
-
-        Debug.Log($"[CharacterPreviewUI] 모델 프리팹: {resources.modelPrefab.name}");
-        Debug.Log($"[CharacterPreviewUI] Avatar 이름: {resources.avatar.name}");
+        lastJobType = job;
     }
 
     private IEnumerator PlayIdleNextFrame(string stateName)
     {
         yield return null;
         yield return null;
-
         previewAnimator.enabled = true;
         previewAnimator.Play(stateName, 0, 0f);
-        Debug.Log($"[CharacterPreviewUI] 상태 재생됨: {stateName}");
     }
 
     private string GetIdleStateName(JobManager.JobType job)
@@ -109,11 +101,5 @@ public class CharacterPreviewUI : MonoBehaviour
             JobManager.JobType.Archer => "Idle_Archer",
             _ => "Idle"
         };
-    }
-
-    public void RotatePreview(float angle)
-    {
-        if (currentPreviewModel != null)
-            currentPreviewModel.transform.Rotate(Vector3.up, angle);
     }
 }
