@@ -10,11 +10,18 @@ public class BossEnemyPatternState : BossEnemyState
     public override void Enter()
     {
         target = boss.bossStatus.target;
+        boss.Animator.SetBool("IsMoving", false); // 공격 중 이동 금지
         boss.StartCoroutine(HandlePattern());
     }
 
     private IEnumerator HandlePattern()
     {
+        if (target == null)
+        {
+            boss.ChangeState(boss.idleState);
+            yield break;
+        }
+
         float distance = Vector3.Distance(boss.transform.position, target.position);
         bool isNearWall = boss.CheckWallNearby();
 
@@ -22,75 +29,69 @@ public class BossEnemyPatternState : BossEnemyState
 
         if (selectedIndex == -1)
         {
-            boss.ChangeState(boss.idleState);
+            boss.ChangeState(boss.moveState);
             yield break;
         }
 
+        boss.bossStatus.lastAttackIndex = selectedIndex; // ★ 선택한 패턴 저장
         boss.Animator.SetInteger("AttackIndex", selectedIndex);
-        boss.Animator.SetTrigger("Attack");
 
-        if (selectedIndex == 6)
+        if (selectedIndex >= 0 && selectedIndex <= 5) // Close 공격
         {
-            yield return boss.StartCoroutine(ExecuteJumpAttack());
-            yield break;
+            LookAtTarget();
+            boss.Animator.SetTrigger("Attack");
         }
-        else if (selectedIndex == 7)
+        else if (selectedIndex == 6) // Jump Attack
+        {
+            yield return ExecuteJumpAttack();
+        }
+        else if (selectedIndex == 7) // Spin Attack
         {
             ExecuteSpinAttack();
-            yield break;
         }
-        else if (selectedIndex == 8)
+        else if (selectedIndex == 8) // Wall Escape
         {
-            yield return boss.StartCoroutine(HandleRotationDelay(0.5f, 1.5f));
-        }
-        else
-        {
-            bool isLight = selectedIndex >= 0 && selectedIndex <= 2;
-            float delay = isLight ?
-                Random.Range(0.5f, 1f) :
-                Random.Range(1.5f, 2.5f);
-
-            yield return boss.StartCoroutine(HandleRotationDelay(delay, delay));
+            LookAwayFromWall();
+            boss.Animator.SetTrigger("Attack");
         }
 
-        boss.ChangeState(boss.idleState);
+        boss.ChangeState(boss.idleState); // 임시
     }
 
-    private IEnumerator HandleRotationDelay(float minTime, float maxTime)
+    private void LookAtTarget()
     {
-        float delay = Random.Range(minTime, maxTime);
-        float elapsed = 0f;
+        if (target == null) return;
 
-        boss.Animator.SetBool("IsMoving", true);
+        Vector3 direction = (target.position - boss.transform.position).normalized;
+        direction.y = 0f;
+        if (direction == Vector3.zero) return;
 
-        while (elapsed < delay)
-        {
-            if (target != null)
-            {
-                Vector3 dir = (target.position - boss.transform.position).normalized;
-                dir.y = 0f;
+        boss.transform.rotation = Quaternion.LookRotation(direction);
+    }
 
-                Quaternion targetRot = Quaternion.LookRotation(dir);
-                boss.transform.rotation = Quaternion.Slerp(
-                    boss.transform.rotation,
-                    targetRot,
-                    Time.deltaTime * 5f
-                );
-            }
+    private void LookAwayFromWall()
+    {
+        Vector3 forward = boss.transform.forward;
+        Vector3 opposite = -forward;
+        opposite.y = 0f;
 
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        boss.Animator.SetBool("IsMoving", false);
+        boss.transform.rotation = Quaternion.LookRotation(opposite);
     }
 
     private IEnumerator ExecuteJumpAttack()
     {
+        if (target == null)
+        {
+            boss.ChangeState(boss.idleState);
+            yield break;
+        }
+
         Vector3 startPos = boss.transform.position;
         Vector3 destination = new Vector3(target.position.x, startPos.y, target.position.z);
-        float jumpTime = 0.85f; // 점프 이동 시간 (0~51프레임 @ 60FPS 기준)
 
+        boss.Animator.SetTrigger("Attack"); // Attack 트리거 먼저 발동
+
+        float jumpTime = 0.85f;
         float elapsed = 0f;
 
         while (elapsed < jumpTime)
@@ -101,48 +102,29 @@ public class BossEnemyPatternState : BossEnemyState
 
             boss.transform.position = movePos;
 
-            Quaternion targetRot = Quaternion.LookRotation(destination - boss.transform.position);
-            boss.transform.rotation = Quaternion.Slerp(boss.transform.rotation, targetRot, Time.deltaTime * 7f);
-
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        boss.transform.position = destination;
-
-        float delay = Random.Range(0.5f, 1.5f);
-        yield return new WaitForSeconds(delay);
-
-        boss.ChangeState(boss.idleState);
+        boss.transform.position = new Vector3(destination.x, boss.transform.position.y, destination.z);
     }
 
     private void ExecuteSpinAttack()
     {
         if (target == null) return;
 
-        Vector3 dir = (target.position - boss.transform.position).normalized;
-        dir.y = 0;
+        Vector3 direction = (target.position - boss.transform.position).normalized;
+        direction.y = 0f;
+        if (direction == Vector3.zero) return;
 
-        Quaternion rot = Quaternion.LookRotation(dir);
-        boss.transform.rotation = rot;
+        boss.transform.rotation = Quaternion.LookRotation(direction);
 
-        boss.StartCoroutine(SpinAttackEndDelay());
-
-        // 애니메이션 트리거는 Enter에서 이미 호출됨
+        boss.Animator.SetTrigger("Attack");
     }
 
-    private IEnumerator SpinAttackEndDelay()
-    {
-        float animDuration = 2.95f; // Spin Attack 애니메이션 길이
-        yield return new WaitForSeconds(animDuration);
-
-        float delay = Random.Range(0.5f, 1.5f);
-        yield return new WaitForSeconds(delay);
-
-        boss.ChangeState(boss.idleState);
+    public override void Update() 
+    { 
+        
     }
-
-    public override void Update() { }
-
     public override void Exit() { }
 }

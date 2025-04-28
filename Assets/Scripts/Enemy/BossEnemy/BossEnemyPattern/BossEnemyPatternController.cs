@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +6,11 @@ public class BossEnemyPatternController : MonoBehaviour
     private Dictionary<int, float> cooldownTimers = new Dictionary<int, float>();
     private int lastUsedIndex = -1;
 
-    // 콤보/Far 공격 쿨타임 범위
     private readonly float comboMinCooldown = 5f;
     private readonly float comboMaxCooldown = 10f;
-
     private readonly float farMinCooldown = 5f;
     private readonly float farMaxCooldown = 10f;
 
-    // 공격 Index 범위
     private readonly int[] lightAttacks = { 0, 1, 2 };
     private readonly int[] comboAttacks = { 3, 4, 5 };
     private readonly int[] farAttacks = { 6, 7 };
@@ -22,7 +18,6 @@ public class BossEnemyPatternController : MonoBehaviour
 
     private void Awake()
     {
-        // 쿨타임 초기화
         foreach (int index in comboAttacks)
             cooldownTimers[index] = -Mathf.Infinity;
         foreach (int index in farAttacks)
@@ -41,12 +36,33 @@ public class BossEnemyPatternController : MonoBehaviour
 
     public int GetPattern(float distanceToPlayer, bool isNearWall)
     {
-        // 우선순위 1: 벽 회피 (연속 허용)
         if (isNearWall)
             return wallAttackIndex;
 
-        // 우선순위 2: Far 공격
-        if (distanceToPlayer >= 6f)
+        if (distanceToPlayer <= 3f) // Close 공격
+        {
+            List<int> available = new List<int>();
+
+            // Light 공격 (쿨타임 없음, 중복만 방지)
+            foreach (int i in lightAttacks)
+            {
+                if (i != lastUsedIndex)
+                    available.Add(i);
+            }
+
+            // Combo 공격 (쿨타임 존재, 중복 방지)
+            foreach (int i in comboAttacks)
+            {
+                if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
+                    available.Add(i);
+            }
+
+            if (available.Count > 0)
+                return SelectRandomAndRecord(available, useCooldown: true, isCombo: true);
+            else
+                return -1; // 선택 실패
+        }
+        else if (distanceToPlayer > 3f && distanceToPlayer <= 6f) // Far 공격
         {
             List<int> available = new List<int>();
             foreach (int i in farAttacks)
@@ -57,32 +73,11 @@ public class BossEnemyPatternController : MonoBehaviour
 
             if (available.Count > 0)
                 return SelectRandomAndRecord(available, useCooldown: true, isCombo: false);
+            else
+                return -1; // 선택 실패
         }
 
-        // 우선순위 3: Close 공격
-        if (distanceToPlayer <= 4f)
-        {
-            List<int> available = new List<int>();
-
-            // Light (0~2) → 쿨타임 없음, 중복 제한만 적용
-            foreach (int i in lightAttacks)
-            {
-                if (i != lastUsedIndex)
-                    available.Add(i);
-            }
-
-            // Combo (3~5) → 쿨타임 + 중복 제한
-            foreach (int i in comboAttacks)
-            {
-                if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
-                    available.Add(i);
-            }
-
-            if (available.Count > 0)
-                return SelectRandomAndRecord(available, useCooldown: true, isCombo: true);
-        }
-
-        return -1; // 패턴 없음
+        return -1; // 6 이상일 경우 Far 공격 가능할 때만 PatternState 들어오게 설계
     }
 
     private int SelectRandomAndRecord(List<int> list, bool useCooldown, bool isCombo)

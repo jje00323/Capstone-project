@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossEnemyMoveState : BossEnemyState
 {
     private Transform target;
-    private float attackCooldownTimer = 0f;
+    private readonly float rotationSpeed = 5f;
 
     public BossEnemyMoveState(BossEnemyFSM boss) : base(boss) { }
 
@@ -22,31 +20,55 @@ public class BossEnemyMoveState : BossEnemyState
         float distance = Vector3.Distance(boss.transform.position, target.position);
         boss.Animator.SetFloat("DistanceToPlayer", distance);
 
-        Vector3 direction = (target.position - boss.transform.position).normalized;
-        direction.y = 0f;
+        if (boss.CheckWallNearby())
+        {
+            boss.ChangeState(boss.patternState);
+            return;
+        }
 
-        // 1. 공격 조건 판단
-        if (distance <= 6f)
+        if (distance >= 6f)
+        {
+            MoveTowardsTarget();
+            return;
+        }
+
+        if (distance > 3f && distance < 6f)
         {
             if (boss.patternController.IsFarPatternReady())
             {
                 boss.ChangeState(boss.patternState);
                 return;
             }
-            else if (distance <= 3f)
+            else
             {
-                boss.ChangeState(boss.patternState);
+                MoveTowardsTarget();
                 return;
             }
         }
 
-        // 2. 이동
+        if (distance <= 3f)
+        {
+            boss.ChangeState(boss.patternState);
+            return;
+        }
+    }
+
+    private void MoveTowardsTarget()
+    {
+        Vector3 direction = (target.position - boss.transform.position).normalized;
+        direction.y = 0f;
+
         boss.transform.position += direction * boss.bossStatus.moveSpeed * Time.deltaTime;
-        boss.transform.rotation = Quaternion.Slerp(
-            boss.transform.rotation,
-            Quaternion.LookRotation(direction),
-            Time.deltaTime * 5f
-        );
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion rot = Quaternion.LookRotation(direction);
+            boss.transform.rotation = Quaternion.Slerp(
+                boss.transform.rotation,
+                rot,
+                Time.deltaTime * rotationSpeed
+            );
+        }
     }
 
     public override void Exit()
@@ -54,4 +76,3 @@ public class BossEnemyMoveState : BossEnemyState
         boss.Animator.SetBool("IsMoving", false);
     }
 }
-

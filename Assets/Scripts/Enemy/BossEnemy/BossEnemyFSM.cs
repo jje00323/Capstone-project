@@ -14,7 +14,7 @@ public class BossEnemyFSM : BaseEnemyFSM
     public BossEnemyIdleState idleState;
     public BossEnemyMoveState moveState;
     public BossEnemyPatternState patternState;
-    public BossEnemyDeadState deadState;
+    // public BossEnemyDeadState deadState; // DeadState는 나중에 따로 구현
 
     protected override void Awake()
     {
@@ -39,7 +39,7 @@ public class BossEnemyFSM : BaseEnemyFSM
         idleState = new BossEnemyIdleState(this);
         moveState = new BossEnemyMoveState(this);
         patternState = new BossEnemyPatternState(this);
-        deadState = new BossEnemyDeadState(this);
+        // deadState = new BossEnemyDeadState(this); // 생성하지 않음
 
         ChangeState(idleState);
     }
@@ -60,7 +60,8 @@ public class BossEnemyFSM : BaseEnemyFSM
 
     public override void Die()
     {
-        ChangeState(deadState);
+        // 현재는 DeadState 전이 없이, 외부에서 사망 처리 따로 구현할 예정
+        Debug.Log("[BossEnemyFSM] Die() 호출됨 - 현재 DeadState 없음.");
     }
 
     /// <summary>
