@@ -58,10 +58,14 @@ MonoBehaviour:
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 45
   coneDistance: 3
-  offset: {x: 0, y: 0, z: 0.5}
+  offset: {x: 0, y: 0.5, z: 0.5}
   isProjectile: 1
   projectileSpeed: 20
   projectileRigidbody: {fileID: -7695004633106016108}
+  useMousePosition: 0
+  mouseGroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   followCaster: 0
@@ -182,7 +186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4603983520219528064, guid: b06d7affdea28eb47b0a2fa19076bf38, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4603983520219528064, guid: b06d7affdea28eb47b0a2fa19076bf38, type: 3}
       propertyPath: m_LocalPosition.z
