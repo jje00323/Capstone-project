@@ -145,7 +145,7 @@ public class PlayerSkillController : MonoBehaviour
         animator.applyRootMotion = true;
         playerMovement.StopAgent();
         playerMovement.RotateToMouse();
-        
+
 
         // 핵심: 직접 애니메이션 재생
         animator.Play(skill.skillAnimation.name);
@@ -156,7 +156,7 @@ public class PlayerSkillController : MonoBehaviour
         //PlayerSkillUI.Instance?.StartUICooldown(skillKey, cooldown);
 
 
-       
+
         // 전투 상태 진입 및 기본공격 초기화3
         var attackSystem = GetComponent<PlayerAttack>();
         if (attackSystem != null)

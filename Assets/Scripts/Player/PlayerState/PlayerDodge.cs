@@ -24,7 +24,13 @@ public class PlayerDodge : MonoBehaviour
 
         stateMachine.ChangeState(PlayerState.Dodging);
         animator.SetTrigger("Dodge");
-        animator.applyRootMotion = true;
+
+        // RootMotion은 애니메이션 클립 설정에 따라 적용됨 (코드에서는 제어하지 않음)
     }
 
+    // 애니메이션 이벤트로 호출될 종료 시점 처리 함수
+    public void EndDodge()
+    {
+        stateMachine.ChangeState(PlayerState.Idle);
+    }
 }

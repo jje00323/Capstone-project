@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
 using static PlayerStateMachine;
+
 [RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerAttack : MonoBehaviour
 {
     private PlayerMovement movement;
-
     private Animator animator;
     private PlayerStateMachine stateMachine;
 
@@ -22,8 +21,7 @@ public class PlayerAttack : MonoBehaviour
 
     private bool isCombat = false;
     private float combatTimer = 0f;
-    private float combatDuration = 6f; // 8초 유지
-
+    private float combatDuration = 6f;
 
     void Awake()
     {
@@ -35,10 +33,8 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         CombatSystem();
-        if (EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
     }
-
 
     public void CombatSystem()
     {
@@ -57,16 +53,10 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // InputHandler에서 호출되는 함수
     public void HandleAttackInput()
     {
         if (!stateMachine.CanAttack()) return;
-
-        //if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        //    return;
-
-
-        if (inputLocked) return; // 입력 락 걸렸으면 무시
+        if (inputLocked) return;
 
         if (isAttacking)
         {
@@ -91,12 +81,12 @@ public class PlayerAttack : MonoBehaviour
                 isCombat = true;
                 animator.SetBool("IsCombat", isCombat);
             }
-            combatTimer = 0f; // 타이머 초기화
-            // 첫 공격
+            combatTimer = 0f;
+
             isAttacking = true;
             comboIndex = 1;
-            inputLocked = true; // 잠금 시작
-            animator.applyRootMotion = true;
+            inputLocked = true;
+
             movement.StopAgent();
             movement.RotateToMouse();
 
@@ -123,14 +113,12 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log($"콤보 {comboIndex}번째 실행됨");
     }
 
-
-    // 애니메이션 이벤트로 호출될 함수
     public void EnableComboInput()
     {
         inputBuffered = false;
         allowBufferedInput = true;
         canExecuteImmediately = false;
-        inputLocked = false; // 다시 입력 가능해짐
+        inputLocked = false;
         Debug.Log("콤보 입력 허용 시작");
     }
 
@@ -157,24 +145,35 @@ public class PlayerAttack : MonoBehaviour
     }
 
     public void EndCombo()
-    {     
-        // 현재 상태와 comboIndex가 일치하면 정상 종료
+    {
         isAttacking = false;
         inputBuffered = false;
         allowBufferedInput = false;
         canExecuteImmediately = false;
-        inputLocked = false; //  중요: 입력 잠금 해제
+        inputLocked = false;
         comboIndex = 0;
-        animator.applyRootMotion = false;
 
-        //animator.SetTrigger("endCombo");
         movement.ResumeAgent();
 
         Debug.Log("공격 초기화");
 
         stateMachine.ChangeState(PlayerState.Idle);
+    }
 
+    public void ForceEndCombo()
+    {
+        isAttacking = false;
+        inputBuffered = false;
+        allowBufferedInput = false;
+        canExecuteImmediately = false;
+        inputLocked = false;
+        comboIndex = 0;
 
+        movement.ResumeAgent();
+
+        Debug.Log("공격 초기화 (강제 종료)");
+
+        stateMachine.ChangeState(PlayerState.Idle);
     }
 
     public void ActivateBasicHitbox()
@@ -193,25 +192,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    public void ForceEndCombo()
-    {
-        // 현재 상태와 comboIndex가 일치하면 정상 종료
-        isAttacking = false;
-        inputBuffered = false;
-        allowBufferedInput = false;
-        canExecuteImmediately = false;
-        inputLocked = false; //  중요: 입력 잠금 해제
-        comboIndex = 0;
-        animator.applyRootMotion = false;
-
-        //animator.SetTrigger("endCombo");
-        movement.ResumeAgent();
-
-        Debug.Log("공격 초기화");
-
-        stateMachine.ChangeState(PlayerState.Idle);
-    }
-
     public void EnterCombatMode()
     {
         if (!isCombat)
@@ -219,6 +199,6 @@ public class PlayerAttack : MonoBehaviour
             isCombat = true;
             animator.SetBool("IsCombat", true);
         }
-        combatTimer = 0f; // 타이머 초기화
+        combatTimer = 0f;
     }
 }

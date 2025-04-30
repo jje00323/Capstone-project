@@ -12,6 +12,7 @@ public class PlayerStateMachine : MonoBehaviour
         SkillCasting,
         Dodging,
         Damaged,
+        Knockback,
         Dead
     }
     public PlayerState CurrentState { get; private set; } = PlayerState.Idle;

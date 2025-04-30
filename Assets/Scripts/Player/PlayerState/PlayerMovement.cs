@@ -16,9 +16,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("이동 이펙트")]
     public GameObject moveClickEffectPrefab;
 
-    [SerializeField] private float rootMotionMultiplier = 1.5f;
-    [SerializeField] private LayerMask enemyLayer;
-
     private bool hasSpawnedEffect = false;
     private bool isRightClickActive = false;
     private float rightClickTimer = 0f;
@@ -48,29 +45,23 @@ public class PlayerMovement : MonoBehaviour
                         agent.remainingDistance > agent.stoppingDistance &&
                         agent.velocity.sqrMagnitude > 0.05f;
 
-        if (stateMachine.CurrentState != PlayerState.Attacking)
-        {
-            if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
-                stateMachine.ChangeState(PlayerState.Moving);
-            else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
-                stateMachine.ChangeState(PlayerState.Idle);
-        }
+        if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
+            stateMachine.ChangeState(PlayerState.Moving);
+        else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
+            stateMachine.ChangeState(PlayerState.Idle);
 
-        // 우클릭 입력 처리
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             isRightClickActive = true;
             rightClickTimer = 0f;
-            HandleRightClick(true); // 이펙트 포함
+            HandleRightClick(true);
             hasSpawnedEffect = true;
         }
         else if (Mouse.current.rightButton.isPressed && isRightClickActive)
         {
             rightClickTimer += Time.deltaTime;
             if (rightClickTimer > rightClickThreshold)
-            {
-                HandleRightClick(false); // 이동만 처리, 이펙트 없음
-            }
+                HandleRightClick(false);
         }
 
         if (Mouse.current.rightButton.wasReleasedThisFrame)
@@ -79,12 +70,8 @@ public class PlayerMovement : MonoBehaviour
             hasSpawnedEffect = false;
         }
 
-        if (stateMachine.CurrentState != PlayerState.Attacking)
-        {
-            RotateTowardsMovementDirection();
-        }
+        RotateTowardsMovementDirection();
     }
-
 
     private void LateUpdate()
     {
@@ -107,7 +94,6 @@ public class PlayerMovement : MonoBehaviour
         ResumeAgent();
     }
 
-
     public void HandleRightClick(bool spawnEffect)
     {
         if (!stateMachine.CanMove()) return;
@@ -123,9 +109,7 @@ public class PlayerMovement : MonoBehaviour
                 agent.SetDestination(targetPosition);
 
                 if (spawnEffect && !hasSpawnedEffect)
-                {
                     SpawnMoveEffect(targetPosition);
-                }
             }
             else
             {
@@ -180,20 +164,6 @@ public class PlayerMovement : MonoBehaviour
             GameObject fx = Instantiate(moveClickEffectPrefab, position + Vector3.up * 0.1f, Quaternion.identity);
             fx.transform.localScale = Vector3.one * 0.7f;
             Destroy(fx, 2f);
-        }
-    }
-
-    void OnAnimatorMove()
-    {
-        if (stateMachine.CurrentState == PlayerStateMachine.PlayerState.SkillCasting ||
-            stateMachine.CurrentState == PlayerStateMachine.PlayerState.Attacking)
-        {
-            Vector3 delta = animator.deltaPosition * rootMotionMultiplier;
-            delta.y = 0f;
-            transform.position += delta;
-            transform.rotation *= animator.deltaRotation;
-
-            Debug.Log("애니메이션 중 움직임");
         }
     }
 
