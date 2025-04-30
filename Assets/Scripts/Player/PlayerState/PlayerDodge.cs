@@ -24,22 +24,7 @@ public class PlayerDodge : MonoBehaviour
 
         stateMachine.ChangeState(PlayerState.Dodging);
         animator.SetTrigger("Dodge");
-        Vector3 direction = transform.forward;
-        Vector3 target = transform.position + direction * dodgeDistance;
-        StartCoroutine(DodgeMove(target));
+        animator.applyRootMotion = true;
     }
 
-    private System.Collections.IEnumerator DodgeMove(Vector3 target)
-    {
-        float elapsed = 0f;
-        Vector3 start = transform.position;
-        while (elapsed < dodgeDuration)
-        {
-            transform.position = Vector3.Lerp(start, target, elapsed / dodgeDuration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = target;
-        stateMachine.ChangeState(PlayerState.Idle);
-    }
 }

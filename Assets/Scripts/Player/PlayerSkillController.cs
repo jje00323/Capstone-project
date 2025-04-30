@@ -84,10 +84,11 @@ public class PlayerSkillController : MonoBehaviour
         if (Time.time - GetLastUsedTime(skillKey) < cooldown) return;
 
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
-        
+
+        animator.applyRootMotion = true;
         playerMovement.StopAgent();
         playerMovement.RotateToMouse();
-        animator.applyRootMotion = true;
+        
 
         // 핵심: 직접 애니메이션 재생
         animator.Play(skill.skillAnimation.name);
