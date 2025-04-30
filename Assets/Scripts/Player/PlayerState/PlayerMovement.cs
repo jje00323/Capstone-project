@@ -10,6 +10,9 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private PlayerStateMachine stateMachine;
 
+    private System.Action onArrivedCallback = null;
+    private float stopDistanceBuffer = 0.2f;
+
     [Header("¿Ãµø ¿Ã∆Â∆Æ")]
     public GameObject moveClickEffectPrefab;
 
@@ -81,6 +84,29 @@ public class PlayerMovement : MonoBehaviour
             RotateTowardsMovementDirection();
         }
     }
+
+
+    private void LateUpdate()
+    {
+        if (onArrivedCallback != null &&
+            !agent.pathPending &&
+            agent.remainingDistance <= agent.stoppingDistance + stopDistanceBuffer &&
+            agent.velocity.sqrMagnitude < 0.1f)
+        {
+            StopAgent();
+            onArrivedCallback?.Invoke();
+            onArrivedCallback = null;
+        }
+    }
+
+    public void MoveTo(Vector3 destination, float stoppingDistance, System.Action onArrived)
+    {
+        agent.stoppingDistance = stoppingDistance;
+        agent.SetDestination(destination);
+        onArrivedCallback = onArrived;
+        ResumeAgent();
+    }
+
 
     public void HandleRightClick(bool spawnEffect)
     {

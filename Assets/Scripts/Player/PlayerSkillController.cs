@@ -23,6 +23,8 @@ public class PlayerSkillController : MonoBehaviour
     private bool isSkillActive = false;
     private string currentJob = "";
 
+    private Vector3? pendingMouseTarget = null;
+
     private void Awake()
     {
         stateMachine = GetComponent<PlayerStateMachine>();
@@ -67,14 +69,69 @@ public class PlayerSkillController : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkill("Q");
-        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkill("W");
-        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkill("E");
-        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
+        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("Q");
+        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("W");
+        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("E");
+        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("R");
     }
 
+    public void TryUseSkillWithRangeCheck(string skillKey)
+    {
+        SkillInfo skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        if (skill == null)
+        {
+            Debug.LogWarning($"[SkillCheck] SkillEquipManager에서 {skillKey} 스킬을 찾지 못함");
+            return;
+        }
+
+        Hitbox hitbox = skill.hitboxPrefab?.GetComponent<Hitbox>();
+        if (hitbox == null)
+        {
+            Debug.LogWarning($"[SkillCheck] {skillKey}의 히트박스 컴포넌트가 null임");
+            return;
+        }
+
+        if (hitbox.useMousePosition)
+        {
+            Vector3? target = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
+            Debug.Log($"[SkillCheck] 마우스 위치 탐지됨: {target}");
+
+            if (!target.HasValue)
+            {
+                Debug.LogWarning($"[SkillCheck] 마우스 위치 없음. 시전 중단");
+                return;
+            }
+
+            float distance = Vector3.Distance(transform.position, target.Value);
+            float castRange = hitbox.castRange;
+            Debug.Log($"[SkillCheck] 거리: {distance} / 시전 사거리: {castRange}");
+
+            if (distance <= castRange)
+            {
+                Debug.Log($"[SkillCheck] 사거리 내 - TryUseSkill 호출");
+                pendingMouseTarget = target;
+                TryUseSkill(skillKey);
+            }
+            else
+            {
+                Debug.Log($"[SkillCheck] 사거리 밖 - 이동 후 TryUseSkill 예약");
+                playerMovement.MoveTo(target.Value, castRange, () =>
+                {
+                    Debug.Log($"[SkillCheck] 이동 완료 - TryUseSkill 실행");
+                    pendingMouseTarget = target;
+                    TryUseSkill(skillKey);
+                });
+            }
+        }
+        else
+        {
+            Debug.Log($"[SkillCheck] 자기중심 스킬 - TryUseSkill 호출");
+            TryUseSkill(skillKey);
+        }
+    }
     public void TryUseSkill(string skillKey)
     {
+        Debug.Log($"[SkillCheck] TryUseSkill() 호출됨 - {skillKey}");
         if (isSkillActive || !stateMachine.CanSkill()) return;
 
         SkillInfo skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
@@ -146,7 +203,18 @@ public class PlayerSkillController : MonoBehaviour
         Hitbox hitbox = instance.GetComponent<Hitbox>();
 
         if (hitbox != null)
-            hitbox.Initialize(transform, skillInfo.followCaster);
+        {
+            if (hitbox.useMousePosition && pendingMouseTarget.HasValue)
+            {
+                hitbox.Initialize(transform, skillInfo.followCaster, pendingMouseTarget.Value);
+            }
+            else
+            {
+                hitbox.Initialize(transform, skillInfo.followCaster);
+            }
+
+            pendingMouseTarget = null; // 사용 후 초기화
+        }
     }
 
     public void SpawnEffect(string skillName)
