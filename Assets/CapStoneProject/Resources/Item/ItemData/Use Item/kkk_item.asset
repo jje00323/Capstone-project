@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b697db48bffa4546b8dbffb712932fd, type: 3}
-  m_Name: HelthPotion
+  m_Name: kkk_item
   m_EditorClassIdentifier: 
-  itemName: Helth_Potion
-  description: heal 50 Helth
-  icon: {fileID: 21300000, guid: 5930331e7a0a26e4a864cedf00bb4cc3, type: 3}
-  itemType: 2
+  itemName: kkk
+  description: kkkkkkkk
+  icon: {fileID: 21300000, guid: 8b512587ec740a54ea02efb2fb2c829d, type: 3}
+  itemType: 3
   isStackable: 1
   maxStack: 99
-  equipPrefab: {fileID: 0}
