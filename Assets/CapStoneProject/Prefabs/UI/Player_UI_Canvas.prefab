@@ -6075,6 +6075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetToMove: {fileID: 2022706104609709079}
+  inventoryUIRoot: {fileID: 0}
 --- !u!1 &5315292559542167700
 GameObject:
   m_ObjectHideFlags: 0
@@ -7487,6 +7488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetToMove: {fileID: 4039061529144205313}
+  inventoryUIRoot: {fileID: 0}
 --- !u!1 &6350726415652219046
 GameObject:
   m_ObjectHideFlags: 0
@@ -11443,12 +11445,12 @@ RectTransform:
   - {fileID: 7517657774231762170}
   - {fileID: 5304381545136876255}
   - {fileID: 2022706104609709079}
-  - {fileID: 2472293157304864282}
   - {fileID: 3688362431243319715}
   - {fileID: 7874743175964618541}
   - {fileID: 4039061529144205313}
   - {fileID: 6964851417241835718}
   - {fileID: 5979455723362905593}
+  - {fileID: 2472293157304864282}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

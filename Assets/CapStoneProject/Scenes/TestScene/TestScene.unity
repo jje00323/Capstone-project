@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &18917742
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3232,12 +3232,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentJob: 0
   jobResourcesList:
-  - jobType: 0
+  - jobType: 1
     animatorController: {fileID: 9100000, guid: 1ca0ec7d3e2db394f904bf536ecfd52e, type: 2}
     avatar: {fileID: 9000000, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d, type: 3}
     modelPrefab: {fileID: 5019315028825407237, guid: e27a9c8375a34ad4b9025a2627468007, type: 3}
-  - jobType: 1
-    animatorController: {fileID: 9100000, guid: e9c3d2c153daaa14f86cd90d11a61662, type: 2}
+  - jobType: 0
+    animatorController: {fileID: 9100000, guid: 4625bf6b9577bed4bad538eb5bf061cc, type: 2}
     avatar: {fileID: 9000000, guid: 84bdafae2f1a71d4f8088242b55831d6, type: 3}
     modelPrefab: {fileID: 1288249998622640856, guid: 128413c070f18f7478a273d832c7683d, type: 3}
   - jobType: 2
