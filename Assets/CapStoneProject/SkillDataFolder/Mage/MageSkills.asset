@@ -15,24 +15,24 @@ MonoBehaviour:
   jobType: 2
   skills:
   - skillKey: Q
-    skillName: QQQ
-    skillIcon: {fileID: 21300000, guid: 29aca89fdb97d4d4587bf59dd57468e7, type: 3}
-    description: ...
+    skillName: "\uB9C8\uB825\uD0C4"
+    skillIcon: {fileID: 21300000, guid: 523bf6f3c1806ce48b9c36cf69041836, type: 3}
+    description: "\uC804\uBC29\uC5D0 \uB9C8\uB825\uAD6C\uB97C \uBC1C\uC0AC\uD55C\uB2E4"
     cooldown: 3
-    hitboxPrefab: {fileID: 9088954983180458133, guid: dce8aef9e0f606b4f9b1cfc80b06ac4b, type: 3}
-    effectPrefab: {fileID: 0}
-    effectDuration: 0
+    hitboxPrefab: {fileID: 334107297067051712, guid: 699e386b39286b44b98e3cfdc6f8ece5, type: 3}
+    effectPrefab: {fileID: 5732568103209889489, guid: 471d7d8ee6b70a34faa69017aa0c6ea1, type: 3}
+    effectDuration: 1
     followCaster: 0
     skillAnimation: {fileID: 7400000, guid: e6773d61aebb0c14db1f8bdf4cfa171d, type: 2}
-    manaCost: 0
+    manaCost: 10
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 5
+    maxLevel: 10
     isUnlocked: 1
-    Feature: 
+    Feature: "\uC77C\uBC18"
   - skillKey: W
-    skillName: WWW
-    skillIcon: {fileID: 21300000, guid: 2d972814256c47d488d38af0cc7a7ded, type: 3}
+    skillName: "\uC5D0\uB108\uC9C0 \uC794\uC601"
+    skillIcon: {fileID: 21300000, guid: a96f5f25e6b399d4ea75828a29498b73, type: 3}
     description: ...
     cooldown: 3
     hitboxPrefab: {fileID: 599437143022285730, guid: 3cf9003fe3e313e4caf8814aba471497, type: 3}
@@ -47,8 +47,8 @@ MonoBehaviour:
     isUnlocked: 1
     Feature: 
   - skillKey: E
-    skillName: EEE
-    skillIcon: {fileID: 21300000, guid: faab10c2bbbfc8a4e8bd69253a4edccf, type: 3}
+    skillName: "\uB9C8\uB825\uC7A5\uD310"
+    skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
     description: ...
     cooldown: 3
     hitboxPrefab: {fileID: 7379637999519721567, guid: fcb17996a95ebd04092745c81b015e1b, type: 3}
@@ -63,8 +63,8 @@ MonoBehaviour:
     isUnlocked: 1
     Feature: 
   - skillKey: R
-    skillName: RRR
-    skillIcon: {fileID: 21300000, guid: 3ce5146121dd79e48a760f81492b10bc, type: 3}
+    skillName: "\uC544\uBAB0\uB791"
+    skillIcon: {fileID: 21300000, guid: 10dc9c67ffb56dd4f800103585f26888, type: 3}
     description: ...
     cooldown: 3
     hitboxPrefab: {fileID: 5135922750843967348, guid: ad60cb9f413e9734f97266fe3bfaf867, type: 3}

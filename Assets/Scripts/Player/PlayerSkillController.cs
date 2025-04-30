@@ -95,7 +95,7 @@ public class PlayerSkillController : MonoBehaviour
         skillLastUsedTime[skillKey] = Time.time;
         isSkillActive = true;
 
-        PlayerSkillUI.Instance?.StartUICooldown(skillKey, cooldown);
+        //PlayerSkillUI.Instance?.StartUICooldown(skillKey, cooldown);
 
 
        
@@ -168,7 +168,26 @@ public class PlayerSkillController : MonoBehaviour
             return;
         }
 
-        activeEffect = Instantiate(skill.effectPrefab, transform.position + transform.forward, transform.rotation);
+        // 프리팹 내부에 "EffectSpawnPoint" 라는 자식 트랜스폼이 있다고 가정
+        Transform spawnTransform = skill.effectPrefab.transform.Find("EffectSpawnPoint");
+
+        Vector3 spawnPosition;
+        Quaternion spawnRotation;
+
+        if (spawnTransform != null)
+        {
+            // SpawnPoint 위치와 회전을 로컬 기준으로 변환
+            spawnPosition = transform.position + transform.TransformDirection(spawnTransform.localPosition);
+            spawnRotation = transform.rotation * spawnTransform.localRotation;
+        }
+        else
+        {
+            // fallback: 기존 방식
+            spawnPosition = transform.position + transform.forward;
+            spawnRotation = transform.rotation;
+        }
+
+        activeEffect = Instantiate(skill.effectPrefab, spawnPosition, spawnRotation);
 
         if (skill.effectDuration > 0f)
             Destroy(activeEffect, skill.effectDuration);
