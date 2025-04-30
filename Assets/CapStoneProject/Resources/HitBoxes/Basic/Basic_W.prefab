@@ -49,22 +49,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   duration: 1
-  followCaster: 0
   startDelay: 0
   repeatCount: 1
   repeatInterval: 0.5
   shape: 0
-  radius: 1
+  radius: 1.5
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 45
   coneDistance: 3
-  offset: {x: 0, y: 0, z: 1}
+  offset: {x: 0, y: 0, z: 0.5}
   isProjectile: 1
   projectileSpeed: 8
   projectileRigidbody: {fileID: -7695004633106016108}
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  caster: {fileID: 0}
+  followCaster: 0
 --- !u!54 &-7695004633106016108
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -111,8 +110,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0.5}
+  m_Radius: 0.75
+  m_Center: {x: 0, y: 0, z: 0.25}
 --- !u!1 &7712101555176753926
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,13 +3,30 @@ using UnityEngine;
 public class SkillUIManager : MonoBehaviour
 {
     [Header("스킬 데이터")]
-    [SerializeField] private JobSkillData[] allJobSkills; // 직업별 스킬데이터들
+    [SerializeField] private JobSkillData[] allJobSkills;
 
     [Header("UI 연결")]
-    [SerializeField] private Transform skillListArea;       // Skill_List_Area 오브젝트
-    [SerializeField] private GameObject skillSlotPrefab;    // Skill_Slot_Area 프리팹
+    [SerializeField] private Transform skillListArea;
+    [SerializeField] private GameObject skillSlotPrefab;
 
     private void Start()
+    {
+        LoadSkillListForCurrentJob();
+    }
+
+    private void OnEnable()
+    {
+        if (JobManager.Instance != null)
+            JobManager.Instance.OnJobChanged += OnJobChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (JobManager.Instance != null)
+            JobManager.Instance.OnJobChanged -= OnJobChanged;
+    }
+
+    private void OnJobChanged(JobManager.JobType newJob)
     {
         LoadSkillListForCurrentJob();
     }
@@ -34,15 +51,13 @@ public class SkillUIManager : MonoBehaviour
             return;
         }
 
-        // 기존 스킬 슬롯 제거
         foreach (Transform child in skillListArea)
         {
             Destroy(child.gameObject);
         }
 
-        SkillSlotUI firstSlot = null; // 첫 스킬 슬롯 추적
+        SkillSlotUI firstSlot = null;
 
-        // 슬롯 생성
         foreach (var skill in jobData.skills)
         {
             GameObject slotObj = Instantiate(skillSlotPrefab, skillListArea);
@@ -57,10 +72,9 @@ public class SkillUIManager : MonoBehaviour
             slotUI.SetSlot(skill);
 
             if (firstSlot == null)
-                firstSlot = slotUI; // 가장 첫 번째 슬롯 저장
+                firstSlot = slotUI;
         }
 
-        // 게임 시작 시 첫 스킬 자동 선택
         if (firstSlot != null)
             firstSlot.OnClickSlot();
 

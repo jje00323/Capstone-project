@@ -156,15 +156,15 @@ public class JobManager : MonoBehaviour
             attack.ForceEndCombo();
         }
 
-        PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
-        if (skillUI != null)
-        {
-            var skillData = GetSkillData(newJob);
-            if (skillData != null)
-            {
-                skillUI.ReloadUI(skillData);
-            }
-        }
+        //PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
+        //if (skillUI != null)
+        //{
+        //    var skillData = GetSkillData(newJob);
+        //    if (skillData != null)
+        //    {
+        //        skillUI.ReloadUI(skillData);
+        //    }
+        //}
 
         var playerMovement = player.GetComponent<PlayerMovement>();
         if (playerMovement != null)
