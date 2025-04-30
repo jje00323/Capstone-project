@@ -198,6 +198,8 @@ public class PlayerMovement : MonoBehaviour
             delta.y = 0f;
             transform.position += delta;
             transform.rotation *= animator.deltaRotation;
+
+            Debug.Log("애니메이션 중 움직임");
         }
     }
 
