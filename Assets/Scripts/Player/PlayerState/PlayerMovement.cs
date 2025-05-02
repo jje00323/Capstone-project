@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 using static PlayerStateMachine;
 
 [RequireComponent(typeof(PlayerStateMachine))]
@@ -13,14 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private System.Action onArrivedCallback = null;
     private float stopDistanceBuffer = 0.2f;
 
-    [Header("이동 이펙트")]
-    public GameObject moveClickEffectPrefab;
-
-    private bool hasSpawnedEffect = false;
-    private bool isRightClickActive = false;
-    private float rightClickTimer = 0f;
-    [SerializeField] private float rightClickThreshold = 0.1f;
     private float defaultStoppingDistance = 0.5f;
+    private Vector3? pendingMoveTarget = null;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -37,8 +31,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!stateMachine.CanMove()) return;
-
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
 
@@ -51,24 +43,12 @@ public class PlayerMovement : MonoBehaviour
         else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
             stateMachine.ChangeState(PlayerState.Idle);
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        // 예약된 이동이 가능한 상태일 때 실행
+        if ((stateMachine.CurrentState == PlayerState.Idle || stateMachine.CurrentState == PlayerState.Moving)
+            && pendingMoveTarget.HasValue)
         {
-            isRightClickActive = true;
-            rightClickTimer = 0f;
-            HandleRightClick(true);
-            hasSpawnedEffect = true;
-        }
-        else if (Mouse.current.rightButton.isPressed && isRightClickActive)
-        {
-            rightClickTimer += Time.deltaTime;
-            if (rightClickTimer > rightClickThreshold)
-                HandleRightClick(false);
-        }
-
-        if (Mouse.current.rightButton.wasReleasedThisFrame)
-        {
-            isRightClickActive = false;
-            hasSpawnedEffect = false;
+            agent.SetDestination(pendingMoveTarget.Value);
+            pendingMoveTarget = null;
         }
 
         RotateTowardsMovementDirection();
@@ -76,14 +56,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (onArrivedCallback != null &&
-            !agent.pathPending &&
+        if (!agent.pathPending &&
             agent.remainingDistance <= agent.stoppingDistance + stopDistanceBuffer &&
             agent.velocity.sqrMagnitude < 0.1f)
         {
             StopAgent();
             onArrivedCallback?.Invoke();
             onArrivedCallback = null;
+
+            agent.ResetPath();
+            pendingMoveTarget = null;
         }
     }
 
@@ -95,31 +77,12 @@ public class PlayerMovement : MonoBehaviour
         ResumeAgent();
     }
 
-    public void HandleRightClick(bool spawnEffect)
+    public void SetPendingMove(Vector3 destination)
     {
-        if (!stateMachine.CanMove()) return;
-
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 desiredPoint = hit.point;
-
-            if (NavMesh.SamplePosition(desiredPoint, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
-            {
-                Vector3 targetPosition = navHit.position;
-                agent.SetDestination(targetPosition);
-
-                if (spawnEffect && !hasSpawnedEffect)
-                    SpawnMoveEffect(targetPosition);
-            }
-            else
-            {
-                agent.ResetPath();
-            }
-        }
+        pendingMoveTarget = destination;
     }
 
-    private void RotateTowardsMovementDirection()
+    public void RotateTowardsMovementDirection()
     {
         Vector3 velocity = agent.velocity;
         velocity.y = 0f;
@@ -131,9 +94,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void RotateToPosition(Vector3 worldPosition)
+    {
+        Vector3 direction = (worldPosition - transform.position);
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = targetRotation;
+        }
+    }
+
     public void RotateToMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Ray ray = Camera.main.ScreenPointToRay(UnityEngine.InputSystem.Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 lookPoint = hit.point;
@@ -153,24 +128,14 @@ public class PlayerMovement : MonoBehaviour
         agent.ResetPath();
     }
 
-    public bool GetAgentStoppedStatus()
-    {
-        return agent.isStopped;
-    }
-
     public void ResumeAgent()
     {
         agent.isStopped = false;
     }
 
-    void SpawnMoveEffect(Vector3 position)
+    public void ResetStoppingDistance()
     {
-        if (moveClickEffectPrefab != null)
-        {
-            GameObject fx = Instantiate(moveClickEffectPrefab, position + Vector3.up * 0.1f, Quaternion.identity);
-            fx.transform.localScale = Vector3.one * 0.7f;
-            Destroy(fx, 2f);
-        }
+        agent.stoppingDistance = defaultStoppingDistance;
     }
 
     public void UpdateAnimatorReference(Animator newAnimator)
@@ -183,32 +148,28 @@ public class PlayerMovement : MonoBehaviour
         return agent.pathPending || agent.remainingDistance > agent.stoppingDistance + 0.1f;
     }
 
-    public void RotateToPosition(Vector3 worldPosition)
+    public bool GetAgentStoppedStatus()
     {
-        Vector3 direction = (worldPosition - transform.position);
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = targetRotation;
-        }
+        return agent.isStopped;
     }
-    public void ResetStoppingDistance()
+
+    public void ClearPendingMove()
     {
-        agent.stoppingDistance = defaultStoppingDistance;
+        pendingMoveTarget = null;
+        agent.ResetPath();
+    }
+
+    public bool HasPendingMoveTarget()
+    {
+        return pendingMoveTarget.HasValue;
     }
 
     public void ShowSkillRangeIndicator(Vector3 center, float radius)
     {
-        // 사거리 표시용 원 생성
         Debug.DrawLine(center, center + Vector3.up * 3, Color.red, 2f);
-        // 또는 임시적으로 Gizmos / Particle 등으로 대체 가능
     }
 
     public void HideSkillRangeIndicator()
     {
-        // 범위 이펙트 제거 로직 (만약 시각화된 오브젝트가 있다면)
     }
-
 }

@@ -2,14 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerSkillController : MonoBehaviour
 {
-    private PlayerStateMachine stateMachine;
-    private PlayerMovement playerMovement;
-    private PlayerAttack playerattack;
-    private Animator animator;
-
     [Header("스킬 데이터 (ScriptableObject)")]
     public JobSkillData skillData;
 
@@ -19,19 +13,44 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
-    private GameObject player;
-    private bool isSkillActive = false;
     private string currentJob = "";
 
     private Vector3? pendingMouseTarget = null;
 
+    private PlayerSkill playerSkill;
+    private PlayerInputHandler inputHandler;
+    private PlayerControls controls;
+
     private void Awake()
     {
-        stateMachine = GetComponent<PlayerStateMachine>();
-        playerMovement = GetComponent<PlayerMovement>();
-        animator = GetComponent<Animator>();
-        player = GameObject.FindWithTag("Player");
+        playerSkill = GetComponent<PlayerSkill>();
+        inputHandler = GetComponent<PlayerInputHandler>();
+        controls = new PlayerControls();
+
         LoadSkillsFromData(skillData);
+    }
+
+    public void RegisterSkillKey(string skillKey)
+    {
+        var action = controls.asset.FindAction($"QWER/{skillKey}");
+        if (action == null)
+        {
+            Debug.LogWarning($"[SkillController] {skillKey}에 대한 InputAction이 존재하지 않음");
+            return;
+        }
+
+        action.performed += ctx =>
+        {
+            SkillInfo equipped = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+            if (equipped == null) return;
+
+            if (CanCast(skillKey) && playerSkill.CanUseSkill())
+            {
+                PrepareSkill(skillKey);
+                playerSkill.StartSkill(GetAnimationName(skillKey));
+                inputHandler.BlockRightClickForOneFrame();
+            }
+        };
     }
 
     public void LoadSkillsFromData(JobSkillData newData)
@@ -67,62 +86,30 @@ public class PlayerSkillController : MonoBehaviour
         Debug.Log($"[SkillController] {currentJob} 스킬 데이터 로드 완료");
     }
 
-    private void Update()
+    public bool CanCast(string skillKey)
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkill("Q");
-        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkill("W");
-        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkill("E");
-        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
+        return Time.time - GetLastUsedTime(skillKey) >= GetSkillCooldown(skillKey);
     }
 
-    public void TryUseSkill(string skillKey)
+    public void PrepareSkill(string skillKey)
     {
-        if (isSkillActive || !stateMachine.CanSkill()) return;
-
-        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
-        if (skill == null) return;
-
-        float cooldown = GetSkillCooldown(skillKey);
-        if (Time.time - GetLastUsedTime(skillKey) < cooldown) return;
-
         pendingMouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
-
-        playerMovement.StopAgent();
-        if (pendingMouseTarget.HasValue)
-            playerMovement.RotateToPosition(pendingMouseTarget.Value);
-        else
-            playerMovement.RotateToMouse();
-
-        animator.applyRootMotion = true;
-        animator.Play(skill.skillAnimation.name);
-
         skillLastUsedTime[skillKey] = Time.time;
-        isSkillActive = true;
+    }
 
-        var attack = GetComponent<PlayerAttack>();
-        if (attack != null)
-        {
-            attack.EnterCombatMode();
-            attack.ForceEndCombo();
-        }
+    public string GetAnimationName(string skillKey)
+    {
+        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        return skill?.skillAnimation?.name;
     }
 
     public void ActivateHitbox(string skillName)
     {
-        SkillInfo skillInfo = null;
-
-        foreach (var s in skillData.skills)
-        {
-            if (s.skillName == skillName)
-            {
-                skillInfo = s;
-                break;
-            }
-        }
+        SkillInfo skillInfo = GetSkillInfo(skillName);
 
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
         {
-            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트벅스 프리파브 없음.");
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트박스 프리팹 없음.");
             return;
         }
 
@@ -139,16 +126,7 @@ public class PlayerSkillController : MonoBehaviour
 
     public void SpawnEffect(string skillName)
     {
-        SkillInfo skill = null;
-        foreach (var s in skillData.skills)
-        {
-            if (s.skillName == skillName)
-            {
-                skill = s;
-                break;
-            }
-        }
-
+        SkillInfo skill = GetSkillInfo(skillName);
         if (skill == null || skill.effectPrefab == null) return;
 
         Transform spawnTransform = skill.effectPrefab.transform.Find("EffectSpawnPoint");
@@ -175,14 +153,15 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
-    public void EndSkill()
+    public void UpdateCurrentJob(JobManager.JobType newJob)
     {
-        isSkillActive = false;
-        animator.applyRootMotion = false;
-        playerMovement.ResumeAgent();
+        currentJob = newJob.ToString();
+        LoadSkillsFromData(skillData);
+    }
 
-        animator.SetTrigger("EndSkill");
-        stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+    public Vector3? GetPendingMouseTarget()
+    {
+        return pendingMouseTarget;
     }
 
     private float GetSkillCooldown(string skillKey)
@@ -195,9 +174,13 @@ public class PlayerSkillController : MonoBehaviour
         return skillLastUsedTime.TryGetValue(skillKey, out float lastTime) ? lastTime : -999f;
     }
 
-    public void UpdateCurrentJob(JobManager.JobType newJob)
+    private SkillInfo GetSkillInfo(string skillKey)
     {
-        currentJob = newJob.ToString();
-        LoadSkillsFromData(skillData);
+        foreach (var skill in skillData.skills)
+        {
+            if (skill.skillKey == skillKey)
+                return skill;
+        }
+        return null;
     }
 }
