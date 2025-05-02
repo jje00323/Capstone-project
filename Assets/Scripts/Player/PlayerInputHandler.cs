@@ -57,7 +57,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 destination = hit.point;
-            moveController?.HandleRightClickInput(destination);
+            moveController?.HandleRightClickInput(destination, true); // 마커 있는 최초 클릭만
         }
     }
 

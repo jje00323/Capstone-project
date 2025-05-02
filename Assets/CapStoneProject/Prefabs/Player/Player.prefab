@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 3034573744972008018}
   - component: {fileID: 7907694053871865476}
   - component: {fileID: 7629337571041222024}
+  - component: {fileID: 6103567165100379957}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -244,3 +245,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveClickEffectPrefab: {fileID: 1195808797154278, guid: 3106d2b2bba6d904fa85391a3d576e1c, type: 3}
+--- !u!114 &6103567165100379957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575806638045421746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842e22ffc21093d4d833cc2ffcb32239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
