@@ -275781,15 +275781,15 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.5
-    functionName: ActivateHitbox
+  - time: 1
+    functionName: SpawnEffect
     data: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.5
-    functionName: SpawnEffect
+  - time: 1
+    functionName: ActivateHitbox
     data: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

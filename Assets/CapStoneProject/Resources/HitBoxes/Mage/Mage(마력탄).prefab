@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   duration: 1
-  castRange: 10
+  castRange: 999
   startDelay: 0
   repeatCount: 1
   repeatInterval: 0.5

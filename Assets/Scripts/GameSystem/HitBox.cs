@@ -8,12 +8,7 @@ public class Hitbox : MonoBehaviour
 
     [Header("히트박스 설정")]
     public float damage = 10f;
-    public float duration = 1f;
-
-    [Header("스킬 사거리")]
-    public float castRange = 10f;
-
-    [Header("반복 판정 설정")]
+    public float duration = 1f; [Header("반복 판정 설정")]
     public float startDelay = 0f;
     public int repeatCount = 1;
     public float repeatInterval = 0.5f;

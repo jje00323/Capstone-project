@@ -24,8 +24,6 @@ public class PlayerSkillController : MonoBehaviour
     private string currentJob = "";
 
     private Vector3? pendingMouseTarget = null;
-    private string pendingSkillKey = null;
-    private bool isPendingSkill = false;
 
     private void Awake()
     {
@@ -40,7 +38,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (newData == null)
         {
-            Debug.LogWarning("스킬 데이터가 없습니다.");
+            Debug.LogWarning("[SkillController] 스킬 데이터가 없습니다.");
             return;
         }
 
@@ -71,63 +69,12 @@ public class PlayerSkillController : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("Q");
-        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("W");
-        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("E");
-        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkillWithRangeCheck("R");
-
-        if (isPendingSkill && !playerMovement.IsAgentMoving())
-        {
-            float dist = Vector3.Distance(transform.position, pendingMouseTarget.Value);
-            var skill = SkillEquipManager.Instance.GetEquippedSkill(pendingSkillKey);
-            var hitbox = skill.hitboxPrefab.GetComponent<Hitbox>();
-
-            if (dist <= hitbox.castRange)
-            {
-                TryUseSkill(pendingSkillKey);
-                isPendingSkill = false;
-            }
-        }
-
-        if (Mouse.current.rightButton.wasPressedThisFrame || Keyboard.current.anyKey.wasPressedThisFrame)
-        {
-            if (isPendingSkill)
-            {
-                isPendingSkill = false;
-                pendingSkillKey = null;
-            }
-        }
+        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkill("Q");
+        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkill("W");
+        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkill("E");
+        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
-    public void TryUseSkillWithRangeCheck(string skillKey)
-    {
-        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
-        if (skill == null) return;
-
-        var hitbox = skill.hitboxPrefab?.GetComponent<Hitbox>();
-        if (hitbox == null) return;
-
-        Vector3? mouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
-        if (!mouseTarget.HasValue) return;
-
-        float distance = Vector3.Distance(transform.position, mouseTarget.Value);
-        if (distance <= hitbox.castRange)
-        {
-            pendingMouseTarget = mouseTarget;
-            TryUseSkill(skillKey);
-        }
-        else
-        {
-            pendingSkillKey = skillKey;
-            pendingMouseTarget = mouseTarget;
-            isPendingSkill = true;
-
-            playerMovement.MoveTo(mouseTarget.Value, hitbox.castRange, () =>
-            {
-                // 이동 후 TryUseSkill()은 Update()에서 자동 실행됨
-            });
-        }
-    }
     public void TryUseSkill(string skillKey)
     {
         if (isSkillActive || !stateMachine.CanSkill()) return;
@@ -137,6 +84,8 @@ public class PlayerSkillController : MonoBehaviour
 
         float cooldown = GetSkillCooldown(skillKey);
         if (Time.time - GetLastUsedTime(skillKey) < cooldown) return;
+
+        pendingMouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
 
         playerMovement.StopAgent();
         if (pendingMouseTarget.HasValue)
@@ -150,17 +99,12 @@ public class PlayerSkillController : MonoBehaviour
         skillLastUsedTime[skillKey] = Time.time;
         isSkillActive = true;
 
-        // 전투 시스템
         var attack = GetComponent<PlayerAttack>();
         if (attack != null)
         {
             attack.EnterCombatMode();
             attack.ForceEndCombo();
         }
-
-        // 예약 초기화
-        isPendingSkill = false;
-        pendingSkillKey = null;
     }
 
     public void ActivateHitbox(string skillName)
@@ -178,7 +122,7 @@ public class PlayerSkillController : MonoBehaviour
 
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
         {
-            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트박스 프리팹 없음.");
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트벅스 프리파브 없음.");
             return;
         }
 
