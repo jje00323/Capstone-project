@@ -155,9 +155,16 @@ public class PlayerAttack : MonoBehaviour
 
         movement.ResumeAgent();
 
-        Debug.Log("공격 초기화");
-
         stateMachine.ChangeState(PlayerState.Idle);
+
+        // 예약된 이동이 있다면 바로 실행
+        if (movement.HasPendingMoveTarget())
+        {
+            Debug.LogWarning("[공격 종료] 예약된 이동 실행");
+            movement.ResumePendingMove();
+        }
+
+        Debug.Log("공격 초기화");
     }
 
     public void ForceEndCombo()

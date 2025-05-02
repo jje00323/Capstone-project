@@ -16,7 +16,6 @@ public class MoveController : MonoBehaviour
     private bool isRightClickHeld = false;
     private float rightClickTimer = 0f;
     private float rightClickRepeatThreshold = 0.15f;
-    private bool hasTriggeredHoldAction = false;
 
     private void Awake()
     {
@@ -31,16 +30,15 @@ public class MoveController : MonoBehaviour
         {
             isRightClickHeld = true;
             rightClickTimer = 0f;
-            hasTriggeredHoldAction = false;
-            TryHandleRightClick(true); // 클릭 1회만 마커 생성 허용
+            TryHandleRightClick(true); // 클릭: 마커 생성
         }
         else if (Mouse.current.rightButton.isPressed && isRightClickHeld)
         {
             rightClickTimer += Time.deltaTime;
-            if (!hasTriggeredHoldAction && rightClickTimer >= rightClickRepeatThreshold)
+            if (rightClickTimer >= rightClickRepeatThreshold)
             {
-                TryHandleRightClick(false); // 꾹 누름은 마커 생성 없이 이동만
-                hasTriggeredHoldAction = true;
+                TryHandleRightClick(false); // 꾹 누름: 마커 없이 반복 이동
+                // 타이머 리셋하지 않음 → 실시간 반복 이동 허용
             }
         }
 
@@ -48,11 +46,10 @@ public class MoveController : MonoBehaviour
         {
             isRightClickHeld = false;
             rightClickTimer = 0f;
-            hasTriggeredHoldAction = false;
         }
     }
 
-    public void HandleRightClickInput(Vector3 destination, bool spawnEffect)
+    public void HandleRightClickInput(Vector3 destination, bool spawnEffect = true)
     {
         if (!inputHandler.IsRightClickAllowed()) return;
 
@@ -69,6 +66,7 @@ public class MoveController : MonoBehaviour
             else
             {
                 movement.SetPendingMove(targetPosition);
+                Debug.LogWarning($"현재 상태 우클릭 이동 X {targetPosition}");
             }
         }
     }

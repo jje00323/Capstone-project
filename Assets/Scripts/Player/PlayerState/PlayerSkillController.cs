@@ -105,11 +105,20 @@ public class PlayerSkillController : MonoBehaviour
 
     public void ActivateHitbox(string skillName)
     {
-        SkillInfo skillInfo = GetSkillInfo(skillName);
+        SkillInfo skillInfo = null;
+
+        foreach (var s in skillData.skills)
+        {
+            if (s.skillName == skillName)
+            {
+                skillInfo = s;
+                break;
+            }
+        }
 
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
         {
-            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트박스 프리팹 없음.");
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트벅스 프리파브 없음.");
             return;
         }
 

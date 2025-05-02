@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using static PlayerStateMachine;
@@ -38,10 +39,15 @@ public class PlayerMovement : MonoBehaviour
                         agent.remainingDistance > agent.stoppingDistance &&
                         agent.velocity.sqrMagnitude > 0.05f;
 
-        if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
-            stateMachine.ChangeState(PlayerState.Moving);
-        else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
-            stateMachine.ChangeState(PlayerState.Idle);
+        if (stateMachine.CurrentState != PlayerState.Attacking &&
+            stateMachine.CurrentState != PlayerState.SkillCasting &&
+            stateMachine.CurrentState != PlayerState.Dodging)
+        {
+            if (isMoving && stateMachine.CurrentState != PlayerState.Moving)
+                stateMachine.ChangeState(PlayerState.Moving);
+            else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
+                stateMachine.ChangeState(PlayerState.Idle);
+        }
 
         // 예약된 이동이 가능한 상태일 때 실행
         if ((stateMachine.CurrentState == PlayerState.Idle || stateMachine.CurrentState == PlayerState.Moving)
@@ -131,6 +137,16 @@ public class PlayerMovement : MonoBehaviour
     public void ResumeAgent()
     {
         agent.isStopped = false;
+    }
+
+    public void ResumePendingMove()
+    {
+        if (pendingMoveTarget.HasValue)
+        {
+            agent.SetDestination(pendingMoveTarget.Value);
+            ResumeAgent();
+            pendingMoveTarget = null;
+        }
     }
 
     public void ResetStoppingDistance()
