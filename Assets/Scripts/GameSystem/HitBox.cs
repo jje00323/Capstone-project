@@ -8,12 +8,7 @@ public class Hitbox : MonoBehaviour
 
     [Header("히트박스 설정")]
     public float damage = 10f;
-    public float duration = 1f;
-
-    [Header("스킬 사거리")]
-    public float castRange = 10f;
-
-    [Header("반복 판정 설정")]
+    public float duration = 1f; [Header("반복 판정 설정")]
     public float startDelay = 0f;
     public int repeatCount = 1;
     public float repeatInterval = 0.5f;
@@ -32,8 +27,8 @@ public class Hitbox : MonoBehaviour
     public Rigidbody projectileRigidbody;
 
     [Header("위치 설정")]
-    public bool useMousePosition = false;                  //  마우스 위치로 생성할지 여부
-    public LayerMask mouseGroundMask = ~0;                 //  마우스 위치 탐지 레이어 (-1은 모든 레이어)
+    public bool useMousePosition = false;
+    public LayerMask mouseGroundMask = ~0;
 
     [Header("디버그")]
     public bool drawGizmos = true;
@@ -45,17 +40,18 @@ public class Hitbox : MonoBehaviour
     private bool initialized = false;
     private bool isHitboxActive = false;
 
-    public void Initialize(Transform casterTransform, bool shouldFollow, Vector3? overrideMousePos = null)
+    private Vector3? fixedMousePosition = null;
+
+    public void Initialize(Transform casterTransform, bool shouldFollow)
     {
         caster = casterTransform;
         followCaster = shouldFollow;
         initialized = true;
 
-        if (useMousePosition)
+        if (useMousePosition && fixedMousePosition.HasValue)
         {
-            Vector3 spawnPos = overrideMousePos ?? MouseUtility.GetMouseWorldPosition(mouseGroundMask) ?? caster.position;
-            transform.position = spawnPos;
-            transform.rotation = MouseUtility.GetLookRotationTo(caster.position, spawnPos);
+            transform.position = fixedMousePosition.Value;
+            transform.rotation = MouseUtility.GetLookRotationTo(caster.position, fixedMousePosition.Value);
             followCaster = false;
         }
         else
@@ -87,34 +83,6 @@ public class Hitbox : MonoBehaviour
             projectileRigidbody.velocity = transform.forward * projectileSpeed;
 
         StartCoroutine(DestroyAfterDuration());
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!isProjectile || !initialized) return;
-
-        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
-        {
-            var enemy = other.GetComponent<EnemyStatus>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-                Debug.Log($"[Hitbox Projectile] 적 피격! 데미지: {damage}");
-            }
-
-            Destroy(gameObject);
-        }
-        else if (CompareTag("EnemyHitbox") && other.CompareTag("Player"))
-        {
-            var player = other.GetComponent<PlayerStatus>();
-            if (player != null)
-            {
-                player.TakeDamage(damage);
-                Debug.Log($"[Hitbox Projectile] 플레이어 피격! 데미지: {damage}");
-            }
-
-            Destroy(gameObject);
-        }
     }
 
     private IEnumerator DestroyAfterDuration()
@@ -243,7 +211,11 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    // 마우스 관련 유틸리티 (필요시 별도 클래스 분리 가능)
+    public void SetFixedMousePosition(Vector3 pos)
+    {
+        fixedMousePosition = pos;
+    }
+
     public static class MouseUtility
     {
         public static Vector3? GetMouseWorldPosition(LayerMask groundMask)

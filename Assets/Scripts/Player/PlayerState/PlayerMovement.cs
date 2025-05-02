@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isRightClickActive = false;
     private float rightClickTimer = 0f;
     [SerializeField] private float rightClickThreshold = 0.1f;
-
+    private float defaultStoppingDistance = 0.5f;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         agent.acceleration = 999f;
         agent.autoBraking = false;
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        defaultStoppingDistance = agent.stoppingDistance;
     }
 
     void Update()
@@ -152,6 +153,11 @@ public class PlayerMovement : MonoBehaviour
         agent.ResetPath();
     }
 
+    public bool GetAgentStoppedStatus()
+    {
+        return agent.isStopped;
+    }
+
     public void ResumeAgent()
     {
         agent.isStopped = false;
@@ -171,4 +177,38 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = newAnimator;
     }
+
+    public bool IsAgentMoving()
+    {
+        return agent.pathPending || agent.remainingDistance > agent.stoppingDistance + 0.1f;
+    }
+
+    public void RotateToPosition(Vector3 worldPosition)
+    {
+        Vector3 direction = (worldPosition - transform.position);
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = targetRotation;
+        }
+    }
+    public void ResetStoppingDistance()
+    {
+        agent.stoppingDistance = defaultStoppingDistance;
+    }
+
+    public void ShowSkillRangeIndicator(Vector3 center, float radius)
+    {
+        // 사거리 표시용 원 생성
+        Debug.DrawLine(center, center + Vector3.up * 3, Color.red, 2f);
+        // 또는 임시적으로 Gizmos / Particle 등으로 대체 가능
+    }
+
+    public void HideSkillRangeIndicator()
+    {
+        // 범위 이펙트 제거 로직 (만약 시각화된 오브젝트가 있다면)
+    }
+
 }

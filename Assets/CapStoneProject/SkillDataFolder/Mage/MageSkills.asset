@@ -68,7 +68,7 @@ MonoBehaviour:
     description: ...
     cooldown: 3
     hitboxPrefab: {fileID: 5135922750843967348, guid: ad60cb9f413e9734f97266fe3bfaf867, type: 3}
-    effectPrefab: {fileID: 0}
+    effectPrefab: {fileID: 1629786646386477521, guid: 89b5bed0cb2f3b24b97b0a09dc3b6c9f, type: 3}
     effectDuration: 0
     followCaster: 0
     skillAnimation: {fileID: 7400000, guid: 7353f362bf0f052449c3b541f0bac021, type: 2}
