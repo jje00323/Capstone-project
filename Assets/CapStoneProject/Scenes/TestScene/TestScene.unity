@@ -956,12 +956,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: allUpgradeData.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: allUpgradeData.Array.data[3]
       value: 
       objectReference: {fileID: 11400000, guid: a10913c47a691ad43a79171bcb869e52, type: 2}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2df4d158319d2ee4f9302596d8468c4c, type: 2}
     - target: {fileID: 8029773597690982829, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -2086,7 +2090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2228435612166614133}
-  offset: {x: 0, y: 7, z: -4.5}
+  offset: {x: 0, y: 9, z: -5.5}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
