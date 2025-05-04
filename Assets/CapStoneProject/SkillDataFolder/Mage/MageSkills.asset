@@ -47,19 +47,19 @@ MonoBehaviour:
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
   - skillKey: E
-    skillName: "\uB9C8\uB825\uC7A5\uD310"
+    skillName: "\uB9C8\uB825\uD3ED\uBC1C"
     skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
     description: ...
     cooldown: 3
-    hitboxPrefab: {fileID: 7379637999519721567, guid: fcb17996a95ebd04092745c81b015e1b, type: 3}
-    effectPrefab: {fileID: 0}
-    effectDuration: 0
+    hitboxPrefab: {fileID: 9050656858112122589, guid: 2f8abaf89fe617f42aa87dd5b56144c8, type: 3}
+    effectPrefab: {fileID: 1231247210357622, guid: 6ea77f0aceabdf845a7ef6a7c049d6e5, type: 3}
+    effectDuration: 1.5
     followCaster: 0
     skillAnimation: {fileID: 7400000, guid: 9a4fcb370bc65cc449807fd65c30b9f2, type: 2}
     manaCost: 0
     requiredLevel: 0
-    currentLevel: 1
-    maxLevel: 5
+    currentLevel: 4
+    maxLevel: 10
     isUnlocked: 1
     Feature: 
   - skillKey: R
@@ -67,11 +67,11 @@ MonoBehaviour:
     skillIcon: {fileID: 21300000, guid: 10dc9c67ffb56dd4f800103585f26888, type: 3}
     description: ...
     cooldown: 3
-    hitboxPrefab: {fileID: 5135922750843967348, guid: ad60cb9f413e9734f97266fe3bfaf867, type: 3}
-    effectPrefab: {fileID: 1629786646386477521, guid: 89b5bed0cb2f3b24b97b0a09dc3b6c9f, type: 3}
-    effectDuration: 0
+    hitboxPrefab: {fileID: 9050656858112122589, guid: fc60477c1ac4abe4086d9da32936202f, type: 3}
+    effectPrefab: {fileID: 0}
+    effectDuration: 1
     followCaster: 0
-    skillAnimation: {fileID: 7400000, guid: 7353f362bf0f052449c3b541f0bac021, type: 2}
+    skillAnimation: {fileID: 7400000, guid: dc634bbd41b51934b856820f9cd58665, type: 2}
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1

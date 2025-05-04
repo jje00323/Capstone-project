@@ -160,21 +160,21 @@ public class PlayerAttack : MonoBehaviour
         stateMachine.ChangeState(PlayerState.Idle);
     }
 
-    public void ForceEndCombo()
-    {
-        isAttacking = false;
-        inputBuffered = false;
-        allowBufferedInput = false;
-        canExecuteImmediately = false;
-        inputLocked = false;
-        comboIndex = 0;
+    //public void ForceEndCombo()
+    //{
+    //    isAttacking = false;
+    //    inputBuffered = false;
+    //    allowBufferedInput = false;
+    //    canExecuteImmediately = false;
+    //    inputLocked = false;
+    //    comboIndex = 0;
 
-        movement.ResumeAgent();
+    //    movement.ResumeAgent();
 
-        Debug.Log("공격 초기화 (강제 종료)");
+    //    Debug.Log("공격 초기화 (강제 종료)");
 
-        stateMachine.ChangeState(PlayerState.Idle);
-    }
+    //    stateMachine.ChangeState(PlayerState.Idle);
+    //}
 
     public void ActivateBasicHitbox()
     {

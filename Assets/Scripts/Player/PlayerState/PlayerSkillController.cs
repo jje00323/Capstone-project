@@ -103,26 +103,16 @@ public class PlayerSkillController : MonoBehaviour
         if (attack != null)
         {
             attack.EnterCombatMode();
-            attack.ForceEndCombo();
+            //attack.ForceEndCombo();
         }
     }
 
     public void ActivateHitbox(string skillName)
     {
-        SkillInfo skillInfo = null;
-
-        foreach (var s in skillData.skills)
-        {
-            if (s.skillName == skillName)
-            {
-                skillInfo = s;
-                break;
-            }
-        }
-
+        var skillInfo = FindSkillInfoByName(skillName);
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
         {
-            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트벅스 프리파브 없음.");
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트박스 프리팹 없음.");
             return;
         }
 
@@ -139,16 +129,7 @@ public class PlayerSkillController : MonoBehaviour
 
     public void SpawnEffect(string skillName)
     {
-        SkillInfo skill = null;
-        foreach (var s in skillData.skills)
-        {
-            if (s.skillName == skillName)
-            {
-                skill = s;
-                break;
-            }
-        }
-
+        var skill = FindSkillInfoByName(skillName);
         if (skill == null || skill.effectPrefab == null) return;
 
         Transform spawnTransform = skill.effectPrefab.transform.Find("EffectSpawnPoint");
@@ -199,5 +180,30 @@ public class PlayerSkillController : MonoBehaviour
     {
         currentJob = newJob.ToString();
         LoadSkillsFromData(skillData);
+    }
+
+    public SkillInfo GetSkillInfoByKey(string skillKey)
+{
+    return SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+}
+
+
+    private SkillInfo FindSkillInfoByName(string skillName)
+    {
+        // 1. 기본 스킬에서 탐색
+        foreach (var s in skillData.skills)
+            if (s.skillName == skillName) return s;
+
+        // 2. 강화 스킬에서 탐색
+        foreach (var baseSkill in skillData.skills)
+        {
+            var upgradeData = SkillUpgradeManager.Instance.GetUpgradeDataFor(baseSkill.skillName);
+            if (upgradeData == null || upgradeData.upgradeOptions == null) continue;
+
+            foreach (var upgraded in upgradeData.upgradeOptions)
+                if (upgraded.skillName == skillName) return upgraded;
+        }
+
+        return null;
     }
 }
