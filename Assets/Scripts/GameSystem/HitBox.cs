@@ -25,6 +25,7 @@ public class Hitbox : MonoBehaviour
     public bool isProjectile = false;
     public float projectileSpeed = 10f;
     public Rigidbody projectileRigidbody;
+    public GameObject secondaryHitboxPrefab;
 
     [Header("위치 설정")]
     public bool useMousePosition = false;
@@ -232,5 +233,39 @@ public class Hitbox : MonoBehaviour
             dir.y = 0f;
             return dir != Vector3.zero ? Quaternion.LookRotation(dir) : Quaternion.identity;
         }
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isProjectile) return;
+
+        LayerMask targetLayer = GetTargetLayerMask();
+        if (((1 << other.gameObject.layer) & targetLayer) == 0) return;
+
+        // 데미지 적용
+        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
+        {
+            var enemy = other.GetComponent<EnemyStatus>();
+            if (enemy != null) enemy.TakeDamage(damage);
+        }
+        else if (CompareTag("EnemyHitbox") && other.CompareTag("Player"))
+        {
+            var player = other.GetComponent<PlayerStatus>();
+            if (player != null) player.TakeDamage(damage);
+        }
+
+        //  폭발 히트박스 소환
+        if (secondaryHitboxPrefab != null)
+        {
+            GameObject explosion = Instantiate(secondaryHitboxPrefab, transform.position, Quaternion.identity);
+            Hitbox explosionHitbox = explosion.GetComponent<Hitbox>();
+            if (explosionHitbox != null)
+            {
+                explosionHitbox.Initialize(transform, false); // followCaster는 필요에 따라 false
+            }
+        }
+
+        Destroy(gameObject); // 원래 투사체 제거
     }
 }

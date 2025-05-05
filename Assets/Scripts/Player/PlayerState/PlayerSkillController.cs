@@ -18,6 +18,8 @@ public class PlayerSkillController : MonoBehaviour
     private string currentJob = "";
     private Vector3? pendingMouseTarget = null;
 
+    private Dictionary<string, float> skillLastUsedTime = new();
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -157,5 +159,15 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public float GetSkillLastUsedTime(string skillKey)
+    {
+        return skillLastUsedTime.TryGetValue(skillKey, out float time) ? time : -999f;
+    }
+
+    public void SetSkillLastUsedTime(string skillKey, float time)
+    {
+        skillLastUsedTime[skillKey] = time;
     }
 }

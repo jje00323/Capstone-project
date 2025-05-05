@@ -33,17 +33,24 @@ public class PlayerSkill : MonoBehaviour
         if (skill == null) return;
 
         float cooldown = skillController.GetSkillCooldown(skillKey);
-        if (Time.time - skillController.GetSkillCooldown(skillKey) < cooldown) return;
+        float lastUsedTime = skillController.GetSkillLastUsedTime(skillKey);
+
+        float timeSinceLastUse = Time.time - lastUsedTime;
+        if (timeSinceLastUse < cooldown)
+        {
+            float remaining = cooldown - timeSinceLastUse;
+            Debug.Log($"[Skill] {skillKey} 스킬 쿨타임: {remaining:F1}초 남음");
+            return;
+        }
 
         Vector3? mouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
 
-        // 쿨타임 시간 저장
-        skillController.SetSkillCooldown(skillKey, Time.time);
+        // 정확히 지금 사용한 시점 저장
+        skillController.SetSkillLastUsedTime(skillKey, Time.time);
 
-        // 상태 전이
+        Debug.Log($"[Skill] {skillKey} 스킬 사용! (쿨타임 {cooldown}초)");
+
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
-
-        // 실제 스킬 실행 위임
         skillController.ExecuteSkill(skillKey, mouseTarget);
     }
     public void EndSkill()
