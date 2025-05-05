@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -13,44 +12,13 @@ public class PlayerSkillController : MonoBehaviour
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
+    private GameObject player;
     private string currentJob = "";
-
-    private Vector3? pendingMouseTarget = null;
-
-    private PlayerSkill playerSkill;
-    private PlayerInputHandler inputHandler;
-    private PlayerControls controls;
 
     private void Awake()
     {
-        playerSkill = GetComponent<PlayerSkill>();
-        inputHandler = GetComponent<PlayerInputHandler>();
-        controls = new PlayerControls();
-
+        player = GameObject.FindWithTag("Player");
         LoadSkillsFromData(skillData);
-    }
-
-    public void RegisterSkillKey(string skillKey)
-    {
-        var action = controls.asset.FindAction($"QWER/{skillKey}");
-        if (action == null)
-        {
-            Debug.LogWarning($"[SkillController] {skillKey}에 대한 InputAction이 존재하지 않음");
-            return;
-        }
-
-        action.performed += ctx =>
-        {
-            SkillInfo equipped = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
-            if (equipped == null) return;
-
-            if (CanCast(skillKey) && playerSkill.CanUseSkill())
-            {
-                PrepareSkill(skillKey);
-                playerSkill.StartSkill(GetAnimationName(skillKey));
-                inputHandler.BlockRightClickForOneFrame();
-            }
-        };
     }
 
     public void LoadSkillsFromData(JobSkillData newData)
@@ -86,39 +54,12 @@ public class PlayerSkillController : MonoBehaviour
         Debug.Log($"[SkillController] {currentJob} 스킬 데이터 로드 완료");
     }
 
-    public bool CanCast(string skillKey)
+    public void ActivateHitbox(string skillName, Vector3? mouseTarget = null)
     {
-        return Time.time - GetLastUsedTime(skillKey) >= GetSkillCooldown(skillKey);
-    }
-
-    public void PrepareSkill(string skillKey)
-    {
-        pendingMouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
-        skillLastUsedTime[skillKey] = Time.time;
-    }
-
-    public string GetAnimationName(string skillKey)
-    {
-        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
-        return skill?.skillAnimation?.name;
-    }
-
-    public void ActivateHitbox(string skillName)
-    {
-        SkillInfo skillInfo = null;
-
-        foreach (var s in skillData.skills)
-        {
-            if (s.skillName == skillName)
-            {
-                skillInfo = s;
-                break;
-            }
-        }
-
+        var skillInfo = FindSkillInfoByName(skillName);
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
         {
-            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트벅스 프리파브 없음.");
+            Debug.LogWarning($"[Hitbox] {skillName} 스킬에 유효한 히트박스 프리팹 없음.");
             return;
         }
 
@@ -126,8 +67,8 @@ public class PlayerSkillController : MonoBehaviour
         Hitbox hitbox = instance.GetComponent<Hitbox>();
         if (hitbox != null)
         {
-            if (hitbox.useMousePosition && pendingMouseTarget.HasValue)
-                hitbox.SetFixedMousePosition(pendingMouseTarget.Value);
+            if (hitbox.useMousePosition && mouseTarget.HasValue)
+                hitbox.SetFixedMousePosition(mouseTarget.Value);
 
             hitbox.Initialize(transform, skillInfo.followCaster);
         }
@@ -135,7 +76,7 @@ public class PlayerSkillController : MonoBehaviour
 
     public void SpawnEffect(string skillName)
     {
-        SkillInfo skill = GetSkillInfo(skillName);
+        var skill = FindSkillInfoByName(skillName);
         if (skill == null || skill.effectPrefab == null) return;
 
         Transform spawnTransform = skill.effectPrefab.transform.Find("EffectSpawnPoint");
@@ -162,34 +103,46 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
+    public float GetSkillCooldown(string skillKey)
+    {
+        return skillCooldowns.TryGetValue(skillKey, out float cooldown) ? cooldown : 0f;
+    }
+
+    public float GetLastUsedTime(string skillKey)
+    {
+        return skillLastUsedTime.TryGetValue(skillKey, out float lastTime) ? lastTime : -999f;
+    }
+
+    public void SaveSkillUseTime(string skillKey)
+    {
+        skillLastUsedTime[skillKey] = Time.time;
+    }
+
     public void UpdateCurrentJob(JobManager.JobType newJob)
     {
         currentJob = newJob.ToString();
         LoadSkillsFromData(skillData);
     }
 
-    public Vector3? GetPendingMouseTarget()
+    public SkillInfo GetSkillInfoByKey(string skillKey)
     {
-        return pendingMouseTarget;
+        return SkillEquipManager.Instance.GetEquippedSkill(skillKey);
     }
 
-    private float GetSkillCooldown(string skillKey)
+    private SkillInfo FindSkillInfoByName(string skillName)
     {
-        return skillCooldowns.TryGetValue(skillKey, out float cooldown) ? cooldown : 0f;
-    }
+        foreach (var s in skillData.skills)
+            if (s.skillName == skillName) return s;
 
-    private float GetLastUsedTime(string skillKey)
-    {
-        return skillLastUsedTime.TryGetValue(skillKey, out float lastTime) ? lastTime : -999f;
-    }
-
-    private SkillInfo GetSkillInfo(string skillKey)
-    {
-        foreach (var skill in skillData.skills)
+        foreach (var baseSkill in skillData.skills)
         {
-            if (skill.skillKey == skillKey)
-                return skill;
+            var upgradeData = SkillUpgradeManager.Instance.GetUpgradeDataFor(baseSkill.skillName);
+            if (upgradeData == null || upgradeData.upgradeOptions == null) continue;
+
+            foreach (var upgraded in upgradeData.upgradeOptions)
+                if (upgraded.skillName == skillName) return upgraded;
         }
+
         return null;
     }
 }

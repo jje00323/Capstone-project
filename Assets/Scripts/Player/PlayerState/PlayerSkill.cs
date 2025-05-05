@@ -1,11 +1,15 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerSkill : MonoBehaviour
 {
     private PlayerStateMachine stateMachine;
     private PlayerMovement playerMovement;
+    private PlayerAttack playerAttack;
     private Animator animator;
+    private PlayerSkillController skillController;
 
     private bool isSkillActive = false;
 
@@ -13,45 +17,56 @@ public class PlayerSkill : MonoBehaviour
     {
         stateMachine = GetComponent<PlayerStateMachine>();
         playerMovement = GetComponent<PlayerMovement>();
+        playerAttack = GetComponent<PlayerAttack>();
         animator = GetComponent<Animator>();
+        skillController = GetComponent<PlayerSkillController>();
     }
 
-    public bool CanUseSkill()
+    private void Update()
     {
-        return !isSkillActive && stateMachine.CanSkill();
+        if (Keyboard.current.qKey.wasPressedThisFrame) TryUseSkill("Q");
+        if (Keyboard.current.wKey.wasPressedThisFrame) TryUseSkill("W");
+        if (Keyboard.current.eKey.wasPressedThisFrame) TryUseSkill("E");
+        if (Keyboard.current.rKey.wasPressedThisFrame) TryUseSkill("R");
     }
 
-    public void StartSkill(string animationName)
+    public void TryUseSkill(string skillKey)
     {
-        if (!CanUseSkill()) return;
+        if (isSkillActive || !stateMachine.CanSkill()) return;
 
-        stateMachine.ChangeState(PlayerStateMachine.PlayerState.SkillCasting);
+        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        if (skill == null) return;
+
+        float cooldown = skillController.GetSkillCooldown(skillKey);
+        if (Time.time - skillController.GetLastUsedTime(skillKey) < cooldown) return;
+
+        Vector3? mouseTarget = Hitbox.MouseUtility.GetMouseWorldPosition(LayerMask.GetMask("Ground"));
 
         playerMovement.StopAgent();
-        playerMovement.RotateToMouse();
+        if (mouseTarget.HasValue)
+            playerMovement.RotateToPosition(mouseTarget.Value);
+        else
+            playerMovement.RotateToMouse();
 
-        animator.Play(animationName);
+        animator.applyRootMotion = true;
+        animator.Play(skill.skillAnimation.name);
+
+        skillController.SaveSkillUseTime(skillKey);
         isSkillActive = true;
 
-        var attack = GetComponent<PlayerAttack>();
-        if (attack != null)
+        if (playerAttack != null)
         {
-            attack.EnterCombatMode();
-            attack.ForceEndCombo();
+            playerAttack.EnterCombatMode();
         }
     }
 
     public void EndSkill()
     {
         isSkillActive = false;
+        animator.applyRootMotion = false;
         playerMovement.ResumeAgent();
 
         animator.SetTrigger("EndSkill");
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
-    }
-
-    public bool IsSkillActive()
-    {
-        return isSkillActive;
     }
 }
