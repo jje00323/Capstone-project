@@ -1,60 +1,52 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerSkillController : MonoBehaviour
 {
+    private Animator animator;
+    private PlayerMovement playerMovement;
+    private PlayerAttack playerAttack;
+
     [Header("스킬 데이터 (ScriptableObject)")]
     public JobSkillData skillData;
 
     private Dictionary<string, GameObject> hitboxPrefabs = new();
     private Dictionary<string, GameObject> effectPrefabs = new();
-    private Dictionary<string, float> skillLastUsedTime = new();
     private Dictionary<string, float> skillCooldowns = new();
 
     private GameObject activeEffect;
-    private GameObject player;
     private string currentJob = "";
+    private Vector3? pendingMouseTarget = null;
 
     private void Awake()
     {
-        player = GameObject.FindWithTag("Player");
+        animator = GetComponent<Animator>();
+        playerMovement = GetComponent<PlayerMovement>();
+        playerAttack = GetComponent<PlayerAttack>();
         LoadSkillsFromData(skillData);
     }
 
-    public void LoadSkillsFromData(JobSkillData newData)
+    public void ExecuteSkill(string skillKey, Vector3? mouseTarget)
     {
-        if (newData == null)
-        {
-            Debug.LogWarning("[SkillController] 스킬 데이터가 없습니다.");
-            return;
-        }
+        var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        if (skill == null) return;
 
-        skillData = newData;
-        hitboxPrefabs.Clear();
-        effectPrefabs.Clear();
-        skillLastUsedTime.Clear();
-        skillCooldowns.Clear();
+        pendingMouseTarget = mouseTarget;
 
-        currentJob = skillData.jobType.ToString();
+        playerMovement.StopAgent();
+        if (pendingMouseTarget.HasValue)
+            playerMovement.RotateToPosition(pendingMouseTarget.Value);
+        else
+            playerMovement.RotateToMouse();
 
-        foreach (var skill in skillData.skills)
-        {
-            string key = currentJob + "_" + skill.skillKey;
+        animator.applyRootMotion = true;
+        animator.Play(skill.skillAnimation.name);
 
-            if (skill.hitboxPrefab != null)
-                hitboxPrefabs[key] = skill.hitboxPrefab;
-
-            if (skill.effectPrefab != null)
-                effectPrefabs[key] = skill.effectPrefab;
-
-            skillLastUsedTime[skill.skillKey] = -999f;
-            skillCooldowns[skill.skillKey] = skill.cooldown;
-        }
-
-        Debug.Log($"[SkillController] {currentJob} 스킬 데이터 로드 완료");
+        if (playerAttack != null)
+            playerAttack.EnterCombatMode();
     }
 
-    public void ActivateHitbox(string skillName, Vector3? mouseTarget = null)
+    public void ActivateHitbox(string skillName)
     {
         var skillInfo = FindSkillInfoByName(skillName);
         if (skillInfo == null || skillInfo.hitboxPrefab == null)
@@ -67,8 +59,8 @@ public class PlayerSkillController : MonoBehaviour
         Hitbox hitbox = instance.GetComponent<Hitbox>();
         if (hitbox != null)
         {
-            if (hitbox.useMousePosition && mouseTarget.HasValue)
-                hitbox.SetFixedMousePosition(mouseTarget.Value);
+            if (hitbox.useMousePosition && pendingMouseTarget.HasValue)
+                hitbox.SetFixedMousePosition(pendingMouseTarget.Value);
 
             hitbox.Initialize(transform, skillInfo.followCaster);
         }
@@ -103,19 +95,21 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
+    public void EndSkill()
+    {
+        animator.applyRootMotion = false;
+        playerMovement.ResumeAgent();
+        animator.SetTrigger("EndSkill");
+    }
+
     public float GetSkillCooldown(string skillKey)
     {
         return skillCooldowns.TryGetValue(skillKey, out float cooldown) ? cooldown : 0f;
     }
 
-    public float GetLastUsedTime(string skillKey)
+    public void SetSkillCooldown(string skillKey, float time)
     {
-        return skillLastUsedTime.TryGetValue(skillKey, out float lastTime) ? lastTime : -999f;
-    }
-
-    public void SaveSkillUseTime(string skillKey)
-    {
-        skillLastUsedTime[skillKey] = Time.time;
+        skillCooldowns[skillKey] = time;
     }
 
     public void UpdateCurrentJob(JobManager.JobType newJob)
@@ -124,9 +118,35 @@ public class PlayerSkillController : MonoBehaviour
         LoadSkillsFromData(skillData);
     }
 
-    public SkillInfo GetSkillInfoByKey(string skillKey)
+    public void LoadSkillsFromData(JobSkillData newData)
     {
-        return SkillEquipManager.Instance.GetEquippedSkill(skillKey);
+        if (newData == null)
+        {
+            Debug.LogWarning("[SkillController] 스킬 데이터가 없습니다.");
+            return;
+        }
+
+        skillData = newData;
+        hitboxPrefabs.Clear();
+        effectPrefabs.Clear();
+        skillCooldowns.Clear();
+
+        currentJob = skillData.jobType.ToString();
+
+        foreach (var skill in skillData.skills)
+        {
+            string key = currentJob + "_" + skill.skillKey;
+
+            if (skill.hitboxPrefab != null)
+                hitboxPrefabs[key] = skill.hitboxPrefab;
+
+            if (skill.effectPrefab != null)
+                effectPrefabs[key] = skill.effectPrefab;
+
+            skillCooldowns[skill.skillKey] = skill.cooldown;
+        }
+
+        Debug.Log($"[SkillController] {currentJob} 스킬 데이터 로드 완료");
     }
 
     private SkillInfo FindSkillInfoByName(string skillName)
