@@ -155,9 +155,9 @@ public class PlayerAttack : MonoBehaviour
 
         movement.ResumeAgent();
 
-        Debug.Log("공격 초기화");
-
         stateMachine.ChangeState(PlayerState.Idle);
+
+        Debug.Log("공격 초기화");
     }
 
     //public void ForceEndCombo()

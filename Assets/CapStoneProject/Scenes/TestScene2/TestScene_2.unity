@@ -806,7 +806,8 @@ PrefabInstance:
       value: Player_UI_Canvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5240111615429959381, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
@@ -1683,7 +1684,7 @@ MonoBehaviour:
     avatar: {fileID: 9000000, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d, type: 3}
     modelPrefab: {fileID: 5019315028825407237, guid: e27a9c8375a34ad4b9025a2627468007, type: 3}
   - jobType: 1
-    animatorController: {fileID: 9100000, guid: e9c3d2c153daaa14f86cd90d11a61662, type: 2}
+    animatorController: {fileID: 9100000, guid: 4625bf6b9577bed4bad538eb5bf061cc, type: 2}
     avatar: {fileID: 9000000, guid: e53c0edb812c5344698949e4671d1a2c, type: 3}
     modelPrefab: {fileID: 1948535115976630, guid: f7902c99c75cad34f934860c6b6ddd9e, type: 3}
   - jobType: 2
