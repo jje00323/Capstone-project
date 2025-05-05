@@ -17,6 +17,10 @@ public class EnemyStunnedState : EnemyState
         enemy.animator.ResetTrigger("Die");
         enemy.animator.SetBool("IsMoving", false);
 
+        // 랜덤 인덱스 설정
+        int index = Random.Range(0, 2); // 0 또는 1
+        enemy.animator.SetInteger("StunnedIndex", index);
+
         // Stunned 트리거 설정
         enemy.animator.SetTrigger("Stunned");
     }
