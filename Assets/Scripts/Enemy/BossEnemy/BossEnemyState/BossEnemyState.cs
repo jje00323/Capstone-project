@@ -6,6 +6,7 @@ public abstract class BossEnemyState
 {
     protected BossEnemyFSM boss;
 
+
     public BossEnemyState(BossEnemyFSM boss)
     {
         this.boss = boss;

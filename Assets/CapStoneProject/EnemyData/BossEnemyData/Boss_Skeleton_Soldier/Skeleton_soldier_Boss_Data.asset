@@ -17,7 +17,7 @@ MonoBehaviour:
   portrait: {fileID: 0}
   maxHP: 1000
   hpBarCount: 10
-  moveSpeed: 5
+  moveSpeed: 2.5
   attackPower: 10
   animatorController: {fileID: 9100000, guid: f7b1c1b410a88544cadb6f9a323de88f, type: 2}
   phaseThresholds: []

@@ -866,6 +866,7 @@ MonoBehaviour:
   currentHP: 100
   target: {fileID: 0}
   moveSpeed: 0
+  lastAttackIndex: -1
 --- !u!114 &4978133360219689201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -881,6 +882,7 @@ MonoBehaviour:
   bossData: {fileID: 11400000, guid: 54cf017d3e0cc7d44af7f3a2f4a86511, type: 2}
   bossStatus: {fileID: -5813994297054512813}
   patternController: {fileID: 9221184078685343720}
+  lockRotation: 0
 --- !u!114 &9221184078685343720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -893,6 +895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3a425962bbe697449377a3bd9208423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bossFSM: {fileID: 4978133360219689201}
 --- !u!114 &7105289665662118133
 MonoBehaviour:
   m_ObjectHideFlags: 0

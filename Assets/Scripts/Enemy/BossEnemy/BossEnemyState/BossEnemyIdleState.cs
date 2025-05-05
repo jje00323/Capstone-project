@@ -22,15 +22,15 @@ public class BossEnemyIdleState : BossEnemyState
     private float GetDelayBasedOnAttackIndex(int index)
     {
         if (index >= 0 && index <= 2) // 가벼운 공격
-            return Random.Range(1.0f, 2.0f);
+            return Random.Range(1.2f, 2.3f);
         else if (index >= 3 && index <= 5) // 콤보 공격
-            return Random.Range(2.0f, 4.0f);
+            return Random.Range(1.5f, 2.5f);
         else if (index == 6 || index == 7) // 점프/스핀 공격
-            return Random.Range(3.0f, 4.0f);
+            return Random.Range(2.0f, 2.8f);
         else if (index == 8) // 벽 탈출
-            return Random.Range(1.0f, 2.0f);
+            return Random.Range(2.0f, 2.8f);
         else // 예외처리
-            return Random.Range(1.0f, 2.0f);
+            return Random.Range(1.5f, 2.5f);
     }
 
     public override void Update()
@@ -44,24 +44,15 @@ public class BossEnemyIdleState : BossEnemyState
 
         if (timer >= delay)
         {
-
             bool isNearWall = boss.CheckWallNearby();
 
-            if (isNearWall)
+            if (boss.patternController.HasAvailablePattern(distance, isNearWall))
             {
                 boss.ChangeState(boss.patternState);
-                return;
-            }
-
-            if (distance >= 6f)
-            {
-                boss.ChangeState(boss.moveState);
-                return;
             }
             else
             {
-                boss.ChangeState(boss.patternState);
-                return;
+                boss.ChangeState(boss.moveState); // 쿨타임 중이므로 이동해서 다시 접근
             }
         }
     }

@@ -9,6 +9,9 @@ public class BossEnemyFSM : BaseEnemyFSM
     public BossEnemyStatus bossStatus;
     public BossEnemyPatternController patternController;
 
+    [Header("상태 제어")]
+    public bool lockRotation = false;
+
     [Header("상태")]
     public BossEnemyState currentState;
     public BossEnemyIdleState idleState;
@@ -79,5 +82,10 @@ public class BossEnemyFSM : BaseEnemyFSM
         }
 
         return false;
+    }
+
+    public void EndBossPattern()
+    {
+        ChangeState(idleState);
     }
 }

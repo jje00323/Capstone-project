@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class BossEnemyPatternController : MonoBehaviour
@@ -6,10 +8,12 @@ public class BossEnemyPatternController : MonoBehaviour
     private Dictionary<int, float> cooldownTimers = new Dictionary<int, float>();
     private int lastUsedIndex = -1;
 
-    private readonly float comboMinCooldown = 5f;
-    private readonly float comboMaxCooldown = 10f;
-    private readonly float farMinCooldown = 5f;
-    private readonly float farMaxCooldown = 10f;
+    public BossEnemyFSM bossFSM; // 인스펙터에서 직접 연결
+
+    private readonly float comboMinCooldown = 12f;
+    private readonly float comboMaxCooldown = 20f;
+    private readonly float farMinCooldown = 16f;
+    private readonly float farMaxCooldown = 28f;
 
     private readonly int[] lightAttacks = { 0, 1, 2 };
     private readonly int[] comboAttacks = { 3, 4, 5 };
@@ -62,19 +66,23 @@ public class BossEnemyPatternController : MonoBehaviour
             else
                 return -1; // 선택 실패
         }
-        else if (distanceToPlayer > 3f && distanceToPlayer <= 6f) // Far 공격
-        {
-            List<int> available = new List<int>();
-            foreach (int i in farAttacks)
-            {
-                if (Time.time >= cooldownTimers[i])
-                    available.Add(i);
-            }
 
-            if (available.Count > 0)
-                return SelectRandomAndRecord(available, useCooldown: true, isCombo: false);
-            else
-                return -1; // 선택 실패
+         //Far 공격: Spin Attack (Index 7, 3~8m)
+        if (distanceToPlayer > 3f && distanceToPlayer <= 8f)
+        {
+            if (farAttacks.Contains(7) && Time.time >= cooldownTimers[7])
+            {
+                return SelectSingleAndRecord(7);
+            }
+        }
+
+        // Far 공격: Jump Attack (Index 6, 8~12m)
+        if (distanceToPlayer > 8f && distanceToPlayer <= 12f)
+        {
+            if (farAttacks.Contains(6) && Time.time >= cooldownTimers[6])
+            {
+                return SelectSingleAndRecord(6);
+            }
         }
 
         return -1; // 6 이상일 경우 Far 공격 가능할 때만 PatternState 들어오게 설계
@@ -97,5 +105,70 @@ public class BossEnemyPatternController : MonoBehaviour
         }
 
         return selected;
+    }
+
+    // 단일 인덱스를 반환하고 기록하는 헬퍼 메서드
+    private int SelectSingleAndRecord(int index)
+    {
+        lastUsedIndex = index;
+
+        // 쿨타임 적용 대상일 경우
+        if (index == 6 || index == 7)
+        {
+            float cooldown = Random.Range(farMinCooldown, farMaxCooldown);
+            cooldownTimers[index] = Time.time + cooldown;
+        }
+
+        return index;
+    }
+    public bool HasAvailablePattern(float distanceToPlayer, bool isNearWall)
+    {
+        if (isNearWall)
+            return true; // 벽 탈출 패턴은 항상 사용 가능
+
+        // 0~3m: Close 공격
+        if (distanceToPlayer <= 3f)
+        {
+            foreach (int i in lightAttacks)
+                if (i != lastUsedIndex)
+                    return true;
+
+            foreach (int i in comboAttacks)
+                if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
+                    return true;
+        }
+
+        // 3~8m: Spin Attack (index 7)
+        if (distanceToPlayer > 3f && distanceToPlayer <= 8f)
+        {
+            if (farAttacks.Contains(7) && Time.time >= cooldownTimers[7])
+                return true;
+        }
+
+        // 8~12m: Jump Attack (index 6)
+        if (distanceToPlayer > 8f && distanceToPlayer <= 12f)
+        {
+            if (farAttacks.Contains(6) && Time.time >= cooldownTimers[6])
+                return true;
+        }
+
+        return false;
+    }
+    public void EndBossPattern()
+    {
+        if (bossFSM != null)
+        {
+            Debug.Log("[애니메이션 이벤트] EndBossPattern 호출됨");
+            bossFSM.EndBossPattern(); // FSM에서 상태 전환 처리
+        }
+        else
+        {
+            Debug.LogWarning("BossEnemyFSM가 연결되지 않았습니다.");
+        }
+    }
+
+    public void Hmm()
+    {
+        Debug.Log("이벤트 된다!!");
     }
 }

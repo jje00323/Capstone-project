@@ -3,7 +3,11 @@ using UnityEngine;
 public class BossEnemyMoveState : BossEnemyState
 {
     private Transform target;
-    private readonly float rotationSpeed = 5f;
+    private readonly float rotationSpeed = 3f;
+
+    private float rotationCheckInterval = 0.3f;
+    private float rotationTimer = 0f;
+    private Vector3 cachedDirection = Vector3.zero;
 
     public BossEnemyMoveState(BossEnemyFSM boss) : base(boss) { }
 
@@ -11,6 +15,21 @@ public class BossEnemyMoveState : BossEnemyState
     {
         target = boss.bossStatus.target;
         boss.Animator.SetBool("IsMoving", true);
+
+        // 처음 진입 시 즉시 회전
+        if (target != null)
+        {
+            Vector3 lookDir = (target.position - boss.transform.position);
+            lookDir.y = 0f;
+
+            if (lookDir != Vector3.zero)
+            {
+                boss.transform.rotation = Quaternion.LookRotation(lookDir);
+                cachedDirection = lookDir.normalized; // 처음 방향 저장
+            }
+        }
+
+        rotationTimer = 0f; // 회전 타이머 초기화
     }
 
     public override void Update()
@@ -26,31 +45,15 @@ public class BossEnemyMoveState : BossEnemyState
             return;
         }
 
-        if (distance >= 6f)
-        {
-            MoveTowardsTarget();
-            return;
-        }
-
-        if (distance > 3f && distance < 6f)
-        {
-            if (boss.patternController.IsFarPatternReady())
-            {
-                boss.ChangeState(boss.patternState);
-                return;
-            }
-            else
-            {
-                MoveTowardsTarget();
-                return;
-            }
-        }
-
-        if (distance <= 3f)
+        // 거리 ≤ 12f → 패턴 가능성 있음
+        if (distance <= 12f && boss.patternController.HasAvailablePattern(distance, boss.CheckWallNearby()))
         {
             boss.ChangeState(boss.patternState);
             return;
         }
+
+        // 거리 > 12f → 계속 이동
+        MoveTowardsTarget();
     }
 
     private void MoveTowardsTarget()
@@ -60,12 +63,26 @@ public class BossEnemyMoveState : BossEnemyState
 
         boss.transform.position += direction * boss.bossStatus.moveSpeed * Time.deltaTime;
 
-        if (direction != Vector3.zero)
+        // 회전은 일정 간격마다 갱신된 방향으로만
+        rotationTimer += Time.deltaTime;
+
+        if (rotationTimer >= rotationCheckInterval)
         {
-            Quaternion rot = Quaternion.LookRotation(direction);
+            rotationTimer = 0f;
+
+            if (direction != Vector3.zero)
+            {
+                cachedDirection = direction; // 최신 방향 저장
+            }
+        }
+
+        // 매 프레임 보간 회전 → cachedDirection 기준
+        if (cachedDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(cachedDirection);
             boss.transform.rotation = Quaternion.Slerp(
                 boss.transform.rotation,
-                rot,
+                targetRotation,
                 Time.deltaTime * rotationSpeed
             );
         }
