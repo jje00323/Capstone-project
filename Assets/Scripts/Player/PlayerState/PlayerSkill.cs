@@ -7,12 +7,14 @@ public class PlayerSkill : MonoBehaviour
     private PlayerStateMachine stateMachine;
     private PlayerMovement playerMovement;
     private PlayerSkillController skillController;
+    private Animator animator;
 
     private void Awake()
     {
         stateMachine = GetComponent<PlayerStateMachine>();
         playerMovement = GetComponent<PlayerMovement>();
         skillController = GetComponent<PlayerSkillController>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -43,5 +45,12 @@ public class PlayerSkill : MonoBehaviour
 
         // 실제 스킬 실행 위임
         skillController.ExecuteSkill(skillKey, mouseTarget);
+    }
+    public void EndSkill()
+    {
+        animator.applyRootMotion = false;
+        playerMovement.ResumeAgent();
+        animator.SetTrigger("EndSkill");
+        stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
     }
 }

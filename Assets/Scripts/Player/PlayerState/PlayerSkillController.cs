@@ -95,13 +95,6 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
-    public void EndSkill()
-    {
-        animator.applyRootMotion = false;
-        playerMovement.ResumeAgent();
-        animator.SetTrigger("EndSkill");
-    }
-
     public float GetSkillCooldown(string skillKey)
     {
         return skillCooldowns.TryGetValue(skillKey, out float cooldown) ? cooldown : 0f;
