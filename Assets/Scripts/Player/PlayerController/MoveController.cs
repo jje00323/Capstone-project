@@ -63,11 +63,7 @@ public class MoveController : MonoBehaviour
                 if (spawnEffect)
                     SpawnMoveEffect(targetPosition);
             }
-            else
-            {
-                movement.SetPendingMove(targetPosition);
-                Debug.LogWarning($"현재 상태 우클릭 이동 X {targetPosition}");
-            }
+            
         }
     }
 
@@ -91,8 +87,4 @@ public class MoveController : MonoBehaviour
         }
     }
 
-    public void EndOfInput()
-    {
-        inputHandler.AllowRightClick();
-    }
 }

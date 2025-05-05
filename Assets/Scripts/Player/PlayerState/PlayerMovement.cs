@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     private float stopDistanceBuffer = 0.2f;
 
     private float defaultStoppingDistance = 0.5f;
-    private Vector3? pendingMoveTarget = null;
 
     void Awake()
     {
@@ -48,14 +47,7 @@ public class PlayerMovement : MonoBehaviour
             else if (!isMoving && stateMachine.CurrentState != PlayerState.Idle)
                 stateMachine.ChangeState(PlayerState.Idle);
         }
-
-        // 예약된 이동이 가능한 상태일 때 실행
-        if ((stateMachine.CurrentState == PlayerState.Idle || stateMachine.CurrentState == PlayerState.Moving)
-            && pendingMoveTarget.HasValue)
-        {
-            agent.SetDestination(pendingMoveTarget.Value);
-            pendingMoveTarget = null;
-        }
+        
 
         RotateTowardsMovementDirection();
     }
@@ -71,7 +63,6 @@ public class PlayerMovement : MonoBehaviour
             onArrivedCallback = null;
 
             agent.ResetPath();
-            pendingMoveTarget = null;
         }
     }
 
@@ -83,10 +74,7 @@ public class PlayerMovement : MonoBehaviour
         ResumeAgent();
     }
 
-    public void SetPendingMove(Vector3 destination)
-    {
-        pendingMoveTarget = destination;
-    }
+  
 
     public void RotateTowardsMovementDirection()
     {
@@ -139,15 +127,6 @@ public class PlayerMovement : MonoBehaviour
         agent.isStopped = false;
     }
 
-    public void ResumePendingMove()
-    {
-        if (pendingMoveTarget.HasValue)
-        {
-            agent.SetDestination(pendingMoveTarget.Value);
-            ResumeAgent();
-            pendingMoveTarget = null;
-        }
-    }
 
     public void ResetStoppingDistance()
     {
@@ -169,16 +148,6 @@ public class PlayerMovement : MonoBehaviour
         return agent.isStopped;
     }
 
-    public void ClearPendingMove()
-    {
-        pendingMoveTarget = null;
-        agent.ResetPath();
-    }
-
-    public bool HasPendingMoveTarget()
-    {
-        return pendingMoveTarget.HasValue;
-    }
 
     public void ShowSkillRangeIndicator(Vector3 center, float radius)
     {
