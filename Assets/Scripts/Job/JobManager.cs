@@ -153,7 +153,7 @@ public class JobManager : MonoBehaviour
         var attack = player.GetComponent<PlayerAttack>();
         if (attack != null)
         {
-            attack.ForceEndCombo();
+            //attack.ForceEndCombo();
         }
 
         //PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();

@@ -954,6 +954,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: a10913c47a691ad43a79171bcb869e52, type: 2}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2df4d158319d2ee4f9302596d8468c4c, type: 2}
     - target: {fileID: 8029773597690982829, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -967,7 +979,8 @@ PrefabInstance:
       value: Player_UI_Canvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5240111615429959381, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5594679619590348858, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       insertIndex: -1
@@ -1488,8 +1501,8 @@ MonoBehaviour:
     modelPrefab: {fileID: 1288249998622640856, guid: 128413c070f18f7478a273d832c7683d, type: 3}
   - jobType: 2
     animatorController: {fileID: 9100000, guid: 0fa1d9419ba5bb045b4eecb5397e0baa, type: 2}
-    avatar: {fileID: 9000000, guid: 35c44a97c30e4e946a0f4d3310613b95, type: 3}
-    modelPrefab: {fileID: 3587820073456374130, guid: 04f91ba3e9125bb499525dcb67970b3a, type: 3}
+    avatar: {fileID: 9000000, guid: 264088356dc073e4a822be9e71c15663, type: 3}
+    modelPrefab: {fileID: 6164553973358529790, guid: 3cb607beb56f477489ba7d24c5b1ef37, type: 3}
   allJobSkillData:
   - {fileID: 11400000, guid: b9487591046bc214f8a040ce1d323c2e, type: 2}
   - {fileID: 11400000, guid: 8fc598f3ef90bd446a494d248d8e500e, type: 2}
@@ -2077,7 +2090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2228435612166614133}
-  offset: {x: 0, y: 7, z: -4.5}
+  offset: {x: 0, y: 9, z: -5.5}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0

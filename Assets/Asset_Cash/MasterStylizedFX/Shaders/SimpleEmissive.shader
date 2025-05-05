@@ -35,11 +35,10 @@ Shader "EmissiveParticle"
 
 		
 
-		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" "UniversalMaterialType"="Unlit" }
+		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent+50" "UniversalMaterialType"="Unlit" }
 
 		Cull Off
 		AlphaToMask Off
-
 		
 
 		HLSLINCLUDE
