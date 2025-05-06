@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f51ba17d3161a43bdfe1c6adc4d83b, type: 3}
+  m_Name: Mage_Q_UP
+  m_EditorClassIdentifier: 
+  skillName: "\uB9C8\uB825\uD0C4"
+  upgradeOptions:
+  - skillKey: W
+    skillName: "\uD3ED\uBC1C\uD0C4"
+    skillIcon: {fileID: 0}
+    description: "\uC774\uB7EC\uCFF5\uC800\uB7EC\uCFF5"
+    cooldown: 1
+    hitboxPrefab: {fileID: 334107297067051712, guid: 1876395792287184b9865fcba75c1e6e, type: 3}
+    effectPrefab: {fileID: 5732568103209889489, guid: 95660908f13df1f41a2b9d1efd5a0695, type: 3}
+    effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: 95a75e668a9b48741b6f8f1ad21e9c7b, type: 2}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"

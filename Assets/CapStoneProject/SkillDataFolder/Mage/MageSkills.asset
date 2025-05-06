@@ -18,7 +18,7 @@ MonoBehaviour:
     skillName: "\uB9C8\uB825\uD0C4"
     skillIcon: {fileID: 21300000, guid: 523bf6f3c1806ce48b9c36cf69041836, type: 3}
     description: "\uC804\uBC29\uC5D0 \uB9C8\uB825\uAD6C\uB97C \uBC1C\uC0AC\uD55C\uB2E4"
-    cooldown: 3
+    cooldown: 1
     hitboxPrefab: {fileID: 334107297067051712, guid: 699e386b39286b44b98e3cfdc6f8ece5, type: 3}
     effectPrefab: {fileID: 5732568103209889489, guid: 471d7d8ee6b70a34faa69017aa0c6ea1, type: 3}
     effectDuration: 1
@@ -30,7 +30,7 @@ MonoBehaviour:
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: W
+  - skillKey: Q
     skillName: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     skillIcon: {fileID: 21300000, guid: a96f5f25e6b399d4ea75828a29498b73, type: 3}
     description: ...
@@ -46,7 +46,7 @@ MonoBehaviour:
     maxLevel: 10
     isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: E
+  - skillKey: Q
     skillName: "\uB9C8\uB825\uD3ED\uBC1C"
     skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
     description: ...
@@ -63,7 +63,7 @@ MonoBehaviour:
     isUnlocked: 1
     Feature: 
   - skillKey: R
-    skillName: "\uC544\uBAB0\uB791"
+    skillName: "\uB9C8\uB825\uAC00\uC2DC"
     skillIcon: {fileID: 21300000, guid: 10dc9c67ffb56dd4f800103585f26888, type: 3}
     description: ...
     cooldown: 3

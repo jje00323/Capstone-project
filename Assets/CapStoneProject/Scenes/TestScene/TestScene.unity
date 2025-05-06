@@ -956,7 +956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: allUpgradeData.Array.size
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: allUpgradeData.Array.data[3]
@@ -966,6 +966,18 @@ PrefabInstance:
       propertyPath: allUpgradeData.Array.data[4]
       value: 
       objectReference: {fileID: 11400000, guid: 2df4d158319d2ee4f9302596d8468c4c, type: 2}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 93151d349553faf41b7923d5b9b3cca5, type: 2}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 178efbd1e376c1f44874fdaffab4d9d8, type: 2}
+    - target: {fileID: 7046849520389181608, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
+      propertyPath: allUpgradeData.Array.data[7]
+      value: 
+      objectReference: {fileID: 11400000, guid: 93151d349553faf41b7923d5b9b3cca5, type: 2}
     - target: {fileID: 8029773597690982829, guid: 7e59408484a40d149b25bee9834f7ed8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1325,6 +1337,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

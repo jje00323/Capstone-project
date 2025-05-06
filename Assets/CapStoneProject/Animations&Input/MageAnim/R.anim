@@ -170483,7 +170483,7 @@ AnimationClip:
   m_Events:
   - time: 0.33333334
     functionName: ActivateHitbox
-    data: "\uC544\uBAB0\uB791"
+    data: "\uB9C8\uB825\uAC00\uC2DC"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f51ba17d3161a43bdfe1c6adc4d83b, type: 3}
+  m_Name: Mage_R_UP
+  m_EditorClassIdentifier: 
+  skillName: "\uB9C8\uB825\uAC00\uC2DC"
+  upgradeOptions:
+  - skillKey: W
+    skillName: "\uC6A9\uC554\uBC14\uC704"
+    skillIcon: {fileID: 0}
+    description: 
+    cooldown: 0
+    hitboxPrefab: {fileID: 9050656858112122589, guid: 1028f51739867954cb475477efdea512, type: 3}
+    effectPrefab: {fileID: 0}
+    effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: ccf13929fa087154295371a5bd2002cc, type: 2}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"
+  - skillKey: E
+    skillName: "\uC5BC\uC74C\uAC00\uC2DC"
+    skillIcon: {fileID: 0}
+    description: 
+    cooldown: 0
+    hitboxPrefab: {fileID: 9050656858112122589, guid: 454852b905eb6c54aa1c48a9878a4fc7, type: 3}
+    effectPrefab: {fileID: 5732568103209889489, guid: 884491d2f75615b42b0932601bdedef8, type: 3}
+    effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 7400000, guid: cb35dac9f701f2749bd98d6ee21115ba, type: 2}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 10
+    isUnlocked: 0
+    Feature: "\uC77C\uBC18"
