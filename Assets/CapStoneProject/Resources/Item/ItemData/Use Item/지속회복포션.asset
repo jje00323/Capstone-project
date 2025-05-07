@@ -9,12 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b697db48bffa4546b8dbffb712932fd, type: 3}
-  m_Name: HelthPotion
+  m_Script: {fileID: 11500000, guid: 478596c9e52f74d44a1123c122bb68a9, type: 3}
+  m_Name: "\uC9C0\uC18D\uD68C\uBCF5\uD3EC\uC158"
   m_EditorClassIdentifier: 
-  itemName: Helth_Potion
-  description: heal 50 Helth
-  icon: {fileID: 21300000, guid: 5930331e7a0a26e4a864cedf00bb4cc3, type: 3}
+  itemName: "\uC9C0\uC18D\uD68C\uBCF5"
+  description: 
+  icon: {fileID: 21300000, guid: e3917cc8e9a28f044a67b8e033f0835e, type: 3}
   itemType: 3
   isStackable: 1
   maxStack: 99
+  effectType: 5
+  amount: 3
+  duration: 5

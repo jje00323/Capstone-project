@@ -4,13 +4,10 @@ using UnityEngine;
 public class ArmorData : EquipmentData
 {
     [Header("°©¿Ê Àü¿ë ½ºÅÈ")]
-    public int physicalDefense;
-    public int magicalDefense;
+    public int Defense;
     public int maxHealth;
-    public float healthRegenRate;
+    
 
     [Header("ºÎ°¡ È¿°ú")]
-    public int fireResistance;
-    public int iceResistance;
-    public bool immuneToStatusEffect;
+    public float healthRegenRate;
 }

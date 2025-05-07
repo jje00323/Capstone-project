@@ -80,8 +80,19 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
         {
             Debug.Log($"[퀵슬롯 사용] {linkedSlot.item.itemName} 사용");
 
-            linkedSlot.quantity--;
+            // === 실제 효과 적용 ===
+            if (linkedSlot.item is ConsumableData consumable)
+            {
+                var player = GameObject.FindWithTag("Player");
+                if (player != null && player.TryGetComponent(out PlayerStatus playerStatus))
+                {
+                    consumable.ApplyEffect(playerStatus);
+                    Debug.Log($"[퀵슬롯 사용] {consumable.effectType} 효과 적용됨");
+                }
+            }
 
+            // 수량 감소 및 UI 갱신
+            linkedSlot.quantity--;
             if (linkedSlot.quantity <= 0)
             {
                 linkedSlot.item = null;

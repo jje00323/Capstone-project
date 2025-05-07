@@ -6,7 +6,8 @@ public class CharacterStatus : MonoBehaviour
 {
     public float maxHP = 100f;
     public float currentHP = 100f;
-
+    public float attack;
+    public float defense;
     public virtual void TakeDamage(float damage)
     {
         currentHP = Mathf.Clamp(currentHP - damage, 0, maxHP);
