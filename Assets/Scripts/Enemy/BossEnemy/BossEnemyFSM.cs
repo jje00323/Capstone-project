@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI; // NavMeshObstacle 사용을 위한 네임스페이스 추가
 
 public class BossEnemyFSM : BaseEnemyFSM
 {
@@ -8,6 +9,7 @@ public class BossEnemyFSM : BaseEnemyFSM
     [Header("연결 컴포넌트")]
     public BossEnemyStatus bossStatus;
     public BossEnemyPatternController patternController;
+    public NavMeshObstacle navMeshObstacle; // 보스 충돌 관통 처리를 위한 필드 추가
 
     [Header("상태 제어")]
     public bool lockRotation = false;
@@ -24,6 +26,7 @@ public class BossEnemyFSM : BaseEnemyFSM
         base.Awake();
         bossStatus = GetComponent<BossEnemyStatus>();
         patternController = GetComponent<BossEnemyPatternController>();
+        navMeshObstacle = GetComponent<NavMeshObstacle>(); // NavMeshObstacle 컴포넌트 참조 초기화
     }
 
     private void Start()

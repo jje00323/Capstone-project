@@ -23,6 +23,9 @@ public class EnemySpawner : MonoBehaviour
 
     private void SetupNavMeshObstacle(GameObject enemy)
     {
+        // 보스는 NavMeshObstacle을 직접 프리팹에서 할당하므로 제외
+        if (enemy.CompareTag("Boss")) return;
+
         var obstacle = enemy.GetComponent<NavMeshObstacle>();
         if (obstacle == null)
         {

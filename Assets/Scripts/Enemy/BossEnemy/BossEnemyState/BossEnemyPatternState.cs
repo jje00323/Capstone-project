@@ -5,13 +5,50 @@ public class BossEnemyPatternState : BossEnemyState
 {
     private Transform target;
 
+    // 충돌 무시용 콜라이더 참조
+    private Collider bossCollider;
+    private Collider playerCollider;
+
     public BossEnemyPatternState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
     {
         target = boss.bossStatus.target;
-        boss.Animator.SetBool("IsMoving", false); // 공격 중 이동 금지
+        boss.Animator.SetBool("IsMoving", false);
+
+        if (bossCollider == null)
+            bossCollider = boss.GetComponent<CapsuleCollider>();
+
+        if (playerCollider == null)
+            playerCollider = GameObject.FindWithTag("Player")?.GetComponent<Collider>();
+
+        if (bossCollider != null && playerCollider != null)
+            Physics.IgnoreCollision(bossCollider, playerCollider, true);
+
+        // NavMeshObstacle 비활성화
+        if (boss.navMeshObstacle != null)
+        {
+            boss.navMeshObstacle.enabled = false;
+            Debug.Log("[PatternState] NavMeshObstacle → Disabled"); // 디버그 출력
+        }
+        else
+        {
+            Debug.LogWarning("[PatternState] NavMeshObstacle 컴포넌트가 없습니다.");
+        }
+
         boss.StartCoroutine(HandlePattern());
+    }
+
+    public override void Exit()
+    {
+        boss.lockRotation = false;
+
+        if (bossCollider != null && playerCollider != null)
+            Physics.IgnoreCollision(bossCollider, playerCollider, false);
+
+        // NavMeshObstacle 다시 활성화
+        if (boss.navMeshObstacle != null)
+            boss.navMeshObstacle.enabled = true;
     }
 
     private IEnumerator HandlePattern()
@@ -38,7 +75,6 @@ public class BossEnemyPatternState : BossEnemyState
 
         if (selectedIndex >= 0 && selectedIndex <= 5) // Close 공격
         {
-            //LockLookAtTargetOnce(); // 기존 LookAtTarget() → 회전 고정용으로 변경
             yield return SmoothLookAtTarget(); // 회전 완료까지 기다림
             boss.Animator.SetTrigger("Attack");
         }
@@ -55,8 +91,6 @@ public class BossEnemyPatternState : BossEnemyState
             LookAwayFromWall();
             boss.Animator.SetTrigger("Attack");
         }
-
-        //boss.ChangeState(boss.idleState); // 임시
     }
 
     private void LookAwayFromWall()
@@ -64,7 +98,6 @@ public class BossEnemyPatternState : BossEnemyState
         Vector3 forward = boss.transform.forward;
         Vector3 opposite = -forward;
         opposite.y = 0f;
-
         boss.transform.rotation = Quaternion.LookRotation(opposite);
     }
 
@@ -76,7 +109,6 @@ public class BossEnemyPatternState : BossEnemyState
             yield break;
         }
 
-        // 1. 점프 직전 기준으로 플레이어 위치 계산 (한 번만)
         Vector3 targetPosition = target.position;
         Vector3 bossPosition = boss.transform.position;
         Vector3 direction = (targetPosition - bossPosition);
@@ -84,28 +116,23 @@ public class BossEnemyPatternState : BossEnemyState
 
         if (direction == Vector3.zero)
         {
-            direction = boss.transform.forward; // 혹시라도 위치가 동일할 경우 보스 정면으로
+            direction = boss.transform.forward;
         }
 
         direction.Normalize();
 
-        // 2. 점프 목적지 설정: 플레이어보다 1.5m 짧은 거리
         float fullDistance = Vector3.Distance(bossPosition, targetPosition);
         float adjustedDistance = Mathf.Max(fullDistance - 1.5f, 0f);
         Vector3 destination = bossPosition + direction * adjustedDistance;
 
-        // 3. 방향을 미리 회전시킴 (점프 시작 시점)
         boss.transform.rotation = Quaternion.LookRotation(direction);
 
-        // 4. Animator 조건 설정
         boss.Animator.SetInteger("AttackIndex", 6);
         boss.Animator.SetTrigger("Attack");
 
-        // 5. 애니메이션 상태 진입 대기
         yield return new WaitUntil(() =>
-            boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_G")); // 정확한 상태 이름 확인 필요
+            boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_G")); // 애니메이션 이름 확인 필요
 
-        // 6. 점프 이동 (도중에 방향/타겟 변경 없음)
         float jumpTime = 0.85f;
         float elapsed = 0f;
         Vector3 startPos = boss.transform.position;
@@ -122,7 +149,6 @@ public class BossEnemyPatternState : BossEnemyState
             yield return null;
         }
 
-        // 7. 최종 위치 보정
         boss.transform.position = new Vector3(destination.x, boss.transform.position.y, destination.z);
     }
 
@@ -135,7 +161,6 @@ public class BossEnemyPatternState : BossEnemyState
         if (direction == Vector3.zero) return;
 
         boss.transform.rotation = Quaternion.LookRotation(direction);
-
         boss.Animator.SetTrigger("Attack");
     }
 
@@ -163,12 +188,5 @@ public class BossEnemyPatternState : BossEnemyState
         boss.lockRotation = true;
     }
 
-    public override void Update() 
-    { 
-        
-    }
-    public override void Exit() 
-    {
-        boss.lockRotation = false;
-    }
+    public override void Update() { }
 }
