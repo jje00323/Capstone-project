@@ -155,7 +155,7 @@ public class Hitbox : MonoBehaviour
 
         foreach (var col in filteredHits)
         {
-            if (CompareTag("PlayerHitbox") && col.CompareTag("Enemy"))
+            if (CompareTag("PlayerHitbox") && col.CompareTag("Enemy") || col.CompareTag("Boss"))
             {
                 var enemy = col.GetComponent<EnemyStatus>();
                 if (enemy != null) enemy.TakeDamage(damage);
@@ -171,7 +171,7 @@ public class Hitbox : MonoBehaviour
     private LayerMask GetTargetLayerMask()
     {
         if (CompareTag("PlayerHitbox"))
-            return LayerMask.GetMask("Enemy", "EnemyIgnorePlayer");
+            return LayerMask.GetMask("Enemy", "EnemyIgnorePlayer", "Boss");
         else if (CompareTag("EnemyHitbox"))
             return LayerMask.GetMask("Player", "PlayerIgnoreEnemy");
 
@@ -244,7 +244,7 @@ public class Hitbox : MonoBehaviour
         if (((1 << other.gameObject.layer) & targetLayer) == 0) return;
 
         // 데미지 적용
-        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy"))
+        if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy") || other.CompareTag("Boss"))
         {
             var enemy = other.GetComponent<EnemyStatus>();
             if (enemy != null) enemy.TakeDamage(damage);
