@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
   m_Name: NewArmor 1
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: "\uAE30\uBCF8 \uD22C\uAD6C"
   description: 
-  icon: {fileID: 0}
-  itemType: 0
+  icon: {fileID: 566335295, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
+  itemType: 1
   isStackable: 0
   maxStack: 1
-  equipmentType: 0
-  allowedJobs: 
-  Defense: 0
-  maxHealth: 0
-  healthRegenRate: 0
+  equipmentType: 1
+  allowedJobs: 00000000
+  Defense: 10
+  MaxHP: 10
+  HealthRegen: 10
