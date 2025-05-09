@@ -61,16 +61,36 @@ public static class StatusEffectApplier
             case StatType.Defense:
                 target.defense += mod.value;
                 break;
-            // MaxMP, CurrentMP는 PlayerStatus일 때만 적용
+
             case StatType.MaxMP:
+                if (target is PlayerStatus mpTarget1)
+                    mpTarget1.maxMP += mod.value;
+                break;
             case StatType.CurrentMP:
-                if (target is PlayerStatus p)
-                {
-                    if (mod.type == StatType.MaxMP)
-                        p.maxMP += mod.value;
-                    else
-                        p.currentMP = Mathf.Clamp(p.currentMP + mod.value, 0, p.maxMP);
-                }
+                if (target is PlayerStatus mpTarget2)
+                    mpTarget2.currentMP = Mathf.Clamp(mpTarget2.currentMP + mod.value, 0, mpTarget2.maxMP);
+                break;
+
+            case StatType.CritRate:
+                if (target is PlayerStatus critTarget1)
+                    critTarget1.critRate += mod.value;
+                break;
+            case StatType.CritDamage:
+                if (target is PlayerStatus critTarget2)
+                    critTarget2.critDamage += mod.value;
+                break;
+            case StatType.MoveSpeed:
+                if (target is PlayerStatus moveTarget)
+                    moveTarget.moveSpeed += mod.value;
+                break;
+
+            // 향후 구현 가능: 경험치 보너스, 회복률 등
+            case StatType.ExpBonus:
+                Debug.Log("[TODO] ExpBonus 적용 로직 필요");
+                break;
+            case StatType.HealthRegen:
+            case StatType.ManaRegen:
+                Debug.Log("[TODO] Regen 스탯은 별도 시스템으로 관리 필요");
                 break;
         }
     }

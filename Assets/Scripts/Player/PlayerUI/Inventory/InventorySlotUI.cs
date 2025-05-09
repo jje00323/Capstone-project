@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class InventorySlotUI : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler,
-    IBeginDragHandler, IDragHandler, IEndDragHandler
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [Header("UI Components")]
     [SerializeField] private Image iconImage;
@@ -13,17 +13,12 @@ public class InventorySlotUI : MonoBehaviour,
 
     private InventorySlot slotData;
     private int _slotIndex;
-    public static InventorySlot draggedSlotData;
-    // 전역 드래그용 아이템 참조
+
     public static ItemData draggedItem;
+    public static MonoBehaviour draggedSlotUI;
 
-    // 슬롯 인덱스 설정
-    public void SetSlotIndex(int index)
-    {
-        _slotIndex = index;
-    }
+    public void SetSlotIndex(int index) => _slotIndex = index;
 
-    // 슬롯 데이터 설정
     public void SetSlot(InventorySlot slot)
     {
         this.slotData = slot;
@@ -40,7 +35,6 @@ public class InventorySlotUI : MonoBehaviour,
         }
     }
 
-    // 슬롯 초기화
     public void ClearSlot()
     {
         iconImage.sprite = null;
@@ -48,19 +42,12 @@ public class InventorySlotUI : MonoBehaviour,
         quantityText.text = "";
     }
 
-    // 슬롯 데이터 반환
-    public InventorySlot GetSlotData()
-    {
-        return slotData;
-    }
+    public InventorySlot GetSlotData() => slotData;
 
-    // 툴팁 표시
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (slotData != null && slotData.item != null)
-        {
             TooltipUI.Instance.Show(slotData.item.itemName, slotData.item.description);
-        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -68,28 +55,76 @@ public class InventorySlotUI : MonoBehaviour,
         TooltipUI.Instance.Hide();
     }
 
-    // 드래그 시작
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (slotData != null && slotData.item != null)
         {
             draggedItem = slotData.item;
-            draggedSlotData = slotData; // 슬롯도 기억
+            draggedSlotUI = this;
             DragIconUI.Instance.Show(slotData.item.icon);
         }
     }
 
-    // 드래그 중
-    public void OnDrag(PointerEventData eventData)
-    {
-        // DragIconUI 자체가 Update에서 마우스를 따라가므로 이 부분은 비워둬도 OK
-    }
+    public void OnDrag(PointerEventData eventData) { }
 
-    // 드래그 종료
     public void OnEndDrag(PointerEventData eventData)
     {
         draggedItem = null;
-        draggedSlotData = null;
+        draggedSlotUI = null;
         DragIconUI.Instance.Hide();
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (draggedItem == null || draggedSlotUI == null) return;
+
+        if (draggedSlotUI == this) return; // 자기 자신이면 무시
+
+        if (draggedSlotUI is QuickSlotUI quick)
+        {
+            // 기존 인벤토리 슬롯 아이템 임시 저장
+            var tempItem = slotData.item;
+            var tempQty = slotData.quantity;
+
+            // 1. 퀵슬롯 -> 인벤토리
+            slotData.SetItem(quick.GetItem(), quick.GetAmount());
+            SetSlot(slotData);
+
+            // 2. 기존 인벤토리 아이템은 퀵슬롯으로
+            quick.SetItem(tempItem, tempQty);
+        }
+
+        else if (draggedSlotUI is InventorySlotUI otherSlot)
+        {
+            // 인벤토리 ↔ 인벤토리 교환
+            var tempItem = slotData.item;
+            var tempQty = slotData.quantity;
+
+            slotData.SetItem(otherSlot.GetSlotData().item, otherSlot.GetSlotData().quantity);
+            SetSlot(slotData);
+
+            otherSlot.GetSlotData().SetItem(tempItem, tempQty);
+            otherSlot.SetSlot(otherSlot.GetSlotData());
+        }
+
+        draggedItem = null;
+        draggedSlotUI = null;
+        DragIconUI.Instance.Hide();
+    }
+
+    public void SetItemToSlot(ItemData item)
+    {
+        slotData.item = item;
+        slotData.quantity = 1;
+        iconImage.sprite = item.icon;
+        iconImage.gameObject.SetActive(true);
+        quantityText.text = "1";
+    }
+
+    public void RemoveItemFromSlot()
+    {
+        slotData.item = null;
+        slotData.quantity = 0;
+        ClearSlot();
     }
 }

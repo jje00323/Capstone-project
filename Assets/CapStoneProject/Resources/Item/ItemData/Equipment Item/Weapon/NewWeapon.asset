@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baced0dade85bdd48a021fd3bcb7c9e1, type: 3}
   m_Name: NewWeapon
   m_EditorClassIdentifier: 
-  itemName: "\uB0A1\uC740 \uAC80"
+  itemName: 
   description: 
   icon: {fileID: 0}
   itemType: 0
   isStackable: 0
   maxStack: 1
   equipmentType: 0
-  attackPower: 10
-  manaAmount: 10
-  manaRegenRate: 10
-  CritRate: 2
-  CritDamage: 5
+  allowedJobs: 
+  attackPower: 0
+  manaAmount: 0
+  manaRegenRate: 0
+  CritRate: 0
+  CritDamage: 0

@@ -8,13 +8,13 @@ public class PlayerStatus : CharacterStatus
     private JobManager.JobType currentJob;
 
 
-    public float maxMP = 50f;
-    public float currentMP = 50f;
+    public float maxMP;
+    public float currentMP;
 
-    public float maxEXP = 100f;
-    public float currentEXP = 0f;
+    public float maxEXP;
+    public float currentEXP;
 
-    public int level = 1;
+    public int level;
 
     
     public float critRate;
@@ -42,8 +42,10 @@ public class PlayerStatus : CharacterStatus
         currentHP = maxHP;
         currentMP = maxMP;
 
-        // 필요 시 공격력, 방어력 등도 추가
-        // 예: attack = data.baseAttack;
+       
+        attack = data.baseAttack;
+        defense = data.baseDefense;
+
 
         UpdateAllUI();
     }

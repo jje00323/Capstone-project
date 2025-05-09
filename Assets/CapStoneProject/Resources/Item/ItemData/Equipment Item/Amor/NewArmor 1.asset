@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
-  m_Name: NewArmor
+  m_Name: NewArmor 1
   m_EditorClassIdentifier: 
-  itemName: "\uAE30\uBCF8 \uC0C1\uC758"
-  description: "\uC5B4\uCA4C\uAD6C\uC800\uCA4C\uAD6C"
-  icon: {fileID: 21300000, guid: d659f7396cd57754eba78763cf986c51, type: 3}
-  itemType: 1
+  itemName: 
+  description: 
+  icon: {fileID: 0}
+  itemType: 0
   isStackable: 0
   maxStack: 1
-  equipmentType: 2
-  allowedJobs: 00000000
-  Defense: 10
-  maxHealth: 10
-  healthRegenRate: 2
+  equipmentType: 0
+  allowedJobs: 
+  Defense: 0
+  maxHealth: 0
+  healthRegenRate: 0

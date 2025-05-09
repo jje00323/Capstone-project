@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class QuickSlotUI : MonoBehaviour, IDropHandler
+public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndDragHandler
 {
     [Header("슬롯 설정")]
     [SerializeField] private int slotIndex;
@@ -15,10 +15,11 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
     [SerializeField] private InputActionReference useSlotAction;
 
     private ItemData currentItem;
-    private int currentAmount;
-    private InventorySlot linkedSlot;
+    private int currentAmount = 1;
 
     private System.Action<InputAction.CallbackContext> cachedCallback;
+
+    public static QuickSlotUI draggedQuickSlot;
 
     private void OnEnable()
     {
@@ -39,7 +40,7 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
         }
     }
 
-    public void SetItem(ItemData item, int amount)
+    public void SetItem(ItemData item, int amount = 1)
     {
         currentItem = item;
         currentAmount = amount;
@@ -49,61 +50,33 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
         countText.text = amount > 1 ? amount.ToString() : "";
     }
 
-    public void SetSlot(InventorySlot slot)
-    {
-        linkedSlot = slot;
-
-        if (slot != null && slot.item != null)
-        {
-            iconImage.sprite = slot.item.icon;
-            iconImage.enabled = true;
-            countText.text = slot.quantity > 1 ? slot.quantity.ToString() : "";
-        }
-        else
-        {
-            ClearSlot();
-        }
-    }
-
     public void ClearSlot()
     {
         currentItem = null;
+        currentAmount = 0;
         iconImage.enabled = false;
         countText.text = "";
     }
 
     public void UseItem()
     {
-        Debug.Log($"[퀵슬롯 사용] 슬롯 {slotIndex} 시도");
-
-        if (linkedSlot != null && linkedSlot.item != null)
+        if (currentItem != null && currentItem is ConsumableData consumable)
         {
-            Debug.Log($"[퀵슬롯 사용] {linkedSlot.item.itemName} 사용");
-
-            // === 실제 효과 적용 ===
-            if (linkedSlot.item is ConsumableData consumable)
+            var player = GameObject.FindWithTag("Player");
+            if (player != null && player.TryGetComponent(out PlayerStatus playerStatus))
             {
-                var player = GameObject.FindWithTag("Player");
-                if (player != null && player.TryGetComponent(out PlayerStatus playerStatus))
-                {
-                    consumable.ApplyEffect(playerStatus);
-                    Debug.Log($"[퀵슬롯 사용] {consumable.effectType} 효과 적용됨");
-                }
+                consumable.ApplyEffect(playerStatus);
             }
 
-            // 수량 감소 및 UI 갱신
-            linkedSlot.quantity--;
-            if (linkedSlot.quantity <= 0)
+            currentAmount--;
+            if (currentAmount <= 0)
             {
-                linkedSlot.item = null;
                 ClearSlot();
             }
             else
             {
-                countText.text = linkedSlot.quantity.ToString();
+                countText.text = currentAmount.ToString();
             }
-
-            InventoryUI.Instance.RefreshAllSlots();
         }
     }
 
@@ -112,45 +85,83 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        var draggedItem = InventorySlotUI.draggedItem;
+        if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null)
+            return;
 
-        if (draggedItem == null)
+        if (InventorySlotUI.draggedItem.itemType != ItemType.Consumable)
         {
-            Debug.LogWarning("드래그된 아이템이 없음");
+            Debug.Log("소비 아이템만 퀵슬롯에 등록 가능합니다.");
             return;
         }
 
-        if (draggedItem.itemType != ItemType.Consumable)
+        // 퀵슬롯 ↔ 퀵슬롯 교환
+        if (InventorySlotUI.draggedSlotUI is QuickSlotUI otherQuickSlot)
         {
-            Debug.Log("소비 아이템만 등록 가능");
-            return;
+            var tempItem = otherQuickSlot.currentItem;
+            var tempAmount = otherQuickSlot.currentAmount;
+
+            otherQuickSlot.SetItem(this.currentItem, this.currentAmount);
+            this.SetItem(tempItem, tempAmount);
+        }
+        else if (InventorySlotUI.draggedSlotUI is InventorySlotUI invSlot)
+        {
+            // 기존 슬롯 내용 제거
+            ClearSlot();
+
+            // 슬롯에서 아이템 복사
+            SetItem(InventorySlotUI.draggedItem, 1);
+            invSlot.RemoveItemFromSlot();
         }
 
-        Debug.Log($"[퀵슬롯 등록] {draggedItem.itemName} → 슬롯 {slotIndex}");
+        InventorySlotUI.draggedItem = null;
+        InventorySlotUI.draggedSlotUI = null;
+        DragIconUI.Instance.Hide();
+    }
 
-        foreach (var slot in InventoryManager.Instance.slots)
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        Debug.Log("[QuickSlotUI] OnBeginDrag 호출됨");
+        if (currentItem != null)
         {
-            if (slot.item == draggedItem)
+            Debug.Log("[QuickSlotUI] 드래그 시작: " + currentItem.itemName);
             {
-                SetSlot(slot);
-                return;
+                InventorySlotUI.draggedItem = currentItem;
+                InventorySlotUI.draggedSlotUI = this;
+                draggedQuickSlot = this;
+                DragIconUI.Instance.Show(currentItem.icon);
             }
         }
-
-        Debug.LogWarning("[퀵슬롯 등록 실패] 인벤토리에 해당 아이템 슬롯을 찾을 수 없음");
+    }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        InventorySlotUI.draggedItem = null;
+        draggedQuickSlot = null;
+        DragIconUI.Instance.Hide();
     }
 
     public void RefreshSlotUI()
     {
-        if (linkedSlot != null && linkedSlot.item != null)
+        if (currentItem != null)
         {
-            iconImage.sprite = linkedSlot.item.icon;
+            iconImage.sprite = currentItem.icon;
             iconImage.enabled = true;
-            countText.text = linkedSlot.quantity > 1 ? linkedSlot.quantity.ToString() : "";
+            countText.text = currentAmount > 1 ? currentAmount.ToString() : "";
         }
         else
         {
             ClearSlot();
         }
+    }
+
+    public void RemoveItemFromSlot()
+    {
+        ClearSlot();
     }
 }
