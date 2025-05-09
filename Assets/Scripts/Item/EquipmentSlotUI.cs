@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndDragHandler
+public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("장비 슬롯 종류")]
     public EquipmentType slotType;
@@ -14,11 +14,15 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
     private EquipmentData equippedItem;
 
+    public static EquipmentSlotUI draggedEquipSlot;
+
     public void OnDrop(PointerEventData eventData)
     {
-        if (InventorySlotUI.draggedItem == null) return;
+        if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null)
+            return;
 
-        if (!(InventorySlotUI.draggedItem is EquipmentData equipment)) return;
+        if (!(InventorySlotUI.draggedItem is EquipmentData equipment))
+            return;
 
         if (equipment.equipmentType != slotType)
         {
@@ -26,11 +30,14 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
             return;
         }
 
-        // 기존 장비 장착
-        EquipmentManager.Instance.EquipItem(equipment);
-        SetItem(equipment);
+        // 기존 장비 백업 (스왑은 안 하지만 여차하면 확장 가능)
+        var oldItem = equippedItem;
 
-        //  draggedSlotUI 안전하게 캐스팅 후 제거
+        // 장비 적용
+        SetItem(equipment);
+        EquipmentManager.Instance.EquipItem(equipment);
+
+        // 출처 제거
         if (InventorySlotUI.draggedSlotUI is InventorySlotUI invSlot)
         {
             invSlot.RemoveItemFromSlot();
@@ -39,27 +46,37 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
         {
             quickSlot.RemoveItemFromSlot();
         }
-        else if (InventorySlotUI.draggedSlotUI is EquipmentSlotUI equipSlot)
+        else if (InventorySlotUI.draggedSlotUI is EquipmentSlotUI otherEquipSlot)
         {
-            equipSlot.RemoveItemFromSlot();
+            otherEquipSlot.RemoveItemFromSlot(); // 만약 장비 → 장비 교환을 고려한다면 SetItem(oldItem)으로 교체
         }
 
-        // 초기화
+        // 정리
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
+        draggedEquipSlot = null;
         DragIconUI.Instance.Hide();
     }
 
     public void SetItem(EquipmentData item)
     {
         equippedItem = item;
-        iconImage.sprite = item.icon;
-        iconImage.enabled = true;
-        nameText.text = item.itemName;
+
+        if (item != null)
+        {
+            iconImage.sprite = item.icon;
+            iconImage.enabled = true;
+            nameText.text = item.itemName;
+        }
+        else
+        {
+            ClearSlot();
+        }
     }
 
     public void ClearSlot()
     {
+        EquipmentManager.Instance.UnequipItem(equippedItem);
         equippedItem = null;
         iconImage.sprite = null;
         iconImage.enabled = false;
@@ -68,25 +85,28 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
     public EquipmentData GetEquippedItem() => equippedItem;
 
-    //  드래그로 장비 해제
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (equippedItem == null) return;
 
         InventorySlotUI.draggedItem = equippedItem;
-        InventorySlotUI.draggedSlotUI = this; //  추가
+        InventorySlotUI.draggedSlotUI = this;
+        draggedEquipSlot = this;
         DragIconUI.Instance.Show(equippedItem.icon);
     }
+
+    public void OnDrag(PointerEventData eventData) { }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         InventorySlotUI.draggedItem = null;
+        InventorySlotUI.draggedSlotUI = null;
+        draggedEquipSlot = null;
         DragIconUI.Instance.Hide();
     }
 
     public void RemoveItemFromSlot()
     {
-        EquipmentManager.Instance.UnequipItem(equippedItem);
         ClearSlot();
     }
 }

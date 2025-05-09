@@ -21,19 +21,11 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void SetSlot(InventorySlot slot)
     {
-        this.slotData = slot;
-
-        if (slot.item != null)
-        {
-            iconImage.sprite = slot.item.icon;
-            iconImage.gameObject.SetActive(true);
-            quantityText.text = slot.quantity.ToString();
-        }
-        else
-        {
-            ClearSlot();
-        }
+        slotData = slot;
+        RefreshSlotUI();
     }
+
+    public InventorySlot GetSlotData() => slotData;
 
     public void ClearSlot()
     {
@@ -42,11 +34,23 @@ public class InventorySlotUI : MonoBehaviour,
         quantityText.text = "";
     }
 
-    public InventorySlot GetSlotData() => slotData;
+    public void RefreshSlotUI()
+    {
+        if (slotData.item != null)
+        {
+            iconImage.sprite = slotData.item.icon;
+            iconImage.gameObject.SetActive(true);
+            quantityText.text = slotData.quantity > 1 ? slotData.quantity.ToString() : "";
+        }
+        else
+        {
+            ClearSlot();
+        }
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (slotData != null && slotData.item != null)
+        if (slotData.item != null)
             TooltipUI.Instance.Show(slotData.item.itemName, slotData.item.description);
     }
 
@@ -57,15 +61,17 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (slotData != null && slotData.item != null)
-        {
-            draggedItem = slotData.item;
-            draggedSlotUI = this;
-            DragIconUI.Instance.Show(slotData.item.icon);
-        }
+        if (slotData.item == null) return;
+
+        draggedItem = slotData.item;
+        draggedSlotUI = this;
+        DragIconUI.Instance.Show(slotData.item.icon);
     }
 
-    public void OnDrag(PointerEventData eventData) { }
+    public void OnDrag(PointerEventData eventData)
+    {
+        // 필수로 있어야 드래그 감지됨 (비워도 됨)
+    }
 
     public void OnEndDrag(PointerEventData eventData)
     {
@@ -76,55 +82,73 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (draggedItem == null || draggedSlotUI == null) return;
+        if (draggedItem == null || draggedSlotUI == null || draggedSlotUI == this) return;
 
-        if (draggedSlotUI == this) return; // 자기 자신이면 무시
+        // 기존 아이템 백업
+        var tempItem = slotData.item;
+        var tempQty = slotData.quantity;
 
-        if (draggedSlotUI is QuickSlotUI quick)
+        switch (draggedSlotUI)
         {
-            // 기존 인벤토리 슬롯 아이템 임시 저장
-            var tempItem = slotData.item;
-            var tempQty = slotData.quantity;
+            // 퀵슬롯 → 인벤토리
+            case QuickSlotUI quick:
+                slotData.item = quick.GetItem();
+                slotData.quantity = quick.GetAmount();
+                RefreshSlotUI();
 
-            // 1. 퀵슬롯 -> 인벤토리
-            slotData.SetItem(quick.GetItem(), quick.GetAmount());
-            SetSlot(slotData);
+                quick.RemoveItemFromSlot();
+                break;
 
-            // 2. 기존 인벤토리 아이템은 퀵슬롯으로
-            quick.SetItem(tempItem, tempQty);
+            // 인벤토리 → 인벤토리
+            case InventorySlotUI otherSlot:
+                var otherData = otherSlot.GetSlotData();
+
+                slotData.item = otherData.item;
+                slotData.quantity = otherData.quantity;
+                RefreshSlotUI();
+
+                otherData.item = tempItem;
+                otherData.quantity = tempQty;
+                otherSlot.RefreshSlotUI();
+                break;
+
+            // 장비슬롯 → 인벤토리
+            case EquipmentSlotUI equipSlot:
+                var equipItem = equipSlot.GetEquippedItem();
+                if (equipItem != null)
+                {
+                    slotData.item = equipItem;
+                    slotData.quantity = 1;
+                    RefreshSlotUI();
+
+                    equipSlot.RemoveItemFromSlot();
+                }
+                break;
         }
 
-        else if (draggedSlotUI is InventorySlotUI otherSlot)
+        //  장비가 장비창으로 옮겨진 경우, 원본 인벤토리 슬롯에서 제거
+        if (draggedSlotUI is InventorySlotUI invSlot && draggedItem is EquipmentData)
         {
-            // 인벤토리 ↔ 인벤토리 교환
-            var tempItem = slotData.item;
-            var tempQty = slotData.quantity;
-
-            slotData.SetItem(otherSlot.GetSlotData().item, otherSlot.GetSlotData().quantity);
-            SetSlot(slotData);
-
-            otherSlot.GetSlotData().SetItem(tempItem, tempQty);
-            otherSlot.SetSlot(otherSlot.GetSlotData());
+            invSlot.RemoveItemFromSlot();
         }
 
+        // 마무리
         draggedItem = null;
         draggedSlotUI = null;
         DragIconUI.Instance.Hide();
     }
 
-    public void SetItemToSlot(ItemData item)
+    public void SetItemToSlot(ItemData item, int quantity = 1)
     {
         slotData.item = item;
-        slotData.quantity = 1;
-        iconImage.sprite = item.icon;
-        iconImage.gameObject.SetActive(true);
-        quantityText.text = "1";
+        slotData.quantity = quantity;
+        RefreshSlotUI();
     }
 
     public void RemoveItemFromSlot()
     {
         slotData.item = null;
         slotData.quantity = 0;
-        ClearSlot();
+        RefreshSlotUI();
     }
 }

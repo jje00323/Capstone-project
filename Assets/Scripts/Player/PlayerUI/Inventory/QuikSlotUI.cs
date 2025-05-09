@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndDragHandler
+public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("ΩΩ∑‘ º≥¡§")]
     [SerializeField] private int slotIndex;
@@ -15,10 +15,9 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndD
     [SerializeField] private InputActionReference useSlotAction;
 
     private ItemData currentItem;
-    private int currentAmount = 1;
+    private int currentAmount = 0;
 
     private System.Action<InputAction.CallbackContext> cachedCallback;
-
     public static QuickSlotUI draggedQuickSlot;
 
     private void OnEnable()
@@ -44,10 +43,7 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndD
     {
         currentItem = item;
         currentAmount = amount;
-
-        iconImage.sprite = item.icon;
-        iconImage.enabled = true;
-        countText.text = amount > 1 ? amount.ToString() : "";
+        RefreshSlotUI();
     }
 
     public void ClearSlot()
@@ -60,7 +56,7 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndD
 
     public void UseItem()
     {
-        if (currentItem != null && currentItem is ConsumableData consumable)
+        if (currentItem is ConsumableData consumable)
         {
             var player = GameObject.FindWithTag("Player");
             if (player != null && player.TryGetComponent(out PlayerStatus playerStatus))
@@ -70,13 +66,9 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndD
 
             currentAmount--;
             if (currentAmount <= 0)
-            {
                 ClearSlot();
-            }
             else
-            {
                 countText.text = currentAmount.ToString();
-            }
         }
     }
 
@@ -85,63 +77,50 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IEndD
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null)
-            return;
+        if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null) return;
+        if (InventorySlotUI.draggedItem.itemType != ItemType.Consumable) return;
 
-        if (InventorySlotUI.draggedItem.itemType != ItemType.Consumable)
+        if (InventorySlotUI.draggedSlotUI is QuickSlotUI draggedQuick)
         {
-            Debug.Log("º“∫Ò æ∆¿Ã≈€∏∏ ƒ¸ΩΩ∑‘ø° µÓ∑œ ∞°¥…«’¥œ¥Ÿ.");
-            return;
+            // QuickSlot <-> QuickSlot ±≥»Ø
+            var tempItem = currentItem;
+            var tempAmount = currentAmount;
+
+            SetItem(draggedQuick.currentItem, draggedQuick.currentAmount);
+            draggedQuick.SetItem(tempItem, tempAmount);
         }
-
-        // ƒ¸ΩΩ∑‘ °Í ƒ¸ΩΩ∑‘ ±≥»Ø
-        if (InventorySlotUI.draggedSlotUI is QuickSlotUI otherQuickSlot)
+        else if (InventorySlotUI.draggedSlotUI is InventorySlotUI draggedInv)
         {
-            var tempItem = otherQuickSlot.currentItem;
-            var tempAmount = otherQuickSlot.currentAmount;
+            var sourceSlot = draggedInv.GetSlotData();
+            if (sourceSlot == null || sourceSlot.item == null) return;
 
-            otherQuickSlot.SetItem(this.currentItem, this.currentAmount);
-            this.SetItem(tempItem, tempAmount);
-        }
-        else if (InventorySlotUI.draggedSlotUI is InventorySlotUI invSlot)
-        {
-            // ±‚¡∏ ΩΩ∑‘ ≥ªøÎ ¡¶∞≈
-            ClearSlot();
-
-            // ΩΩ∑‘ø°º≠ æ∆¿Ã≈€ ∫πªÁ
-            SetItem(InventorySlotUI.draggedItem, 1);
-            invSlot.RemoveItemFromSlot();
+            // ¿Œ∫•≈‰∏Æ °Ê ƒ¸ΩΩ∑‘: ∫πªÁ«ÿº≠ º“¿Ø
+            SetItem(sourceSlot.item, sourceSlot.quantity);
+            draggedInv.RemoveItemFromSlot();
         }
 
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
+        draggedQuickSlot = null;
         DragIconUI.Instance.Hide();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        Debug.Log("[QuickSlotUI] OnBeginDrag »£√‚µ ");
-        if (currentItem != null)
-        {
-            Debug.Log("[QuickSlotUI] µÂ∑°±◊ Ω√¿€: " + currentItem.itemName);
-            {
-                InventorySlotUI.draggedItem = currentItem;
-                InventorySlotUI.draggedSlotUI = this;
-                draggedQuickSlot = this;
-                DragIconUI.Instance.Show(currentItem.icon);
-            }
-        }
+        if (currentItem == null) return;
+
+        InventorySlotUI.draggedItem = currentItem;
+        InventorySlotUI.draggedSlotUI = this;
+        draggedQuickSlot = this;
+        DragIconUI.Instance.Show(currentItem.icon);
     }
+
+    public void OnDrag(PointerEventData eventData) { }
+
     public void OnEndDrag(PointerEventData eventData)
     {
         InventorySlotUI.draggedItem = null;
+        InventorySlotUI.draggedSlotUI = null;
         draggedQuickSlot = null;
         DragIconUI.Instance.Hide();
     }

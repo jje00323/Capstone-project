@@ -48,7 +48,7 @@ public class PlayerAttack : MonoBehaviour
                 animator.SetBool("IsCombat", false);
                 combatTimer = 0f;
 
-                Debug.Log("전투 상태 종료됨: BasicMove 상태로 돌아감");
+               // Debug.Log("전투 상태 종료됨: BasicMove 상태로 돌아감");
             }
         }
     }
@@ -63,7 +63,7 @@ public class PlayerAttack : MonoBehaviour
             if (allowBufferedInput && !canExecuteImmediately)
             {
                 inputBuffered = true;
-                Debug.Log("입력 감지됨 (버퍼 저장)");
+                //Debug.Log("입력 감지됨 (버퍼 저장)");
             }
             else if (canExecuteImmediately)
             {
@@ -93,7 +93,7 @@ public class PlayerAttack : MonoBehaviour
             stateMachine.ChangeState(PlayerState.Attacking);
             animator.SetTrigger("NextCombo");
 
-            Debug.Log("첫 번째 공격 실행");
+            //Debug.Log("첫 번째 공격 실행");
         }
     }
 
@@ -110,7 +110,7 @@ public class PlayerAttack : MonoBehaviour
         canExecuteImmediately = false;
         inputLocked = true;
 
-        Debug.Log($"콤보 {comboIndex}번째 실행됨");
+        //Debug.Log($"콤보 {comboIndex}번째 실행됨");
     }
 
     public void EnableComboInput()
@@ -119,7 +119,7 @@ public class PlayerAttack : MonoBehaviour
         allowBufferedInput = true;
         canExecuteImmediately = false;
         inputLocked = false;
-        Debug.Log("콤보 입력 허용 시작");
+        //Debug.Log("콤보 입력 허용 시작");
     }
 
     public void CanAttack()
@@ -129,11 +129,11 @@ public class PlayerAttack : MonoBehaviour
         if (inputBuffered)
         {
             ExecuteNextCombo();
-            Debug.Log("버퍼된 입력으로 콤보 실행");
+            //Debug.Log("버퍼된 입력으로 콤보 실행");
         }
         else
         {
-            Debug.Log("CanAttack 호출됨 - 아직 입력 없음");
+           // Debug.Log("CanAttack 호출됨 - 아직 입력 없음");
         }
     }
 
@@ -141,7 +141,7 @@ public class PlayerAttack : MonoBehaviour
     {
         allowBufferedInput = false;
         canExecuteImmediately = false;
-        Debug.Log("콤보 입력 종료");
+        //Debug.Log("콤보 입력 종료");
     }
 
     public void EndCombo()
@@ -157,7 +157,7 @@ public class PlayerAttack : MonoBehaviour
 
         stateMachine.ChangeState(PlayerState.Idle);
 
-        Debug.Log("공격 초기화");
+       // Debug.Log("공격 초기화");
     }
 
     //public void ForceEndCombo()
@@ -184,7 +184,7 @@ public class PlayerAttack : MonoBehaviour
         if (skillSystem != null)
         {
             skillSystem.ActivateHitbox(key);
-            Debug.Log($"[기본공격] 히트박스 생성 요청: {key}");
+            //Debug.Log($"[기본공격] 히트박스 생성 요청: {key}");
         }
         else
         {
