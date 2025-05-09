@@ -90,29 +90,23 @@ public class InventorySlotUI : MonoBehaviour,
 
         switch (draggedSlotUI)
         {
-            // 퀵슬롯 → 인벤토리
             case QuickSlotUI quick:
                 slotData.item = quick.GetItem();
                 slotData.quantity = quick.GetAmount();
                 RefreshSlotUI();
-
                 quick.RemoveItemFromSlot();
                 break;
 
-            // 인벤토리 → 인벤토리
             case InventorySlotUI otherSlot:
                 var otherData = otherSlot.GetSlotData();
-
                 slotData.item = otherData.item;
                 slotData.quantity = otherData.quantity;
                 RefreshSlotUI();
-
                 otherData.item = tempItem;
                 otherData.quantity = tempQty;
                 otherSlot.RefreshSlotUI();
                 break;
 
-            // 장비슬롯 → 인벤토리
             case EquipmentSlotUI equipSlot:
                 var equipItem = equipSlot.GetEquippedItem();
                 if (equipItem != null)
@@ -120,17 +114,11 @@ public class InventorySlotUI : MonoBehaviour,
                     slotData.item = equipItem;
                     slotData.quantity = 1;
                     RefreshSlotUI();
-
                     equipSlot.RemoveItemFromSlot();
                 }
                 break;
         }
 
-        //  장비가 장비창으로 옮겨진 경우, 원본 인벤토리 슬롯에서 제거
-        if (draggedSlotUI is InventorySlotUI invSlot && draggedItem is EquipmentData)
-        {
-            invSlot.RemoveItemFromSlot();
-        }
 
         // 마무리
         draggedItem = null;
@@ -147,6 +135,7 @@ public class InventorySlotUI : MonoBehaviour,
 
     public void RemoveItemFromSlot()
     {
+        Debug.Log($"[InventorySlotUI] RemoveItemFromSlot() - 제거 대상: {(slotData.item != null ? slotData.item.itemName : "없음")}");
         slotData.item = null;
         slotData.quantity = 0;
         RefreshSlotUI();

@@ -9,6 +9,7 @@ public class EquipmentManager : MonoBehaviour
     public PlayerStatus playerStatus;
 
     private Dictionary<EquipmentType, EquipmentData> equippedItems = new();
+    private Dictionary<EquipmentType, List<StatModifier>> appliedModifiers = new();
 
     private void Awake()
     {
@@ -41,27 +42,47 @@ public class EquipmentManager : MonoBehaviour
         }
 
         equippedItems[equipment.equipmentType] = equipment;
-        StatusEffectApplier.ApplyStatModifiers(playerStatus, equipment.GetAllStatModifiers());
+
+        var modifiers = equipment.GetAllStatModifiers();
+        appliedModifiers[equipment.equipmentType] = new List<StatModifier>(modifiers);
+        StatusEffectApplier.ApplyStatModifiers(playerStatus, modifiers);
+
         Debug.Log($"[장비 장착] {equipment.itemName} 장착됨");
         Debug.Log($"[스탯 적용 후] maxHP: {playerStatus.maxHP}, maxMP: {playerStatus.maxMP}, " +
               $"Attack: {playerStatus.attack}, Defense: {playerStatus.defense}");
-
     }
 
-    public void UnequipItem(EquipmentData equipment)
+    public void UnequipItem(EquipmentData item)
     {
-        if (equipment == null) return;
-
-        var inverseMods = new List<StatModifier>();
-        foreach (var mod in equipment.statModifiers)
+        if (item == null || playerStatus == null)
         {
-            inverseMods.Add(new StatModifier(mod.type, -mod.value, mod.isFlat));
+            Debug.LogError("[UnequipItem] item 또는 playerStatus가 null");
+            return;
         }
 
-        StatusEffectApplier.ApplyStatModifiers(playerStatus, inverseMods);
-        equippedItems.Remove(equipment.equipmentType);
+        Debug.Log($"[UnequipItem] 장비 해제: {item.itemName}");
 
-        Debug.Log($"[장비 해제] {equipment.itemName} 해제됨");
+        if (!appliedModifiers.TryGetValue(item.equipmentType, out var modifiers) || modifiers == null)
+        {
+            Debug.LogWarning("[UnequipItem] 적용된 스탯 정보가 없습니다");
+            return;
+        }
+
+        var negativeMods = new List<StatModifier>();
+        foreach (var mod in modifiers)
+        {
+            Debug.Log($"[UnequipItem] -{mod.type}: -{mod.value} (flat: {mod.isFlat})");
+            negativeMods.Add(new StatModifier(mod.type, -mod.value, mod.isFlat));
+        }
+
+        StatusEffectApplier.ApplyStatModifiers(playerStatus, negativeMods);
+        appliedModifiers.Remove(item.equipmentType);
+
+        if (equippedItems.ContainsKey(item.equipmentType))
+        {
+            equippedItems.Remove(item.equipmentType);
+            Debug.Log($"[UnequipItem] equippedItems에서 제거됨: {item.equipmentType}");
+        }
     }
 
     public EquipmentData GetEquipped(EquipmentType type)

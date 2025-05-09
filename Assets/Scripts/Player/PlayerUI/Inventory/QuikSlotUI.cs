@@ -80,25 +80,34 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
         if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null) return;
         if (InventorySlotUI.draggedItem.itemType != ItemType.Consumable) return;
 
-        if (InventorySlotUI.draggedSlotUI is QuickSlotUI draggedQuick)
+        var draggedItem = InventorySlotUI.draggedItem;
+        var draggedFrom = InventorySlotUI.draggedSlotUI;
+
+        // 기존 아이템 백업
+        var oldItem = currentItem;
+        var oldAmount = currentAmount;
+
+        // 현재 슬롯에 드래그한 아이템 등록
+        SetItem(draggedItem, draggedFrom is QuickSlotUI qs ? qs.GetAmount() : 1);
+
+        // 드래그 원본에 기존 아이템 되돌려 놓기
+        if (draggedFrom is QuickSlotUI fromQuick)
         {
-            // QuickSlot <-> QuickSlot 교환
-            var tempItem = currentItem;
-            var tempAmount = currentAmount;
-
-            SetItem(draggedQuick.currentItem, draggedQuick.currentAmount);
-            draggedQuick.SetItem(tempItem, tempAmount);
+            fromQuick.SetItem(oldItem, oldAmount);
         }
-        else if (InventorySlotUI.draggedSlotUI is InventorySlotUI draggedInv)
+        else if (draggedFrom is InventorySlotUI fromInv)
         {
-            var sourceSlot = draggedInv.GetSlotData();
-            if (sourceSlot == null || sourceSlot.item == null) return;
-
-            // 인벤토리 → 퀵슬롯: 복사해서 소유
-            SetItem(sourceSlot.item, sourceSlot.quantity);
-            draggedInv.RemoveItemFromSlot();
+            if (oldItem != null)
+            {
+                fromInv.SetItemToSlot(oldItem, oldAmount);
+            }
+            else
+            {
+                fromInv.RemoveItemFromSlot();
+            }
         }
 
+        // 드래그 상태 초기화
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
         draggedQuickSlot = null;

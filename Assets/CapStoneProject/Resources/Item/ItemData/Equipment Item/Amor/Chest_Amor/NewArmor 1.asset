@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
+  m_Name: NewArmor 1
+  m_EditorClassIdentifier: 
+  itemName: ChestAmor
+  description: 
+  icon: {fileID: -607346249, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
+  itemType: 1
+  isStackable: 0
+  maxStack: 1
+  equipmentType: 2
+  allowedJobs: 00000000
+  Defense: 20
+  MaxHP: 50
+  HealthRegen: 10

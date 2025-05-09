@@ -93,5 +93,6 @@ public static class StatusEffectApplier
                 Debug.Log("[TODO] Regen 스탯은 별도 시스템으로 관리 필요");
                 break;
         }
+        Debug.Log($"[ApplyStatModifier] {mod.type} {(mod.value >= 0 ? "+" : "")}{mod.value}");
     }
 }
