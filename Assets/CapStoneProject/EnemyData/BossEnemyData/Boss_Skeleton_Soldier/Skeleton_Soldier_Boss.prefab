@@ -865,6 +865,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 100
   currentHP: 100
+  attack: 0
+  defense: 0
   target: {fileID: 0}
   moveSpeed: 0
   lastAttackIndex: -1

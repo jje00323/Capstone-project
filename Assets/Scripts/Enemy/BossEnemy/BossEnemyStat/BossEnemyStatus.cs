@@ -4,13 +4,17 @@ public class BossEnemyStatus : CharacterStatus
 {
     [Header("전투 상태")]
     public Transform target;
+    [Header("보스 능력치")]
     public float moveSpeed;
 
     [Header("패턴 관리")]
     public int lastAttackIndex = -1; // 패턴별 Idle 딜레이 관리용
 
+    public BossEnemyData bossData { get; private set; }
+
     public void Setup(BossEnemyData data)
     {
+        bossData = data;
         maxHP = data.maxHP;
         currentHP = maxHP;
         moveSpeed = data.moveSpeed;

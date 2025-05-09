@@ -7,6 +7,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
+    [Header("보스 UI 관련")]
+    [SerializeField] private BossEnemyHealthUI bossHPUI;
+
 
     private void Start()
     {
@@ -17,7 +20,35 @@ public class EnemySpawner : MonoBehaviour
         foreach (Transform spawn in spawnPoints)
         {
             GameObject enemy = Instantiate(enemyPrefab, spawn.position, spawn.rotation);
-            SetupNavMeshObstacle(enemy);
+
+            if (enemy.CompareTag("Boss"))
+            {
+                var bossFSM = enemy.GetComponent<BossEnemyFSM>();
+                if (bossFSM != null && bossFSM.bossData != null)
+                {
+                    bossFSM.bossStatus.Setup(bossFSM.bossData);
+                    Debug.Log("[EnemySpawner] Boss Setup 호출 완료");
+
+                    // UI 연결
+                    if (bossHPUI != null)
+                    {
+                        bossHPUI.SetBoss(bossFSM.bossStatus);
+                        Debug.Log("[EnemySpawner] BossHealthUI에 bossStatus 연결 완료");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[EnemySpawner] BossHealthUI가 연결되지 않았습니다.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("[EnemySpawner] bossFSM 또는 bossData가 누락되었습니다.");
+                }
+            }
+            else
+            {
+                SetupNavMeshObstacle(enemy); // 일반 몬스터 처리
+            }
         }
     }
 
