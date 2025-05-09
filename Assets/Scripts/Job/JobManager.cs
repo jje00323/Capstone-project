@@ -39,9 +39,12 @@ public class JobManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
             InitializeJobResources();
             InitializeDashSettings();
             InitializeSkillData();
+            InitializeStatData(); 
+
             Debug.Log("JobManager 인스턴스 생성됨!");
         }
         else
@@ -49,6 +52,7 @@ public class JobManager : MonoBehaviour
             Debug.LogWarning("JobManager 중복 생성! 기존 인스턴스를 유지합니다.");
             Destroy(gameObject);
         }
+
     }
 
     void Start()
@@ -166,6 +170,19 @@ public class JobManager : MonoBehaviour
         //    }
         //}
 
+        var playerStatus = player.GetComponent<PlayerStatus>();
+        var statData = jobStatDict.TryGetValue(newJob, out var data) ? data : null;
+
+        if (playerStatus != null && statData != null)
+        {
+            playerStatus.ApplyJobStats(statData); // 이 함수는 PlayerStatus.cs에 구현해야 함
+        }
+        else
+        {
+            Debug.LogWarning("[JobManager] 스탯 데이터를 찾을 수 없습니다: " + newJob);
+        }
+        playerStatus.SetJob(newJob);
+
         var playerMovement = player.GetComponent<PlayerMovement>();
         if (playerMovement != null)
             playerMovement.UpdateAnimatorReference(playerAnimator);
@@ -196,4 +213,25 @@ public class JobManager : MonoBehaviour
     public void ChangeToWarrior() => ChangeJob(JobType.Warrior);
     public void ChangeToMage() => ChangeJob(JobType.Mage);
     public void ChangeToArcher() => ChangeJob(JobType.Archer);
+
+
+    public JobStatusData[] allJobStatData;
+    private Dictionary<JobType, JobStatusData> jobStatDict;
+
+    private void InitializeStatData()
+    {
+        jobStatDict = new Dictionary<JobType, JobStatusData>();
+        foreach (var data in allJobStatData)
+        {
+            if (!jobStatDict.ContainsKey(data.jobType))
+            {
+                jobStatDict[data.jobType] = data;
+            }
+        }
+    }
+
+    public JobStatusData GetStatData(JobType jobType)
+    {
+        return jobStatDict.TryGetValue(jobType, out var data) ? data : null;
+    }
 }

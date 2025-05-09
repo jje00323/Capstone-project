@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baced0dade85bdd48a021fd3bcb7c9e1, type: 3}
   m_Name: NewWeapon
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: "\uB0A1\uC740 \uAC80"
   description: 
   icon: {fileID: 0}
   itemType: 0
@@ -20,7 +20,7 @@ MonoBehaviour:
   maxStack: 1
   equipmentType: 0
   attackPower: 10
-  manaAmount: 50
+  manaAmount: 10
   manaRegenRate: 10
-  skillEffect: 
-  attackRange: 0
+  CritRate: 2
+  CritDamage: 5

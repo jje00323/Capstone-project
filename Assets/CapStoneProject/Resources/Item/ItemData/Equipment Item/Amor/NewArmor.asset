@@ -12,17 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
   m_Name: NewArmor
   m_EditorClassIdentifier: 
-  itemName: "\uAC11\uC637"
-  description: "\uAE30\uBCF8\uAC11\uC637"
+  itemName: "\uCC9C\uC637"
+  description: 
   icon: {fileID: 0}
-  itemType: 0
+  itemType: 1
   isStackable: 0
   maxStack: 1
-  equipmentType: 0
-  physicalDefense: 40
-  magicalDefense: 40
-  maxHealth: 40
-  healthRegenRate: 2
-  fireResistance: 0
-  iceResistance: 0
-  immuneToStatusEffect: 0
+  equipmentType: 1
+  Defense: 10
+  maxHealth: 10
+  healthRegenRate: 0.2

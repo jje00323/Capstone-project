@@ -1,9 +1,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewRune", menuName = "Inventory/Rune Data")]
-public class RuneData : ItemData
+public class RuneData : EquipmentData
 {
-    [Header("·é½ºÅæ °­È­ È¿°ú")]
     public int strengthBonus;
     public int agilityBonus;
     public int intelligenceBonus;
