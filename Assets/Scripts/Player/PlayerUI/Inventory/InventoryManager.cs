@@ -39,9 +39,9 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     public bool AddItem(ItemData item, int amount)
     {
-        Debug.Log($" [AddItem] {item.itemName} x{amount} 추가 시도");
+        Debug.Log($"[AddItem] {item.itemName} x{amount} 추가 시도");
 
-        // 1. 스택 가능한 슬롯에 추가
+        // 1. 스택 가능한 슬롯에 우선 추가
         foreach (var slot in slots)
         {
             if (slot.item != null && slot.item == item && item.isStackable && slot.quantity < item.maxStack)
@@ -51,11 +51,11 @@ public class InventoryManager : MonoBehaviour
                 slot.quantity += addAmount;
                 amount -= addAmount;
 
-                Debug.Log($" [AddItem] 스택된 슬롯에 {addAmount} 추가됨 (남은 수량: {amount})");
+                Debug.Log($"[AddItem] 기존 스택 슬롯에 {addAmount} 추가됨 → 현재: {slot.quantity}");
 
                 if (amount <= 0)
                 {
-                    RefreshQuickSlots(); //  퀵슬롯 갱신
+                    RefreshQuickSlots();
                     return true;
                 }
             }
@@ -66,16 +66,24 @@ public class InventoryManager : MonoBehaviour
         {
             if (slot.item == null)
             {
-                slot.item = item;
-                slot.quantity = amount;
-                Debug.Log($" [AddItem] 빈 슬롯에 {item.itemName} x{amount} 추가됨");
+                int addAmount = item.isStackable ? Mathf.Min(item.maxStack, amount) : 1;
 
-                RefreshQuickSlots(); //  퀵슬롯 갱신
-                return true;
+                slot.item = item;
+                slot.quantity = addAmount;
+                amount -= addAmount;
+
+                Debug.Log($"[AddItem] 빈 슬롯에 {item.itemName} x{addAmount} 추가됨");
+
+                if (amount <= 0)
+                {
+                    RefreshQuickSlots();
+                    return true;
+                }
             }
         }
 
-        Debug.LogWarning($" [AddItem] 실패: 빈 슬롯 없음. {item.itemName} x{amount} 추가 불가");
+        // 3. 아직도 남은 수량이 있다면 실패
+        Debug.LogWarning($"[AddItem] 실패: {item.itemName} x{amount} 남음 → 인벤토리에 추가 불가");
         return false;
     }
 

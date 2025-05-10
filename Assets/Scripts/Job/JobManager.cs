@@ -55,9 +55,10 @@ public class JobManager : MonoBehaviour
 
     }
 
-    void Start()
+    IEnumerator Start()
     {
-        ChangeJob(currentJob);
+        yield return null; // 한 프레임 대기 → 다른 컴포넌트 초기화 대기
+        ChangeJob(currentJob); // 다시 Basic 직업으로 진입 → ApplyJobStats 호출됨
     }
 
     private void InitializeDashSettings()

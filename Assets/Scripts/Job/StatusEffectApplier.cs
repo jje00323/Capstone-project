@@ -10,10 +10,8 @@ public enum StatType
     CurrentMP,
     Attack,
     Defense,
-    MoveSpeed,
     CritRate,
     CritDamage,
-    ExpBonus,
     HealthRegen,
     ManaRegen
 }
@@ -79,15 +77,7 @@ public static class StatusEffectApplier
                 if (target is PlayerStatus critTarget2)
                     critTarget2.critDamage += mod.value;
                 break;
-            case StatType.MoveSpeed:
-                if (target is PlayerStatus moveTarget)
-                    moveTarget.moveSpeed += mod.value;
-                break;
 
-            // 향후 구현 가능: 경험치 보너스, 회복률 등
-            case StatType.ExpBonus:
-                Debug.Log("[TODO] ExpBonus 적용 로직 필요");
-                break;
             case StatType.HealthRegen:
             case StatType.ManaRegen:
                 Debug.Log("[TODO] Regen 스탯은 별도 시스템으로 관리 필요");

@@ -39,7 +39,14 @@ public class InventorySlotUI : MonoBehaviour,
         if (slotData.item != null)
         {
             iconImage.sprite = slotData.item.icon;
-            iconImage.gameObject.SetActive(true);
+
+          
+            if (!iconImage.gameObject.activeSelf)
+                iconImage.gameObject.SetActive(true);
+
+            if (!quantityText.gameObject.activeSelf)
+                quantityText.gameObject.SetActive(true);
+
             quantityText.text = slotData.quantity > 1 ? slotData.quantity.ToString() : "";
         }
         else

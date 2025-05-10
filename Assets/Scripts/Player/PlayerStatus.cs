@@ -28,6 +28,8 @@ public class PlayerStatus : CharacterStatus
     private Coroutine mpRegenCoroutine;
     private Dictionary<StatType, Coroutine> activeBuffDict = new();
 
+
+    public PlayerStateUI stateUI;
     void Start()
     {
         UpdateAllUI();
@@ -177,6 +179,7 @@ public class PlayerStatus : CharacterStatus
         playerUI.UpdateMP(currentMP, maxMP);
         playerUI.UpdateEXP(currentEXP, maxEXP);
         playerUI.UpdateLevel(level);
+        stateUI?.UpdateStats();
     }
 
     protected override void OnDeath()

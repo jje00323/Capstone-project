@@ -40,33 +40,43 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
         Debug.Log($"[장비 장착 시도] {equipment.itemName} → {slotType}");
 
-        // 기존 장비 백업
         var oldItem = equippedItem;
 
         // 장비 장착
         SetItem(equipment);
         EquipmentManager.Instance.EquipItem(equipment);
 
-        // 기존 장비를 인벤토리에 추가
         if (oldItem != null)
         {
-            bool added = InventoryManager.Instance.AddItem(oldItem, 1);
-            if (!added)
-                Debug.LogWarning($"[장비 교체 실패] 인벤토리에 {oldItem.itemName} 추가 실패");
+            // 교환: 기존 장비를 원래 드래그한 슬롯에 넣기
+            switch (InventorySlotUI.draggedSlotUI)
+            {
+                case InventorySlotUI invSlot:
+                    invSlot.SetItemToSlot(oldItem, 1);
+                    break;
+                case QuickSlotUI quickSlot:
+                    quickSlot.SetItem(oldItem, 1);
+                    break;
+                case EquipmentSlotUI equipSlot:
+                    equipSlot.SetItem(oldItem);
+                    break;
+            }
         }
-
-        // 드래그된 슬롯에서 제거
-        switch (InventorySlotUI.draggedSlotUI)
+        else
         {
-            case InventorySlotUI invSlot:
-                invSlot.RemoveItemFromSlot();
-                break;
-            case QuickSlotUI quickSlot:
-                quickSlot.RemoveItemFromSlot();
-                break;
-            case EquipmentSlotUI equipSlot:
-                equipSlot.RemoveItemFromSlot();
-                break;
+            // 장비창이 비어 있었던 경우 → 원래 슬롯 비우기
+            switch (InventorySlotUI.draggedSlotUI)
+            {
+                case InventorySlotUI invSlot:
+                    invSlot.RemoveItemFromSlot();
+                    break;
+                case QuickSlotUI quickSlot:
+                    quickSlot.RemoveItemFromSlot();
+                    break;
+                case EquipmentSlotUI equipSlot:
+                    equipSlot.RemoveItemFromSlot();
+                    break;
+            }
         }
 
         InventorySlotUI.draggedItem = null;
