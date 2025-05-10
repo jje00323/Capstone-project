@@ -43,49 +43,46 @@ public class BossEnemyPatternController : MonoBehaviour
         if (isNearWall)
             return wallAttackIndex;
 
-        if (distanceToPlayer <= 3f) // Close 공격
-        {
-            List<int> available = new List<int>();
+        List<int> available = new List<int>();
 
-            // Light 공격 (쿨타임 없음, 중복만 방지)
+        // 1. Light 공격 (0~3m)
+        if (distanceToPlayer <= 3f)
+        {
             foreach (int i in lightAttacks)
             {
                 if (i != lastUsedIndex)
                     available.Add(i);
             }
+        }
 
-            // Combo 공격 (쿨타임 존재, 중복 방지)
+        // 2. Combo 공격 (0~6m)
+        if (distanceToPlayer <= 6f)
+        {
             foreach (int i in comboAttacks)
             {
                 if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
                     available.Add(i);
             }
-
-            if (available.Count > 0)
-                return SelectRandomAndRecord(available, useCooldown: true, isCombo: true);
-            else
-                return -1; // 선택 실패
         }
 
-         //Far 공격: Spin Attack (Index 7, 3~8m)
-        if (distanceToPlayer > 3f && distanceToPlayer <= 8f)
+        // 3. Spin 공격 (6~8m)
+        if (distanceToPlayer > 6f && distanceToPlayer <= 8f)
         {
-            if (farAttacks.Contains(7) && Time.time >= cooldownTimers[7])
-            {
-                return SelectSingleAndRecord(7);
-            }
+            if (Time.time >= cooldownTimers[7])
+                available.Add(7);
         }
 
-        // Far 공격: Jump Attack (Index 6, 8~12m)
+        // 4. Jump 공격 (8~12m)
         if (distanceToPlayer > 8f && distanceToPlayer <= 12f)
         {
-            if (farAttacks.Contains(6) && Time.time >= cooldownTimers[6])
-            {
-                return SelectSingleAndRecord(6);
-            }
+            if (Time.time >= cooldownTimers[6])
+                available.Add(6);
         }
 
-        return -1; // 6 이상일 경우 Far 공격 가능할 때만 PatternState 들어오게 설계
+        if (available.Count > 0)
+            return SelectRandomAndRecord(available, useCooldown: true, isCombo: false);
+        else
+            return -1;
     }
 
     private int SelectRandomAndRecord(List<int> list, bool useCooldown, bool isCombo)
@@ -124,31 +121,39 @@ public class BossEnemyPatternController : MonoBehaviour
     public bool HasAvailablePattern(float distanceToPlayer, bool isNearWall)
     {
         if (isNearWall)
-            return true; // 벽 탈출 패턴은 항상 사용 가능
+            return true; // 벽 패턴은 항상 사용 가능
 
-        // 0~3m: Close 공격
+        // 1. Light 공격 (0~3m)
         if (distanceToPlayer <= 3f)
         {
             foreach (int i in lightAttacks)
+            {
                 if (i != lastUsedIndex)
                     return true;
-
-            foreach (int i in comboAttacks)
-                if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
-                    return true;
+            }
         }
 
-        // 3~8m: Spin Attack (index 7)
-        if (distanceToPlayer > 3f && distanceToPlayer <= 8f)
+        // 2. Combo 공격 (0~6m)
+        if (distanceToPlayer <= 6f)
         {
-            if (farAttacks.Contains(7) && Time.time >= cooldownTimers[7])
+            foreach (int i in comboAttacks)
+            {
+                if (i != lastUsedIndex && Time.time >= cooldownTimers[i])
+                    return true;
+            }
+        }
+
+        // 3. Spin 공격 (6~8m)
+        if (distanceToPlayer > 6f && distanceToPlayer <= 8f)
+        {
+            if (Time.time >= cooldownTimers[7])
                 return true;
         }
 
-        // 8~12m: Jump Attack (index 6)
+        // 4. Jump 공격 (8~12m)
         if (distanceToPlayer > 8f && distanceToPlayer <= 12f)
         {
-            if (farAttacks.Contains(6) && Time.time >= cooldownTimers[6])
+            if (Time.time >= cooldownTimers[6])
                 return true;
         }
 

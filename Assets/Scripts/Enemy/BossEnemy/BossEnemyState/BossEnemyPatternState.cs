@@ -141,7 +141,7 @@ public class BossEnemyPatternState : BossEnemyState
         {
             float t = elapsed / jumpTime;
             Vector3 movePos = Vector3.Lerp(startPos, destination, t);
-            movePos.y += Mathf.Sin(t * Mathf.PI) * 2f; // 포물선 효과
+            movePos.y += Mathf.Sin(t * Mathf.PI) * 0.2f; // 포물선 효과
 
             boss.transform.position = movePos;
 

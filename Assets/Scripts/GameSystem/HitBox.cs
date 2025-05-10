@@ -157,8 +157,8 @@ public class Hitbox : MonoBehaviour
         {
             if (CompareTag("PlayerHitbox") && col.CompareTag("Enemy") || col.CompareTag("Boss"))
             {
-                var enemy = col.GetComponent<EnemyStatus>();
-                if (enemy != null) enemy.TakeDamage(damage);
+                var target = col.GetComponent<CharacterStatus>();
+                if (target != null) target.TakeDamage(damage);
             }
             else if (CompareTag("EnemyHitbox") && col.CompareTag("Player"))
             {
@@ -246,8 +246,8 @@ public class Hitbox : MonoBehaviour
         // 데미지 적용
         if (CompareTag("PlayerHitbox") && other.CompareTag("Enemy") || other.CompareTag("Boss"))
         {
-            var enemy = other.GetComponent<EnemyStatus>();
-            if (enemy != null) enemy.TakeDamage(damage);
+            var target = other.GetComponent<CharacterStatus>();
+            if (target != null) target.TakeDamage(damage);
         }
         else if (CompareTag("EnemyHitbox") && other.CompareTag("Player"))
         {

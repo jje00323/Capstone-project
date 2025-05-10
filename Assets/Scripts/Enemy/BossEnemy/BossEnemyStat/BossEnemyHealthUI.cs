@@ -93,7 +93,7 @@ public class BossEnemyHealthUI : MonoBehaviour
             backFill.color = hpColors[nextColorIndex];
         }
 
-        Debug.Log($"[BossHPUI] FrontFill.fillAmount = {frontFill.fillAmount}, color = {frontFill.color}");
+        //Debug.Log($"[BossHPUI] FrontFill.fillAmount = {frontFill.fillAmount}, color = {frontFill.color}");
 
         //Debug.Log($"[BossHPUI] HP: {currentHP} / Segment: {segmentHP}, Bars: {currentBarIndex}");
     }

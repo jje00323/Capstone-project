@@ -29,6 +29,18 @@ public class BossEnemyStatus : CharacterStatus
             target = playerObj.transform;
         }
     }
+    public override void TakeDamage(float damage)
+    {
+        if (IsDead) return;
+
+        currentHP = Mathf.Clamp(currentHP - damage, 0, maxHP);
+        Debug.Log($"[BossEnemyStatus] {damage} 데미지 → 현재 체력: {currentHP}");
+
+        if (IsDead)
+        {
+            OnDeath();
+        }
+    }
 
     protected override void OnDeath()
     {
