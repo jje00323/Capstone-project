@@ -32,7 +32,13 @@ public class PlayerStatus : CharacterStatus
     public PlayerStateUI stateUI;
     void Start()
     {
-        UpdateAllUI();
+        if (stateUI == null)
+        {
+            stateUI = FindObjectOfType<PlayerStateUI>();
+            Debug.Log("[PlayerStatus] stateUI 자동 연결됨");
+        }
+
+        UpdateAllUI(); // 초기 상태도 UI에 반영
     }
 
     public void ApplyJobStats(JobStatusData data)
@@ -47,6 +53,9 @@ public class PlayerStatus : CharacterStatus
        
         attack = data.baseAttack;
         defense = data.baseDefense;
+
+        critRate = data.critical;
+        critDamage = data.critical_Damage;
 
 
         UpdateAllUI();
@@ -175,11 +184,29 @@ public class PlayerStatus : CharacterStatus
 
     public void UpdateAllUI()
     {
+        Debug.Log("[UpdateAllUI] 호출됨");
+
         playerUI.UpdateHP(currentHP, maxHP);
         playerUI.UpdateMP(currentMP, maxMP);
         playerUI.UpdateEXP(currentEXP, maxEXP);
         playerUI.UpdateLevel(level);
-        stateUI?.UpdateStats();
+
+        if (stateUI == null)
+        {
+            Debug.LogWarning("[UpdateAllUI] stateUI가 null입니다. UI가 갱신되지 않습니다.");
+        }
+        else
+        {
+            Debug.Log("[UpdateAllUI] stateUI 연결 확인됨 → UpdateStats() 호출 시도");
+            stateUI.UpdateStats();
+        }
+
+        Debug.Log($"[스탯 상태] " +
+            $"LV: {level}, " +
+            $"HP: {currentHP}/{maxHP}, " +
+            $"MP: {currentMP}/{maxMP}, " +
+            $"ATK: {attack}, DEF: {defense}, " +
+            $"CritRate: {critRate}, CritDmg: {critDamage}");
     }
 
     protected override void OnDeath()

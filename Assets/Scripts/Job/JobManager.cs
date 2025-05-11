@@ -161,22 +161,18 @@ public class JobManager : MonoBehaviour
             //attack.ForceEndCombo();
         }
 
-        //PlayerSkillUI skillUI = FindObjectOfType<PlayerSkillUI>();
-        //if (skillUI != null)
-        //{
-        //    var skillData = GetSkillData(newJob);
-        //    if (skillData != null)
-        //    {
-        //        skillUI.ReloadUI(skillData);
-        //    }
-        //}
+
 
         var playerStatus = player.GetComponent<PlayerStatus>();
         var statData = jobStatDict.TryGetValue(newJob, out var data) ? data : null;
 
         if (playerStatus != null && statData != null)
         {
-            playerStatus.ApplyJobStats(statData); // 이 함수는 PlayerStatus.cs에 구현해야 함
+            playerStatus.stateUI = FindObjectOfType<PlayerStateUI>(); //  stateUI 강제 연결
+
+            playerStatus.ApplyJobStats(statData);
+            playerStatus.SetJob(newJob);
+            playerStatus.UpdateAllUI();
         }
         else
         {
@@ -184,6 +180,7 @@ public class JobManager : MonoBehaviour
         }
         playerStatus.SetJob(newJob);
 
+        
         var playerMovement = player.GetComponent<PlayerMovement>();
         if (playerMovement != null)
             playerMovement.UpdateAnimatorReference(playerAnimator);

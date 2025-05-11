@@ -15,31 +15,46 @@ public class PlayerStateUI : MonoBehaviour
 
     private PlayerStatus player;
 
+
+    private PlayerStatus Player => GameObject.FindWithTag("Player")?.GetComponent<PlayerStatus>();
     void Start()
     {
-        player = GameObject.FindWithTag("Player")?.GetComponent<PlayerStatus>();
-        if (player == null)
-        {
-            Debug.LogError("[PlayerStateUI] PlayerStatus를 찾을 수 없습니다.");
-            return;
-        }
-
         UpdateStats();
     }
 
     public void UpdateStats()
     {
-        if (player == null) return;
+        Debug.Log("[PlayerStateUI] UpdateStats() 호출됨");
 
-        maxHPText.text = $"{player.maxHP:F0}";
-        maxMPText.text = $"{player.maxMP:F0}";
-        attackText.text = $"{player.attack:F1}";
-        defenseText.text = $"{player.defense:F1}";
-        critRateText.text = $"{player.critRate * 100f:F1}%";
-        critDamageText.text = $"{player.critDamage * 100f:F1}%";
+        var playerObj = GameObject.FindWithTag("Player");
+        if (playerObj == null)
+        {
+            Debug.LogWarning("[PlayerStateUI] Player 오브젝트를 찾을 수 없습니다.");
+            return;
+        }
 
-        // 현재는 고정값 또는 외부 연산 필요
-        healthRegenText.text = "-";  // 필요 시 playerStatus에서 값을 가져오도록 확장
+        var status = playerObj.GetComponent<PlayerStatus>();
+        if (status == null)
+        {
+            Debug.LogWarning("[PlayerStateUI] PlayerStatus 컴포넌트가 없습니다.");
+            return;
+        }
+
+        Debug.Log($"[PlayerStateUI] 상태 적용 중 → maxHP: {status.maxHP}, ATK: {status.attack}, CritRate: {status.critRate}");
+
+        if (maxHPText == null || attackText == null)
+        {
+            Debug.LogError("[PlayerStateUI] UI 텍스트 컴포넌트 연결 안됨");
+            return;
+        }
+
+        maxHPText.text = $"{status.maxHP:F0}";
+        maxMPText.text = $"{status.maxMP:F0}";
+        attackText.text = $"{status.attack:F1}";
+        defenseText.text = $"{status.defense:F1}";
+        critRateText.text = $"{status.critRate:F1}%";
+        critDamageText.text = $"{status.critDamage:F1}%";
+        healthRegenText.text = "-";
         manaRegenText.text = "-";
     }
 }
