@@ -78,7 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   duration: 0.2
-  followCaster: 0
   startDelay: 0.2
   repeatCount: 10
   repeatInterval: 0.4
@@ -91,6 +90,11 @@ MonoBehaviour:
   isProjectile: 0
   projectileSpeed: 10
   projectileRigidbody: {fileID: 0}
+  secondaryHitboxPrefab: {fileID: 0}
+  useMousePosition: 0
+  mouseGroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  caster: {fileID: 0}
+  followCaster: 0
