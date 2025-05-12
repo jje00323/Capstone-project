@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
-  m_Name: NewArmor 1
+  m_Name: Basic_Helmet
   m_EditorClassIdentifier: 
   itemName: "\uAE30\uBCF8 \uD22C\uAD6C"
   description: 

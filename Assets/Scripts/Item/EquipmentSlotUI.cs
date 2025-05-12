@@ -10,19 +10,27 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
     [Header("UI")]
     public Image iconImage;
-    public TextMeshProUGUI nameText;
 
     private EquipmentData equippedItem;
+    private int currentAmount = 1;
 
     public static EquipmentSlotUI draggedEquipSlot;
 
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log("[EquipmentSlotUI] OnDrop 시작");
+
         if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null)
+        {
+            Debug.LogWarning("[EquipmentSlotUI] 드래그된 항목이 null입니다.");
             return;
+        }
 
         if (!(InventorySlotUI.draggedItem is EquipmentData equipment))
+        {
+            Debug.LogWarning("[EquipmentSlotUI] 드래그된 아이템이 EquipmentData가 아닙니다.");
             return;
+        }
 
         if (equipment.equipmentType != slotType)
         {
@@ -30,28 +38,47 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
             return;
         }
 
-        // 기존 장비 백업 (스왑은 안 하지만 여차하면 확장 가능)
+        Debug.Log($"[장비 장착 시도] {equipment.itemName} → {slotType}");
+
         var oldItem = equippedItem;
 
-        // 장비 적용
+        // 장비 장착
         SetItem(equipment);
         EquipmentManager.Instance.EquipItem(equipment);
 
-        // 출처 제거
-        if (InventorySlotUI.draggedSlotUI is InventorySlotUI invSlot)
+        if (oldItem != null)
         {
-            invSlot.RemoveItemFromSlot();
+            // 교환: 기존 장비를 원래 드래그한 슬롯에 넣기
+            switch (InventorySlotUI.draggedSlotUI)
+            {
+                case InventorySlotUI invSlot:
+                    invSlot.SetItemToSlot(oldItem, 1);
+                    break;
+                case QuickSlotUI quickSlot:
+                    quickSlot.SetItem(oldItem, 1);
+                    break;
+                case EquipmentSlotUI equipSlot:
+                    equipSlot.SetItem(oldItem);
+                    break;
+            }
         }
-        else if (InventorySlotUI.draggedSlotUI is QuickSlotUI quickSlot)
+        else
         {
-            quickSlot.RemoveItemFromSlot();
-        }
-        else if (InventorySlotUI.draggedSlotUI is EquipmentSlotUI otherEquipSlot)
-        {
-            otherEquipSlot.RemoveItemFromSlot(); // 만약 장비 → 장비 교환을 고려한다면 SetItem(oldItem)으로 교체
+            // 장비창이 비어 있었던 경우 → 원래 슬롯 비우기
+            switch (InventorySlotUI.draggedSlotUI)
+            {
+                case InventorySlotUI invSlot:
+                    invSlot.RemoveItemFromSlot();
+                    break;
+                case QuickSlotUI quickSlot:
+                    quickSlot.RemoveItemFromSlot();
+                    break;
+                case EquipmentSlotUI equipSlot:
+                    equipSlot.RemoveItemFromSlot();
+                    break;
+            }
         }
 
-        // 정리
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
         draggedEquipSlot = null;
@@ -66,7 +93,6 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
         {
             iconImage.sprite = item.icon;
             iconImage.enabled = true;
-            nameText.text = item.itemName;
         }
         else
         {
@@ -76,14 +102,13 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
     public void ClearSlot()
     {
-        EquipmentManager.Instance.UnequipItem(equippedItem);
         equippedItem = null;
         iconImage.sprite = null;
         iconImage.enabled = false;
-        nameText.text = slotType.ToString();
     }
 
     public EquipmentData GetEquippedItem() => equippedItem;
+    public int GetAmount() => currentAmount;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -107,6 +132,11 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
 
     public void RemoveItemFromSlot()
     {
-        ClearSlot();
+        if (equippedItem != null)
+        {
+            EquipmentManager.Instance.UnequipItem(equippedItem); // 스탯 제거
+        }
+
+        ClearSlot(); // UI 정리
     }
 }
