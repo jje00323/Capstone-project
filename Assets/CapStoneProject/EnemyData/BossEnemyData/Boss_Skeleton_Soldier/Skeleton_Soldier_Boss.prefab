@@ -887,8 +887,8 @@ MonoBehaviour:
   patternController: {fileID: 9221184078685343720}
   navMeshObstacle: {fileID: 1402751927481038657}
   lockRotation: 0
-  useTestPattern: 1
-  testPatternIndex: 1
+  useTestPattern: 0
+  testPatternIndex: 2
 --- !u!114 &9221184078685343720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -914,32 +914,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9533eb875f09075438e8de0e9ab0616a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPrefabs:
-  - {fileID: 5557548418706590239, guid: d02225cef341599498f8c89933345a3a, type: 3}
+  attackDataList:
+  - {fileID: 11400000, guid: ff1f10c54f1bafa48a7d80a38a8a4aca, type: 2}
+  - {fileID: 11400000, guid: 8757e443794bb324a8e9cc80bfb08ffc, type: 2}
+  - {fileID: 11400000, guid: 554b26be64ee7d24e80291a86ef6d4db, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 11400000, guid: 616215749df7701479d0bf9e69ff95fc, type: 2}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 4743754892185120454, guid: e067caae7e4230042a2ff1a7e3d3038d, type: 3}
-  - {fileID: 0}
-  telegraphInfos:
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
-  - telegraphPrefab: {fileID: 8491407428899719878, guid: ce66501083e9979479e85f1a946eb395, type: 3}
-    shapeType: 1
-  - telegraphPrefab: {fileID: 0}
-    shapeType: 0
 --- !u!208 &1402751927481038657
 NavMeshObstacle:
   m_ObjectHideFlags: 0

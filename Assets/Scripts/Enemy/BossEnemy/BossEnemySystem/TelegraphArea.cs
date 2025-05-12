@@ -21,13 +21,7 @@ public class TelegraphArea : MonoBehaviour
     public void Initialize(Vector3 spawnPos, Quaternion rotation, Transform casterTransform)
     {
         caster = casterTransform;
-
-        //// Y축 높이는 항상 offset 기준으로 고정 (장판이 바닥에 딱 붙게)
-        //spawnPos.y = offset.y; // 일반적으로 0.01f
-
         transform.position = spawnPos + casterTransform.TransformDirection(offset);
-
-        // 회전은 보스가 바라보는 방향 그대로, 추가 회전 없이
         transform.rotation = rotation;
 
         if (autoScaleFromHitbox && hitboxPrefab != null)
@@ -54,6 +48,8 @@ public class TelegraphArea : MonoBehaviour
             }
         }
     }
+
+
     void Update()
     {
         time += Time.deltaTime;
@@ -63,4 +59,5 @@ public class TelegraphArea : MonoBehaviour
         if (time >= duration)
             Destroy(gameObject);
     }
+
 }

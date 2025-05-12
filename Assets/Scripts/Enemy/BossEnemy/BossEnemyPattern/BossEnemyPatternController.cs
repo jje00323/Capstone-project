@@ -164,6 +164,7 @@ public class BossEnemyPatternController : MonoBehaviour
         if (bossFSM != null)
         {
             Debug.Log("[애니메이션 이벤트] EndBossPattern 호출됨");
+            bossFSM.Animator.speed = 1f;
             bossFSM.EndBossPattern(); // FSM에서 상태 전환 처리
         }
         else

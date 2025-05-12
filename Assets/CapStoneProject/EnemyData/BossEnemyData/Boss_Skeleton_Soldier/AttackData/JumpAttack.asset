@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cc3fecf20ae72418aaae436721967c, type: 3}
+  m_Name: JumpAttack
+  m_EditorClassIdentifier: 
+  attackIndex: 6
+  hitboxPrefabs:
+  - {fileID: 4743754892185120454, guid: e067caae7e4230042a2ff1a7e3d3038d, type: 3}
+  telegraphInfos:
+  - telegraphPrefab: {fileID: 8491407428899719878, guid: ce66501083e9979479e85f1a946eb395, type: 3}
+    shapeType: 1

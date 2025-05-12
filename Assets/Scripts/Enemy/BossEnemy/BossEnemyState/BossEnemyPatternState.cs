@@ -76,7 +76,7 @@ public class BossEnemyPatternState : BossEnemyState
             selectedIndex = boss.patternController.GetPattern(distance, isNearWall);
         }
 
-        //=============================================================================
+        // ^^^^ 강제 테스트 패턴 실행 구문 ^^^^
 
         if (selectedIndex == -1)
         {
@@ -86,6 +86,9 @@ public class BossEnemyPatternState : BossEnemyState
 
         boss.bossStatus.lastAttackIndex = selectedIndex; // 선택한 패턴 저장
         boss.Animator.SetInteger("AttackIndex", selectedIndex);
+
+        // 속도 조절 메서드 호출
+        ApplyAnimationSpeedForIndex(selectedIndex);
 
         if (selectedIndex >= 0 && selectedIndex <= 5) // Close 공격
         {
@@ -200,6 +203,21 @@ public class BossEnemyPatternState : BossEnemyState
 
         boss.transform.rotation = targetRot;
         boss.lockRotation = true;
+    }
+    private void ApplyAnimationSpeedForIndex(int index)
+    {
+        switch (index)
+        {
+            case 1:
+                boss.Animator.speed = 0.65f;
+                break;
+            case 2:
+                boss.Animator.speed = 0.65f;
+                break;
+            default:
+                boss.Animator.speed = 1f;
+                break;
+        }
     }
 
     public override void Update() { }
