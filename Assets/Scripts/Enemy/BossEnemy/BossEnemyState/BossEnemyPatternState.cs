@@ -9,6 +9,7 @@ public class BossEnemyPatternState : BossEnemyState
     private Collider bossCollider;
     private Collider playerCollider;
 
+
     public BossEnemyPatternState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()

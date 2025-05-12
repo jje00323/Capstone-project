@@ -7,6 +7,9 @@ public class BossEnemyAttackController : MonoBehaviour
     [Header("히트박스 프리팹 (AttackIndex 순서대로 연결)")]
     public GameObject[] attackPrefabs = new GameObject[8];
 
+    [Header("경고 장판 프리팹")]
+    public GameObject jumpTelegraphPrefab;
+
     private BossEnemyFSM bossFSM;
 
     private void Awake()
@@ -55,6 +58,40 @@ public class BossEnemyAttackController : MonoBehaviour
         else
         {
             Debug.LogWarning("[BossEnemyAttackController] 히트박스 프리팹에 Hitbox 컴포넌트가 없습니다.");
+        }
+    }
+    public void ShowJumpTelegraphCone()
+    {
+        if (jumpTelegraphPrefab == null || bossFSM == null || bossFSM.bossStatus == null)
+            return;
+
+        Transform target = bossFSM.bossStatus.target;
+        if (target == null) return;
+
+        Vector3 bossPos = transform.position;
+        Vector3 targetPos = target.position;
+        Vector3 dir = (targetPos - bossPos);
+        dir.y = 0f;
+
+        if (dir == Vector3.zero)
+            dir = transform.forward;
+
+        dir.Normalize();
+
+        // 정확한 착지 예측 위치
+        float fullDistance = Vector3.Distance(bossPos, targetPos);
+        float adjustedDistance = Mathf.Max(fullDistance - 1.5f, 0f);
+        Vector3 spawnPos = bossPos + dir * adjustedDistance;
+
+        // 부채꼴 정면 방향 = Z+ 기준이므로 회전 보정 없음
+        Quaternion rotation = Quaternion.LookRotation(dir);// * Quaternion.Euler(90f, 135f, 0f);
+
+        // 텔레그래프 생성
+        GameObject warn = Instantiate(jumpTelegraphPrefab, spawnPos, rotation);
+        TelegraphArea telegraph = warn.GetComponent<TelegraphArea>();
+        if (telegraph != null)
+        {
+            telegraph.Initialize(transform);
         }
     }
 }

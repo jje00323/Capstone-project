@@ -921,6 +921,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 4743754892185120454, guid: e067caae7e4230042a2ff1a7e3d3038d, type: 3}
   - {fileID: 0}
+  jumpTelegraphPrefab: {fileID: 5733865912962534652, guid: 1df97249f9905b54f9ac659bdef38a5f, type: 3}
 --- !u!208 &1402751927481038657
 NavMeshObstacle:
   m_ObjectHideFlags: 0
