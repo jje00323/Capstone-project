@@ -21,6 +21,10 @@ public class BossEnemyFSM : BaseEnemyFSM
     public BossEnemyPatternState patternState;
     // public BossEnemyDeadState deadState; // DeadState는 나중에 따로 구현
 
+    [Header("디버그용 테스트 패턴")]
+    public bool useTestPattern = false;
+    [Range(0, 7)] public int testPatternIndex = 0;
+
     protected override void Awake()
     {
         base.Awake();

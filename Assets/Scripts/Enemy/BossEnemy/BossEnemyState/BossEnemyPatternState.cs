@@ -9,7 +9,6 @@ public class BossEnemyPatternState : BossEnemyState
     private Collider bossCollider;
     private Collider playerCollider;
 
-
     public BossEnemyPatternState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
@@ -63,7 +62,21 @@ public class BossEnemyPatternState : BossEnemyState
         float distance = Vector3.Distance(boss.transform.position, target.position);
         bool isNearWall = boss.CheckWallNearby();
 
-        int selectedIndex = boss.patternController.GetPattern(distance, isNearWall);
+        //int selectedIndex = boss.patternController.GetPattern(distance, isNearWall);
+
+        int selectedIndex;
+
+        if (boss.useTestPattern)
+        {
+            selectedIndex = boss.testPatternIndex;
+            Debug.Log($"[TEST] 강제 테스트 패턴 실행: {selectedIndex}");
+        }
+        else
+        {
+            selectedIndex = boss.patternController.GetPattern(distance, isNearWall);
+        }
+
+        //=============================================================================
 
         if (selectedIndex == -1)
         {
