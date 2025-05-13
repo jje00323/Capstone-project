@@ -31,7 +31,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""OnRightClick"",
                     ""type"": ""Button"",
                     ""id"": ""9d12586e-c0d3-4526-a0e9-15441636cea6"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -252,7 +252,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Inventory"",
                     ""type"": ""Button"",
                     ""id"": ""ae852993-d0d9-4a88-84b3-dd90886650cf"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -271,6 +271,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""3ddb7587-5226-43e1-b031-e5e9b50b4b5f"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quest"",
+                    ""type"": ""Button"",
+                    ""id"": ""8869cdba-a9bc-4cbb-b3f2-4d38eeab90c1"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -309,6 +318,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""State"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae14e5ed-4c1d-4e6d-becc-a7a4f3c6dbb9"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quest"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +351,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
         m_UI_Skill = m_UI.FindAction("Skill", throwIfNotFound: true);
         m_UI_State = m_UI.FindAction("State", throwIfNotFound: true);
+        m_UI_Quest = m_UI.FindAction("Quest", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -511,6 +532,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Inventory;
     private readonly InputAction m_UI_Skill;
     private readonly InputAction m_UI_State;
+    private readonly InputAction m_UI_Quest;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
@@ -518,6 +540,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
         public InputAction @Skill => m_Wrapper.m_UI_Skill;
         public InputAction @State => m_Wrapper.m_UI_State;
+        public InputAction @Quest => m_Wrapper.m_UI_Quest;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -536,6 +559,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @State.started += instance.OnState;
             @State.performed += instance.OnState;
             @State.canceled += instance.OnState;
+            @Quest.started += instance.OnQuest;
+            @Quest.performed += instance.OnQuest;
+            @Quest.canceled += instance.OnQuest;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -549,6 +575,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @State.started -= instance.OnState;
             @State.performed -= instance.OnState;
             @State.canceled -= instance.OnState;
+            @Quest.started -= instance.OnQuest;
+            @Quest.performed -= instance.OnQuest;
+            @Quest.canceled -= instance.OnQuest;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -583,5 +612,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnInventory(InputAction.CallbackContext context);
         void OnSkill(InputAction.CallbackContext context);
         void OnState(InputAction.CallbackContext context);
+        void OnQuest(InputAction.CallbackContext context);
     }
 }

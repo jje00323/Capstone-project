@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Experimental.Rendering.RayTracingAccelerationStructure;
 
 public class JobManager : MonoBehaviour
 {
@@ -17,8 +16,8 @@ public class JobManager : MonoBehaviour
     public JobSkillData[] allJobSkillData;
     private Dictionary<JobType, JobSkillData> skillDataDict;
 
-
     public event System.Action<JobType> OnJobChanged;
+
     [System.Serializable]
     public class JobResources
     {
@@ -43,7 +42,7 @@ public class JobManager : MonoBehaviour
             InitializeJobResources();
             InitializeDashSettings();
             InitializeSkillData();
-            InitializeStatData(); 
+            InitializeStatData();
 
             Debug.Log("JobManager 인스턴스 생성됨!");
         }
@@ -52,13 +51,28 @@ public class JobManager : MonoBehaviour
             Debug.LogWarning("JobManager 중복 생성! 기존 인스턴스를 유지합니다.");
             Destroy(gameObject);
         }
-
     }
 
     IEnumerator Start()
     {
-        yield return null; // 한 프레임 대기 → 다른 컴포넌트 초기화 대기
-        ChangeJob(currentJob); // 다시 Basic 직업으로 진입 → ApplyJobStats 호출됨
+        yield return null;
+        
+
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null && player.TryGetComponent(out PlayerStatus ps))
+        {
+            if (ps.stateUI == null)
+            {
+                ps.stateUI = FindObjectOfType<PlayerStateUI>();
+                if (ps.stateUI != null)
+                {
+                    Debug.Log("[JobManager] Start에서 stateUI 강제 연결 완료");
+                    ps.UpdateAllUI();
+                }
+            }
+        }
+
+        ChangeJob(currentJob);
     }
 
     private void InitializeDashSettings()
@@ -155,20 +169,23 @@ public class JobManager : MonoBehaviour
             stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
         }
 
-        var attack = player.GetComponent<PlayerAttack>();
-        if (attack != null)
-        {
-            //attack.ForceEndCombo();
-        }
-
-
-
         var playerStatus = player.GetComponent<PlayerStatus>();
         var statData = jobStatDict.TryGetValue(newJob, out var data) ? data : null;
 
         if (playerStatus != null && statData != null)
         {
-            playerStatus.stateUI = FindObjectOfType<PlayerStateUI>(); //  stateUI 강제 연결
+            if (playerStatus.stateUI == null)
+            {
+                playerStatus.stateUI = FindObjectOfType<PlayerStateUI>();
+                if (playerStatus.stateUI == null)
+                {
+                    Debug.LogWarning("[JobManager] PlayerStateUI를 찾을 수 없습니다. UI 갱신이 누르게 될 수 있습니다.");
+                }
+                else
+                {
+                    Debug.Log("[JobManager] stateUI를 강제로 연결했습니다.");
+                }
+            }
 
             playerStatus.ApplyJobStats(statData);
             playerStatus.SetJob(newJob);
@@ -176,24 +193,21 @@ public class JobManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[JobManager] 스탯 데이터를 찾을 수 없습니다: " + newJob);
+            Debug.LogWarning("[JobManager] PlayerStatus 또는 스템 데이터를 찾을 수 없습니다: " + newJob);
         }
-        playerStatus.SetJob(newJob);
 
-        
         var playerMovement = player.GetComponent<PlayerMovement>();
         if (playerMovement != null)
             playerMovement.UpdateAnimatorReference(playerAnimator);
 
         Debug.Log($"[직업 변경 완료] {newJob}");
 
-        //  이벤트를 다음 프레임에 호출
         StartCoroutine(InvokeJobChangedDelayed(newJob));
     }
 
     private IEnumerator InvokeJobChangedDelayed(JobType newJob)
     {
-        yield return null; // 한 프레임 대기
+        yield return null;
         OnJobChanged?.Invoke(newJob);
     }
 
@@ -211,7 +225,6 @@ public class JobManager : MonoBehaviour
     public void ChangeToWarrior() => ChangeJob(JobType.Warrior);
     public void ChangeToMage() => ChangeJob(JobType.Mage);
     public void ChangeToArcher() => ChangeJob(JobType.Archer);
-
 
     public JobStatusData[] allJobStatData;
     private Dictionary<JobType, JobStatusData> jobStatDict;

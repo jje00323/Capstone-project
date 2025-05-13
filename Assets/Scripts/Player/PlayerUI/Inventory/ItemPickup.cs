@@ -34,8 +34,11 @@ public class ItemPickup : MonoBehaviour
             {
                 if (slot.GetItem() == itemData)
                 {
-                    slot.SetItem(itemData, slot.GetAmount() + quantity);
-                    Debug.Log($"[ItemPickup] 퀵슬롯 수량 증가: {itemData.itemName} x{slot.GetAmount()}");
+                    //  인벤토리에서 실제 수량도 증가 → QuickSlotUI는 자동 반영됨
+                    InventoryManager.Instance.AddItem(itemData, quantity);
+
+                    slot.RefreshSlotUI(); // 퀵슬롯도 수량 반영
+                    Debug.Log($"[ItemPickup] 퀵슬롯 수량 증가: {itemData.itemName}");
                     Destroy(gameObject);
                     return;
                 }

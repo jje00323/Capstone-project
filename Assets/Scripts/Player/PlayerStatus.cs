@@ -5,6 +5,10 @@ using UnityEngine;
 public class PlayerStatus : CharacterStatus
 {
 
+    [Header("UI 연결")]
+    public PlayerStateUI stateUI;
+
+
     private JobManager.JobType currentJob;
 
 
@@ -29,16 +33,23 @@ public class PlayerStatus : CharacterStatus
     private Dictionary<StatType, Coroutine> activeBuffDict = new();
 
 
-    public PlayerStateUI stateUI;
+
     void Start()
     {
         if (stateUI == null)
         {
-            stateUI = FindObjectOfType<PlayerStateUI>();
-            Debug.Log("[PlayerStatus] stateUI 자동 연결됨");
+            // 보조 안전 장치 (비활성화 포함해서 찾기)
+            var canvasRoot = GameObject.Find("UIRoot"); // 이름은 실제 UI 루트 GameObject 이름으로 바꾸세요
+            if (canvasRoot != null)
+                stateUI = canvasRoot.GetComponentInChildren<PlayerStateUI>(true);
+
+            if (stateUI != null)
+                Debug.Log("[PlayerStatus] stateUI 수동 연결 성공");
+            else
+                Debug.LogWarning("[PlayerStatus] PlayerStateUI를 찾을 수 없습니다.");
         }
 
-        UpdateAllUI(); // 초기 상태도 UI에 반영
+        UpdateAllUI();
     }
 
     public void ApplyJobStats(JobStatusData data)

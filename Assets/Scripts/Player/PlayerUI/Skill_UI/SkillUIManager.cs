@@ -9,21 +9,21 @@ public class SkillUIManager : MonoBehaviour
     [SerializeField] private Transform skillListArea;
     [SerializeField] private GameObject skillSlotPrefab;
 
-    private void Start()
-    {
-        LoadSkillListForCurrentJob();
-    }
-
-    private void OnEnable()
+    private void Awake()
     {
         if (JobManager.Instance != null)
             JobManager.Instance.OnJobChanged += OnJobChanged;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (JobManager.Instance != null)
             JobManager.Instance.OnJobChanged -= OnJobChanged;
+    }
+
+    private void OnEnable()
+    {
+        LoadSkillListForCurrentJob(); // UI 열릴 때 항상 갱신
     }
 
     private void OnJobChanged(JobManager.JobType newJob)

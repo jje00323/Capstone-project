@@ -98,10 +98,9 @@ public class InventorySlotUI : MonoBehaviour,
         switch (draggedSlotUI)
         {
             case QuickSlotUI quick:
-                slotData.item = quick.GetItem();
-                slotData.quantity = quick.GetAmount();
-                RefreshSlotUI();
-                quick.RemoveItemFromSlot();
+                // 퀵슬롯 → 인벤토리 드래그 시, 인벤토리에는 아무것도 하지 않고 퀵슬롯만 삭제
+                Debug.Log("[InventorySlotUI] 퀵슬롯 → 인벤토리 드래그 감지됨 → 퀵슬롯 아이템 삭제 처리");
+                quick.ClearSlot(); // 퀵슬롯 비움
                 break;
 
             case InventorySlotUI otherSlot:
@@ -126,7 +125,6 @@ public class InventorySlotUI : MonoBehaviour,
                 break;
         }
 
-
         // 마무리
         draggedItem = null;
         draggedSlotUI = null;
@@ -147,4 +145,6 @@ public class InventorySlotUI : MonoBehaviour,
         slotData.quantity = 0;
         RefreshSlotUI();
     }
+
+    public int GetAmount() => slotData != null ? slotData.quantity : 1;
 }

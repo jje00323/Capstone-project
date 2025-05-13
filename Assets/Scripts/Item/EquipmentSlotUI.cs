@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("장비 슬롯 종류")]
     public EquipmentType slotType;
@@ -15,6 +15,9 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
     private int currentAmount = 1;
 
     public static EquipmentSlotUI draggedEquipSlot;
+
+    public string itemName;
+    public string itemDescription;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -55,7 +58,7 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
                     invSlot.SetItemToSlot(oldItem, 1);
                     break;
                 case QuickSlotUI quickSlot:
-                    quickSlot.SetItem(oldItem, 1);
+                    
                     break;
                 case EquipmentSlotUI equipSlot:
                     equipSlot.SetItem(oldItem);
@@ -93,6 +96,9 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
         {
             iconImage.sprite = item.icon;
             iconImage.enabled = true;
+
+            itemName = item.itemName;
+            itemDescription = item.description;
         }
         else
         {
@@ -138,5 +144,21 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, I
         }
 
         ClearSlot(); // UI 정리
+    }
+
+
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (equippedItem == null) return; //  아이템이 없을 때 툴팁 차단
+
+        if (TooltipUI.Instance != null)
+            TooltipUI.Instance.Show(itemName, itemDescription);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (TooltipUI.Instance != null)
+            TooltipUI.Instance.Hide();
     }
 }

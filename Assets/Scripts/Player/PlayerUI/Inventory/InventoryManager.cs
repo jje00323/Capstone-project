@@ -8,7 +8,7 @@ public class InventoryManager : MonoBehaviour
     [Header("인벤토리 설정")]
     public int maxSlotCount = 48;
     public List<InventorySlot> slots = new();
-
+    private int gold;
     void Awake()
     {
         if (Instance == null)
@@ -55,6 +55,7 @@ public class InventoryManager : MonoBehaviour
 
                 if (amount <= 0)
                 {
+                    InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
                     RefreshQuickSlots();
                     return true;
                 }
@@ -76,6 +77,7 @@ public class InventoryManager : MonoBehaviour
 
                 if (amount <= 0)
                 {
+                    InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
                     RefreshQuickSlots();
                     return true;
                 }
@@ -102,6 +104,8 @@ public class InventoryManager : MonoBehaviour
                 if (slot.quantity <= 0)
                     slot.Clear();
 
+                InventoryUI.Instance?.RefreshAllSlots(); //  아이템 제거 후에도 UI 갱신
+                RefreshQuickSlots();
                 return;
             }
         }
@@ -115,4 +119,13 @@ public class InventoryManager : MonoBehaviour
             qs.RefreshSlotUI();
         }
     }
+
+    public void AddGold(int amount)
+    {
+        gold += amount;
+        Debug.Log($"[Inventory] 골드 +{amount} → 총 {gold}");
+        // 필요 시 UI 갱신 로직 추가
+    }
+
+    public int GetGold() => gold;
 }

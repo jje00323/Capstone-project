@@ -9,7 +9,7 @@
                     "name": "OnRightClick",
                     "type": "Button",
                     "id": "9d12586e-c0d3-4526-a0e9-15441636cea6",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -230,7 +230,7 @@
                     "name": "Inventory",
                     "type": "Button",
                     "id": "ae852993-d0d9-4a88-84b3-dd90886650cf",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -249,6 +249,15 @@
                     "type": "Button",
                     "id": "3ddb7587-5226-43e1-b031-e5e9b50b4b5f",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quest",
+                    "type": "Button",
+                    "id": "8869cdba-a9bc-4cbb-b3f2-4d38eeab90c1",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -285,6 +294,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "State",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae14e5ed-4c1d-4e6d-becc-a7a4f3c6dbb9",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quest",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
