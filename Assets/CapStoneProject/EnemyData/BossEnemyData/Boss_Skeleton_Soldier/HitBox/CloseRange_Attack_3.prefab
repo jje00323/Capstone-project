@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 5557548418706590239}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.62}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -50,11 +50,11 @@ MonoBehaviour:
   repeatCount: 1
   repeatInterval: 0
   shape: 0
-  radius: 8
+  radius: 3.5
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 0
   coneDistance: 0
-  offset: {x: 0, y: 1.5, z: 3}
+  offset: {x: 0, y: 1.5, z: 3.8}
   isProjectile: 0
   projectileSpeed: 10
   projectileRigidbody: {fileID: 0}

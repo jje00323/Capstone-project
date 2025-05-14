@@ -110,7 +110,6 @@ public class Hitbox : MonoBehaviour
         yield return new WaitForSeconds(duration);
         Destroy(gameObject);
     }
-
     private void ApplyDamage()
     {
         if (!initialized)
@@ -122,6 +121,8 @@ public class Hitbox : MonoBehaviour
         Vector3 center = followCaster && caster != null
             ? caster.position + caster.TransformDirection(offset)
             : transform.position + transform.TransformDirection(offset);
+
+        Debug.Log($"[Hitbox] 실제 데미지 중심 위치: {center}");
 
         Collider[] hits = null;
         List<Collider> filteredHits = new List<Collider>();

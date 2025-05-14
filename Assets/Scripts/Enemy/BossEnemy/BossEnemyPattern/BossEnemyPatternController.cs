@@ -172,9 +172,4 @@ public class BossEnemyPatternController : MonoBehaviour
             Debug.LogWarning("BossEnemyFSM가 연결되지 않았습니다.");
         }
     }
-
-    public void Hmm()
-    {
-        Debug.Log("이벤트 된다!!");
-    }
 }

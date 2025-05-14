@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73cc3fecf20ae72418aaae436721967c, type: 3}
-  m_Name: CloseRange_Attack_3
+  m_Name: ComboAttack_2
   m_EditorClassIdentifier: 
   attackIndex: 2
   hitboxPrefabs:
-  - {fileID: 5557548418706590239, guid: fcaaf7fff79a01046a9d14461f7e32d1, type: 3}
-  telegraphInfos:
-  - telegraphPrefab: {fileID: 8042199655072720705, guid: 5f6ee8185079f3f42abcb7b0761b88ec, type: 3}
-    shapeType: 2
+  - {fileID: 5557548418706590239, guid: 4eb74f30a3738e844b2ef9b6de936771, type: 3}
+  - {fileID: 5557548418706590239, guid: 4eb74f30a3738e844b2ef9b6de936771, type: 3}
+  - {fileID: 5557548418706590239, guid: 4eb74f30a3738e844b2ef9b6de936771, type: 3}
+  telegraphInfos: []

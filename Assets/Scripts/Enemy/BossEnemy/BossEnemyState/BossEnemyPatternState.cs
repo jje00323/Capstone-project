@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class BossEnemyPatternState : BossEnemyState
 {
@@ -139,7 +140,7 @@ public class BossEnemyPatternState : BossEnemyState
         direction.Normalize();
 
         float fullDistance = Vector3.Distance(bossPosition, targetPosition);
-        float adjustedDistance = Mathf.Max(fullDistance - 1.5f, 0f);
+        float adjustedDistance = Mathf.Max(fullDistance - 3.0f, 0f);
         Vector3 destination = bossPosition + direction * adjustedDistance;
 
         boss.transform.rotation = Quaternion.LookRotation(direction);
@@ -204,6 +205,7 @@ public class BossEnemyPatternState : BossEnemyState
         boss.transform.rotation = targetRot;
         boss.lockRotation = true;
     }
+ 
     private void ApplyAnimationSpeedForIndex(int index)
     {
         switch (index)

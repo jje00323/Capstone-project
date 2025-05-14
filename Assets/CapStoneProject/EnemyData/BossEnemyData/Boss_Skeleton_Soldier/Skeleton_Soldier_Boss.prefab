@@ -887,8 +887,8 @@ MonoBehaviour:
   patternController: {fileID: 9221184078685343720}
   navMeshObstacle: {fileID: 1402751927481038657}
   lockRotation: 0
-  useTestPattern: 0
-  testPatternIndex: 2
+  useTestPattern: 1
+  testPatternIndex: 0
 --- !u!114 &9221184078685343720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,10 +919,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8757e443794bb324a8e9cc80bfb08ffc, type: 2}
   - {fileID: 11400000, guid: 554b26be64ee7d24e80291a86ef6d4db, type: 2}
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e75a40ee9f0abb54185d16874337e6ad, type: 2}
   - {fileID: 0}
   - {fileID: 11400000, guid: 616215749df7701479d0bf9e69ff95fc, type: 2}
   - {fileID: 0}
+  animSpeedProfiles:
+  - attackIndex: 2
+    startSpeed: 0.2
+    targetSpeed: 0.65
+    duration: 5
+    finalSpeed: 0.65
 --- !u!208 &1402751927481038657
 NavMeshObstacle:
   m_ObjectHideFlags: 0

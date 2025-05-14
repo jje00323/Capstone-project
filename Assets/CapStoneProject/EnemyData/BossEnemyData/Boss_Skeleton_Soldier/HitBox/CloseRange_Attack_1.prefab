@@ -52,8 +52,8 @@ MonoBehaviour:
   shape: 2
   radius: 2
   boxSize: {x: 3, y: 2, z: 3}
-  coneAngle: 240
-  coneDistance: 4.8
+  coneAngle: 200
+  coneDistance: 4.2
   offset: {x: 0, y: 0, z: 1}
   isProjectile: 0
   projectileSpeed: 10
