@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c855a064373914b8d3c6a9422ab230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 2
+  damage: 30
   duration: 0.1
   startDelay: 0
   repeatCount: 1
@@ -90,6 +90,11 @@ MonoBehaviour:
   isProjectile: 0
   projectileSpeed: 10
   projectileRigidbody: {fileID: 0}
+  secondaryHitboxPrefab: {fileID: 0}
+  useMousePosition: 0
+  mouseGroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   followCaster: 1

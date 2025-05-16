@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11020cb24dd33f846829362b800cf704, type: 3}
+  m_Name: "\uC2DC\uC791\uD018\uC2A4\uD2B8"
+  m_EditorClassIdentifier: 
+  questID: 1
+  questTitle: "\uBAA8\uD5D8\uC758 \uC2DC\uC791"
+  questObjective: "\uAE30\uBCF8\uC870\uC791 \uC775\uD788\uAE30"
+  questDescription: "\uBAA8\uD5D8\uC744 \uC2DC\uC791\uD558\uAE30\uC704\uD55C \uD6C8\uB828"
+  questType: 0
+  levelRequirement: 1
+  nextQuestID: -1
+  conditions:
+  - {fileID: 11400000, guid: 48d791c171c24ab4a902de0fb5225c25, type: 2}
+  - {fileID: 11400000, guid: 030f0aa8e6229514c9093c2a18d0d680, type: 2}
+  - {fileID: 11400000, guid: 683e30089587fb54aaf9a1e72133322a, type: 2}
+  reward:
+    experience: 20
+    gold: 10
+    items:
+    - item: {fileID: 11400000, guid: 9a3eb711c4a859043b355ce339c5560c, type: 2}
+      amount: 5
+    - item: {fileID: 11400000, guid: 2851b76c75858514fb6327f8c130ab66, type: 2}
+      amount: 5

@@ -10,6 +10,9 @@ public class EnemyData : ScriptableObject
     public string enemyName;
     public int enemyLevel;
 
+    [Header("퀘스트 조건용 태그")] //  추가
+    public string enemyTag;
+
     [Header("애니메이션")]
     public RuntimeAnimatorController animatorController;
 

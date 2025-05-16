@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class QuickSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("슬롯 설정")]
     [SerializeField] private int slotIndex;
@@ -14,8 +14,7 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
     [Header("입력 액션 연결")]
     [SerializeField] private InputActionReference useSlotAction;
 
-    private ItemData currentItem;
-    private int currentAmount = 0;
+    private InventorySlot referencedSlot;  // 인벤토리 슬롯 참조
 
     private System.Action<InputAction.CallbackContext> cachedCallback;
     public static QuickSlotUI draggedQuickSlot;
@@ -39,24 +38,24 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
         }
     }
 
-    public void SetItem(ItemData item, int amount = 1)
+    public void SetReference(InventorySlot slot)
     {
-        currentItem = item;
-        currentAmount = amount;
+        referencedSlot = slot;
         RefreshSlotUI();
     }
 
     public void ClearSlot()
     {
-        currentItem = null;
-        currentAmount = 0;
+        referencedSlot = null;
         iconImage.enabled = false;
         countText.text = "";
     }
 
     public void UseItem()
     {
-        if (currentItem is ConsumableData consumable)
+        if (referencedSlot == null || referencedSlot.item == null) return;
+
+        if (referencedSlot.item is ConsumableData consumable)
         {
             var player = GameObject.FindWithTag("Player");
             if (player != null && player.TryGetComponent(out PlayerStatus playerStatus))
@@ -64,50 +63,38 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
                 consumable.ApplyEffect(playerStatus);
             }
 
-            currentAmount--;
-            if (currentAmount <= 0)
+            InventoryManager.Instance.RemoveItem(referencedSlot.item, 1);
+            RefreshSlotUI();
+
+            if (referencedSlot.quantity <= 0 || referencedSlot.item == null)
+            {
                 ClearSlot();
-            else
-                countText.text = currentAmount.ToString();
+            }
         }
     }
 
-    public ItemData GetItem() => currentItem;
-    public int GetAmount() => currentAmount;
+    public ItemData GetItem() => referencedSlot?.item;
+    public int GetAmount() => referencedSlot?.quantity ?? 0;
 
     public void OnDrop(PointerEventData eventData)
     {
         if (InventorySlotUI.draggedItem == null || InventorySlotUI.draggedSlotUI == null) return;
         if (InventorySlotUI.draggedItem.itemType != ItemType.Consumable) return;
 
-        var draggedItem = InventorySlotUI.draggedItem;
-        var draggedFrom = InventorySlotUI.draggedSlotUI;
-
-        // 기존 아이템 백업
-        var oldItem = currentItem;
-        var oldAmount = currentAmount;
-
-        // 현재 슬롯에 드래그한 아이템 등록
-        SetItem(draggedItem, draggedFrom is QuickSlotUI qs ? qs.GetAmount() : 1);
-
-        // 드래그 원본에 기존 아이템 되돌려 놓기
-        if (draggedFrom is QuickSlotUI fromQuick)
+        if (InventorySlotUI.draggedSlotUI is InventorySlotUI invSlot)
         {
-            fromQuick.SetItem(oldItem, oldAmount);
+            var slot = invSlot.GetSlotData();
+            SetReference(slot);
         }
-        else if (draggedFrom is InventorySlotUI fromInv)
+        else if (InventorySlotUI.draggedSlotUI is QuickSlotUI quickSlot)
         {
-            if (oldItem != null)
-            {
-                fromInv.SetItemToSlot(oldItem, oldAmount);
-            }
-            else
-            {
-                fromInv.RemoveItemFromSlot();
-            }
+            var oldSlot = referencedSlot;
+            referencedSlot = quickSlot.referencedSlot;
+            quickSlot.referencedSlot = oldSlot;
+
+            quickSlot.RefreshSlotUI();
         }
 
-        // 드래그 상태 초기화
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
         draggedQuickSlot = null;
@@ -116,18 +103,24 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (currentItem == null) return;
+        if (referencedSlot == null || referencedSlot.item == null) return;
 
-        InventorySlotUI.draggedItem = currentItem;
+        InventorySlotUI.draggedItem = referencedSlot.item;
         InventorySlotUI.draggedSlotUI = this;
         draggedQuickSlot = this;
-        DragIconUI.Instance.Show(currentItem.icon);
+        DragIconUI.Instance.Show(referencedSlot.item.icon);
     }
 
     public void OnDrag(PointerEventData eventData) { }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (InventorySlotUI.draggedSlotUI == this)
+        {
+            Debug.Log("[QuickSlotUI] 슬롯 밖으로 드래그됨 → 슬롯 해제됨");
+            ClearSlot();
+        }
+
         InventorySlotUI.draggedItem = null;
         InventorySlotUI.draggedSlotUI = null;
         draggedQuickSlot = null;
@@ -136,11 +129,11 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
 
     public void RefreshSlotUI()
     {
-        if (currentItem != null)
+        if (referencedSlot != null && referencedSlot.item != null)
         {
-            iconImage.sprite = currentItem.icon;
+            iconImage.sprite = referencedSlot.item.icon;
             iconImage.enabled = true;
-            countText.text = currentAmount > 1 ? currentAmount.ToString() : "";
+            countText.text = referencedSlot.quantity > 1 ? referencedSlot.quantity.ToString() : "";
         }
         else
         {
@@ -151,5 +144,19 @@ public class QuickSlotUI : MonoBehaviour, IDropHandler, IBeginDragHandler, IDrag
     public void RemoveItemFromSlot()
     {
         ClearSlot();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (referencedSlot == null || referencedSlot.item == null) return;
+
+        if (TooltipUI.Instance != null)
+            TooltipUI.Instance.Show(referencedSlot.item.itemName, referencedSlot.item.description);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (TooltipUI.Instance != null)
+            TooltipUI.Instance.Hide();
     }
 }

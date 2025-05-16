@@ -31,7 +31,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""OnRightClick"",
                     ""type"": ""Button"",
                     ""id"": ""9d12586e-c0d3-4526-a0e9-15441636cea6"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -67,7 +67,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Combat"",
                     ""type"": ""Button"",
                     ""id"": ""7491dfa4-a19b-415e-84aa-bff2be366497"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -252,7 +252,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Inventory"",
                     ""type"": ""Button"",
                     ""id"": ""ae852993-d0d9-4a88-84b3-dd90886650cf"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -271,6 +271,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""3ddb7587-5226-43e1-b031-e5e9b50b4b5f"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quest"",
+                    ""type"": ""Button"",
+                    ""id"": ""8869cdba-a9bc-4cbb-b3f2-4d38eeab90c1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Talk_NPC"",
+                    ""type"": ""Button"",
+                    ""id"": ""c344d278-78d8-49dd-b9a8-448ad77404d4"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -309,6 +327,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""State"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae14e5ed-4c1d-4e6d-becc-a7a4f3c6dbb9"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quest"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7c9cf821-7b27-4e6f-97ad-252d1e8bfde4"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Talk_NPC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +371,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
         m_UI_Skill = m_UI.FindAction("Skill", throwIfNotFound: true);
         m_UI_State = m_UI.FindAction("State", throwIfNotFound: true);
+        m_UI_Quest = m_UI.FindAction("Quest", throwIfNotFound: true);
+        m_UI_Talk_NPC = m_UI.FindAction("Talk_NPC", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -511,6 +553,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Inventory;
     private readonly InputAction m_UI_Skill;
     private readonly InputAction m_UI_State;
+    private readonly InputAction m_UI_Quest;
+    private readonly InputAction m_UI_Talk_NPC;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
@@ -518,6 +562,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
         public InputAction @Skill => m_Wrapper.m_UI_Skill;
         public InputAction @State => m_Wrapper.m_UI_State;
+        public InputAction @Quest => m_Wrapper.m_UI_Quest;
+        public InputAction @Talk_NPC => m_Wrapper.m_UI_Talk_NPC;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -536,6 +582,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @State.started += instance.OnState;
             @State.performed += instance.OnState;
             @State.canceled += instance.OnState;
+            @Quest.started += instance.OnQuest;
+            @Quest.performed += instance.OnQuest;
+            @Quest.canceled += instance.OnQuest;
+            @Talk_NPC.started += instance.OnTalk_NPC;
+            @Talk_NPC.performed += instance.OnTalk_NPC;
+            @Talk_NPC.canceled += instance.OnTalk_NPC;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -549,6 +601,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @State.started -= instance.OnState;
             @State.performed -= instance.OnState;
             @State.canceled -= instance.OnState;
+            @Quest.started -= instance.OnQuest;
+            @Quest.performed -= instance.OnQuest;
+            @Quest.canceled -= instance.OnQuest;
+            @Talk_NPC.started -= instance.OnTalk_NPC;
+            @Talk_NPC.performed -= instance.OnTalk_NPC;
+            @Talk_NPC.canceled -= instance.OnTalk_NPC;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -583,5 +641,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnInventory(InputAction.CallbackContext context);
         void OnSkill(InputAction.CallbackContext context);
         void OnState(InputAction.CallbackContext context);
+        void OnQuest(InputAction.CallbackContext context);
+        void OnTalk_NPC(InputAction.CallbackContext context);
     }
 }

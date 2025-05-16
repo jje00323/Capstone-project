@@ -17,6 +17,13 @@ public class PlayerStateUI : MonoBehaviour
 
 
     private PlayerStatus Player => GameObject.FindWithTag("Player")?.GetComponent<PlayerStatus>();
+    public static PlayerStateUI Instance { get; private set; }
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         UpdateStats();
@@ -50,10 +57,10 @@ public class PlayerStateUI : MonoBehaviour
 
         maxHPText.text = $"{status.maxHP:F0}";
         maxMPText.text = $"{status.maxMP:F0}";
-        attackText.text = $"{status.attack:F1}";
-        defenseText.text = $"{status.defense:F1}";
-        critRateText.text = $"{status.critRate:F1}%";
-        critDamageText.text = $"{status.critDamage:F1}%";
+        attackText.text = $"{status.attack:F0}";
+        defenseText.text = $"{status.defense:F0}";
+        critRateText.text = $"{status.critRate:F0}%";
+        critDamageText.text = $"{status.critDamage:F0}%";
         healthRegenText.text = "-";
         manaRegenText.text = "-";
     }
