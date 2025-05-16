@@ -18,4 +18,5 @@ public class BossAttackData : ScriptableObject
 
     [Header("경고 장판 프리팹")]
     public List<TelegraphInfo> telegraphInfos;
+
 }

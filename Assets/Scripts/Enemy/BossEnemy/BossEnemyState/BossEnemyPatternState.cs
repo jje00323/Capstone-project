@@ -216,6 +216,18 @@ public class BossEnemyPatternState : BossEnemyState
             case 2:
                 boss.Animator.speed = 0.65f;
                 break;
+            case 3:
+                boss.Animator.speed = 0.75f;
+                break;
+            case 4:
+                boss.Animator.speed = 0.75f;
+                break;
+            case 5:
+                boss.Animator.speed = 0.75f;
+                break;
+            case 7:
+                boss.Animator.speed = 0.75f;
+                break;
             default:
                 boss.Animator.speed = 1f;
                 break;

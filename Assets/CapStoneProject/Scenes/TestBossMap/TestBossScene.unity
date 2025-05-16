@@ -361,6 +361,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 0
   iconImage: {fileID: 1170250840}
+  itemName: 
+  itemDescription: 
 --- !u!114 &230462110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -970,6 +972,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 3
   iconImage: {fileID: 1074953209}
+  itemName: 
+  itemDescription: 
 --- !u!114 &431969366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1333,6 +1337,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 2
   iconImage: {fileID: 197075612}
+  itemName: 
+  itemDescription: 
 --- !u!114 &685502000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1425,6 +1431,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 5
   iconImage: {fileID: 1679623447}
+  itemName: 
+  itemDescription: 
 --- !u!114 &701697055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1506,6 +1514,7 @@ MonoBehaviour:
   currentHP: 100
   attack: 0
   defense: 0
+  stateUI: {fileID: 0}
   maxMP: 50
   currentMP: 50
   maxEXP: 100
@@ -1515,7 +1524,6 @@ MonoBehaviour:
   critDamage: 0
   moveSpeed: 0
   playerUI: {fileID: 432824961}
-  stateUI: {fileID: 0}
 --- !u!4 &718843010 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6104760139747125831, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
@@ -2025,6 +2033,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 1
   iconImage: {fileID: 1326275775}
+  itemName: 
+  itemDescription: 
 --- !u!114 &1094250808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3680,6 +3690,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 4
   iconImage: {fileID: 675088534}
+  itemName: 
+  itemDescription: 
 --- !u!114 &1749151248
 MonoBehaviour:
   m_ObjectHideFlags: 0

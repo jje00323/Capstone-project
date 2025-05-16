@@ -10,6 +10,7 @@ public class BossEnemyStatus : CharacterStatus
     [Header("패턴 관리")]
     public int lastAttackIndex = -1; // 패턴별 Idle 딜레이 관리용
 
+
     public BossEnemyData bossData { get; private set; }
 
     public void Setup(BossEnemyData data)
@@ -31,14 +32,14 @@ public class BossEnemyStatus : CharacterStatus
     }
     public override void TakeDamage(float damage)
     {
-        if (IsDead) return;
-
         currentHP = Mathf.Clamp(currentHP - damage, 0, maxHP);
         Debug.Log($"[BossEnemyStatus] {damage} 데미지 → 현재 체력: {currentHP}");
+
 
         if (IsDead)
         {
             OnDeath();
+            return;
         }
     }
 
@@ -46,4 +47,5 @@ public class BossEnemyStatus : CharacterStatus
     {
         GetComponent<BossEnemyFSM>()?.Die();
     }
+
 }

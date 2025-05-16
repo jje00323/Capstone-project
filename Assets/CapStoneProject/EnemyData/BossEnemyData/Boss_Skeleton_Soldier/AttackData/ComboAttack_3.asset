@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73cc3fecf20ae72418aaae436721967c, type: 3}
-  m_Name: ComboAttack_1
+  m_Name: ComboAttack_3
   m_EditorClassIdentifier: 
-  attackIndex: 0
+  attackIndex: 2
   hitboxPrefabs:
-  - {fileID: 5557548418706590239, guid: 5263ffd11f115334ab385f13e664eebe, type: 3}
-  - {fileID: 5557548418706590239, guid: 8c13b166c9ef74e48a32a4b887d5a5f6, type: 3}
-  - {fileID: 5557548418706590239, guid: 005ecc1c1e0c5d549a0d27a73d88470e, type: 3}
+  - {fileID: 5557548418706590239, guid: 0efe0cdb164a45440b3bc141b3f575a0, type: 3}
+  - {fileID: 5557548418706590239, guid: 01008806f6ff07245bcc6d7fb81717af, type: 3}
+  - {fileID: 5557548418706590239, guid: 668c54096605acd478a62f9668259eaa, type: 3}
+  - {fileID: 5557548418706590239, guid: dda8f4ea1d4652c459788ae7fa4d85af, type: 3}
   telegraphInfos: []

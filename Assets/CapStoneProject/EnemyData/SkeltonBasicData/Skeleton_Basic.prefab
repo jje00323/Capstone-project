@@ -1130,6 +1130,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 50
   currentHP: 50
+  attack: 0
+  defense: 0
   enemyData: {fileID: 11400000, guid: 6551637484c55684daa6fd288c5cc85a, type: 2}
   enemyUI: {fileID: 329598082777169093}
   target: {fileID: 0}
@@ -2145,6 +2147,10 @@ PrefabInstance:
     - target: {fileID: 8847498297422714924, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_Name
       value: WorldCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8847498297422714924, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
