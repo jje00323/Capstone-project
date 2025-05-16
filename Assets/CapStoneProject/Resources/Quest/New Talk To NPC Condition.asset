@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: New Talk To NPC Condition
   m_EditorClassIdentifier: 
   conditionName: "\uC870\uC791\uBC95 \uC124\uBA85 \uB4E3\uAE30"
-  npcID: 1
+  npcID: TUTORIAL_NPC

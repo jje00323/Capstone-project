@@ -47,6 +47,13 @@ public class EnemyDeadState : EnemyState
             if (dissolveMat.HasProperty("_DissolveAmount"))
                 dissolveMat.SetFloat("_DissolveAmount", 0f);
         }
+
+        if (!string.IsNullOrEmpty(enemy.enemyData.enemyTag))
+        {
+            QuestManager.Instance.UpdateCondition("KillEnemy", enemy.enemyData.enemyTag);
+            Debug.Log($"[EnemyDeadState] 퀘스트 조건 갱신: {enemy.enemyData.enemyTag}");
+        }
+
     }
 
     public override void Update()

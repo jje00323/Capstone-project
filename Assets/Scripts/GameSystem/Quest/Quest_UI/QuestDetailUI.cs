@@ -18,6 +18,26 @@ public class QuestDetailUI : MonoBehaviour
 
     private PlayerQuestProgress currentProgress;
 
+    private void OnEnable()
+    {
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.OnQuestUpdated += OnQuestProgressUpdated;
+    }
+
+    private void OnDisable()
+    {
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.OnQuestUpdated -= OnQuestProgressUpdated;
+    }
+
+    private void OnQuestProgressUpdated(PlayerQuestProgress updated)
+    {
+        // 현재 보고 있는 퀘스트가 갱신되었으면 다시 표시
+        if (currentProgress != null && updated.questData.questID == currentProgress.questData.questID)
+        {
+            ShowDetails(updated);
+        }
+    }
     public void ShowDetails(PlayerQuestProgress progress)
     {
         currentProgress = progress;
@@ -89,5 +109,12 @@ public class QuestDetailUI : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+    public void RefreshCurrent()
+    {
+        if (currentProgress != null)
+        {
+            ShowDetails(currentProgress); // 강제로 다시 갱신
+        }
     }
 }

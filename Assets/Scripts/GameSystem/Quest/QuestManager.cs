@@ -7,6 +7,8 @@ public class QuestManager : MonoBehaviour
 
     private List<PlayerQuestProgress> activeQuests = new List<PlayerQuestProgress>();
 
+
+    public event System.Action<PlayerQuestProgress> OnQuestUpdated;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -20,6 +22,15 @@ public class QuestManager : MonoBehaviour
 
         PlayerQuestProgress newProgress = new PlayerQuestProgress(questData);
         activeQuests.Add(newProgress);
+
+        //  퀘스트 조건 순회하면서 ReachAreaCondition 확인
+        foreach (var condition in questData.conditions)
+        {
+            if (condition is ReachAreaCondition areaCond)
+            {
+                QuestAreaTriggerSpawner.Instance?.SpawnTrigger(areaCond.areaID);
+            }
+        }
 
         Debug.Log($"[QuestManager] 퀘스트 수락: {questData.questTitle}");
     }
@@ -53,7 +64,12 @@ public class QuestManager : MonoBehaviour
                 else if (condition is ReachAreaCondition areaCond && type == "ReachArea")
                 {
                     if (areaCond.areaID == identifier)
+                    {
                         progress.IncrementProgress(i, amount);
+
+                        //  트리거 즉시 제거
+                        QuestAreaTriggerSpawner.Instance?.RemoveTrigger(identifier);
+                    }
                 }
                 else if (condition is UseItemCondition useCond && type == "UseItem")
                 {
@@ -67,6 +83,8 @@ public class QuestManager : MonoBehaviour
                 progress.state = QuestState.Completed;
                 Debug.Log($"[QuestManager] 퀘스트 완료 가능: {progress.questData.questTitle}");
             }
+
+            OnQuestUpdated?.Invoke(progress);
         }
     }
 

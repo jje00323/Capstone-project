@@ -33,6 +33,8 @@ public class QuestListUI : MonoBehaviour
         }
 
         RefreshUI();
+
+        questDetailUI.RefreshCurrent();
     }
 
     private void ChangeFilter(QuestFilter filter)

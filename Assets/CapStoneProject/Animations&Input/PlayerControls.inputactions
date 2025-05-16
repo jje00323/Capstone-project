@@ -45,7 +45,7 @@
                     "name": "Combat",
                     "type": "Button",
                     "id": "7491dfa4-a19b-415e-84aa-bff2be366497",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -261,6 +261,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Talk_NPC",
+                    "type": "Button",
+                    "id": "c344d278-78d8-49dd-b9a8-448ad77404d4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -300,11 +309,22 @@
                 {
                     "name": "",
                     "id": "ae14e5ed-4c1d-4e6d-becc-a7a4f3c6dbb9",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Quest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c9cf821-7b27-4e6f-97ad-252d1e8bfde4",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Talk_NPC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

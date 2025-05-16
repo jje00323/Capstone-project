@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: SkeletonBasic
   enemyLevel: 1
+  enemyTag: "\uC2A4\uCF08\uB808\uD1A4"
   animatorController: {fileID: 9100000, guid: 27a55f0d6f84e1040a9379a1cd48a718, type: 2}
   maxHP: 100
   moveSpeed: 2
