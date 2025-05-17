@@ -19,7 +19,8 @@ public class BossEnemyFSM : BaseEnemyFSM
     public BossEnemyIdleState idleState;
     public BossEnemyMoveState moveState;
     public BossEnemyPatternState patternState;
-    // public BossEnemyDeadState deadState; // DeadState는 나중에 따로 구현
+    public BossEnemyDeadState deadState;
+    public BossEnemyCutsceneState cutsceneState;
 
     [Header("디버그용 테스트 패턴")]
     public bool useTestPattern = false;
@@ -49,7 +50,8 @@ public class BossEnemyFSM : BaseEnemyFSM
         idleState = new BossEnemyIdleState(this);
         moveState = new BossEnemyMoveState(this);
         patternState = new BossEnemyPatternState(this);
-        // deadState = new BossEnemyDeadState(this); // 생성하지 않음
+        deadState = new BossEnemyDeadState(this);
+        cutsceneState = new BossEnemyCutsceneState(this);
 
         ChangeState(idleState);
     }
@@ -70,8 +72,8 @@ public class BossEnemyFSM : BaseEnemyFSM
 
     public override void Die()
     {
-        // 현재는 DeadState 전이 없이, 외부에서 사망 처리 따로 구현할 예정
-        Debug.Log("[BossEnemyFSM] Die() 호출됨 - 현재 DeadState 없음.");
+        Debug.Log("[BossEnemyFSM] Die() 호출됨 → DeadState 전환");
+        ChangeState(deadState);
     }
 
     /// <summary>

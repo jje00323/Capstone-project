@@ -15,7 +15,7 @@ MonoBehaviour:
   bossName: SkeletonSoldier
   bossLevel: 10
   portrait: {fileID: 0}
-  maxHP: 1000
+  maxHP: 10
   hpBarCount: 10
   moveSpeed: 2.5
   attackPower: 10
@@ -27,5 +27,6 @@ MonoBehaviour:
   cutsceneDuration: 4
   expReward: 0
   goldReward: 0
-  itemDrops: []
+  itemDrops:
+  - {fileID: 7860532433299138414, guid: 8262d0d3692857648baf63bfcb5a1e46, type: 3}
   bossThemeMusic: {fileID: 0}

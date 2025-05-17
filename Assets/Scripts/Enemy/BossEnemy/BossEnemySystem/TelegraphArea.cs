@@ -18,11 +18,9 @@ public class TelegraphArea : MonoBehaviour
     private Transform caster;
     private float time = 0f;
 
-    private bool initializedExternally;
     public void Initialize(Vector3 spawnPos, Quaternion rotation, Transform casterTransform, bool isJumpAttack = false)
     {
         caster = casterTransform;
-        initializedExternally = true;
 
         if (isJumpAttack)
         {
