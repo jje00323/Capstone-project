@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11020cb24dd33f846829362b800cf704, type: 3}
+  m_Name: Quest_2
+  m_EditorClassIdentifier: 
+  questID: 2
+  questTitle: "\uC774\uB3D9 \uC870\uC791"
+  questObjective: "\uC9C0\uC815 \uAD6C\uC5ED\uAE4C\uC9C0 \uC774\uB3D9\uD558\uAE30"
+  questDescription: "\uC774\uB3D9 \uC870\uC791 \uC775\uD788\uAE30"
+  questType: 0
+  levelRequirement: 1
+  nextQuestID: 3
+  conditions:
+  - {fileID: 11400000, guid: 030f0aa8e6229514c9093c2a18d0d680, type: 2}
+  reward:
+    experience: 30
+    gold: 0
+    items: []
+  startNarration: "\uC870\uC2EC\uD558\uBA70 \uC55E\uC758 \uCEA0\uD504\uAE4C\uC9C0
+    \uC774\uB3D9\uD558\uC790"

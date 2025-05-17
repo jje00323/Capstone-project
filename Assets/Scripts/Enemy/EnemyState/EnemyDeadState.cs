@@ -2,12 +2,7 @@ using UnityEngine;
 
 public class EnemyDeadState : EnemyState
 {
-    private float timer = 0f;
-    private float dissolveAmount = 0f;
-    private float dissolveDelay = 1f;   // 사망 후 유지 시간
-    private float dissolveSpeed = 1f;
-    private float dissolveEnd = 1f;
-    private bool isDissolving = false;
+    
 
     private Material dissolveMat;
 
@@ -15,9 +10,7 @@ public class EnemyDeadState : EnemyState
 
     public override void Enter()
     {
-        timer = 0f;
-        dissolveAmount = 0f;
-        isDissolving = false;
+       
 
         // Rigidbody 물리 해제 (땅에 꺼지는 현상 방지)
         if (enemy.Rigidbody != null)
@@ -54,38 +47,31 @@ public class EnemyDeadState : EnemyState
             Debug.Log($"[EnemyDeadState] 퀘스트 조건 갱신: {enemy.enemyData.enemyTag}");
         }
 
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            PlayerStatus playerStatus = playerObj.GetComponent<PlayerStatus>();
+            if (playerStatus != null)
+            {
+                playerStatus.GainEXP(enemy.enemyData.expDrop);
+                Debug.Log($"[EnemyDeadState] 경험치 {enemy.enemyData.expDrop} 지급됨");
+            }
+            else
+            {
+                Debug.LogWarning("[EnemyDeadState] PlayerStatus 컴포넌트를 찾을 수 없습니다.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[EnemyDeadState] Player 태그를 가진 오브젝트를 찾을 수 없습니다.");
+        }
+
     }
 
     public override void Update()
     {
-        timer += Time.deltaTime;
-
-        // Delay 후 Dissolve 시작
-        if (!isDissolving && timer >= dissolveDelay)
-        {
-            isDissolving = true;
-
-            // 충돌 제거
-            if (enemy.Collider != null)
-                enemy.Collider.enabled = false;
-        }
-
-        if (isDissolving && dissolveMat != null)
-        {
-            dissolveAmount += Time.deltaTime * dissolveSpeed;
-
-            // 여기 디버그 로그 찍기
-            Debug.Log($"[Dissolve] amount: {dissolveAmount}");
-
-            if (dissolveMat.HasProperty("_DissolveAmount"))
-                dissolveMat.SetFloat("_DissolveAmount", dissolveAmount);
-
-            if (dissolveAmount >= dissolveEnd)
-            {
-                // 삭제 또는 풀링 반환 처리
-                GameObject.Destroy(enemy.gameObject);
-            }
-        }
+        
+        
     }
 
     public override void Exit()
