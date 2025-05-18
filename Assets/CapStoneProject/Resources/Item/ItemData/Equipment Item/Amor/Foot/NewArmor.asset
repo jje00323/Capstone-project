@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
+  m_Name: NewArmor
+  m_EditorClassIdentifier: 
+  itemName: "\uBCF4\uC628\uC7A5\uD654"
+  description: "\uBC29\uC5B4\uB825:2\n\uCD5C\uB300\uCCB4\uB825:10\n\uCCB4\uB825\uC7AC\uC0DD:2"
+  icon: {fileID: 21300000, guid: 29a1226f7b5e20240942612e151c3c4c, type: 3}
+  itemType: 1
+  rarity: 1
+  isStackable: 0
+  maxStack: 1
+  equipmentType: 5
+  allowedJobs: 000000000100000002000000
+  Defense: 2
+  MaxHP: 10
+  HealthRegen: 2

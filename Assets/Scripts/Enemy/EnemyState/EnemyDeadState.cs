@@ -1,3 +1,4 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class EnemyDeadState : EnemyState
@@ -65,7 +66,47 @@ public class EnemyDeadState : EnemyState
         {
             Debug.LogWarning("[EnemyDeadState] Player 태그를 가진 오브젝트를 찾을 수 없습니다.");
         }
+        TryDropItems();
+    }
 
+    private void TryDropItems()
+    {
+        var dropList = enemy.enemyData.dropItems;
+        if (dropList == null || dropList.Count == 0) return;
+
+        foreach (var drop in dropList)
+        {
+            if (drop.itemPrefab == null) continue;
+
+            float roll = Random.Range(0f, 100f);
+            if (roll <= drop.dropChance)
+            {
+                Vector2 offset2D = Random.insideUnitCircle * 1.5f;
+                Vector3 dropPos = enemy.transform.position + new Vector3(offset2D.x, 0.5f, offset2D.y);
+
+                GameObject item = GameObject.Instantiate(drop.itemPrefab, dropPos, Quaternion.identity);
+
+                if (drop.dropEffectPrefab != null)
+                    GameObject.Instantiate(drop.dropEffectPrefab, dropPos, Quaternion.identity);
+
+                
+
+                Debug.Log($"[Drop] {item.name} 드롭됨 (확률: {drop.dropChance}%)");
+            }
+        }
+    }
+
+    
+
+    private Color GetColorByRarity(ItemRarity rarity)
+    {
+        switch (rarity)
+        {
+            case ItemRarity.Normal: return Color.white;
+            case ItemRarity.Rare: return Color.blue;
+            case ItemRarity.Epic: return Color.magenta;
+            default: return Color.gray;
+        }
     }
 
     public override void Update()

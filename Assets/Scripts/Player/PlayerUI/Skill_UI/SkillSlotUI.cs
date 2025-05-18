@@ -11,6 +11,8 @@ public class SkillSlotUI : MonoBehaviour,
     [SerializeField] private TextMeshProUGUI skillNameText;
     [SerializeField] private TextMeshProUGUI featureText;
     [SerializeField] private TextMeshProUGUI currentLevel;
+    [SerializeField] private TextMeshProUGUI costText;
+    [SerializeField] private GameObject lockOverlay;
 
     public SkillInfo skillData;  // 현재 적용 중인 스킬
     public SkillInfo baseSkill;  // 원본 스킬 (업그레이드 이전)
@@ -41,23 +43,48 @@ public class SkillSlotUI : MonoBehaviour,
         skillIcon.sprite = skillData.skillIcon;
         skillNameText.text = skillData.skillName;
         featureText.text = skillData.Feature;
-        currentLevel.text = skillData.currentLevel.ToString();
+        currentLevel.text = $"{skillData.currentLevel}";
+
+        //  잠금 여부 시각화
+        if (lockOverlay != null)
+            lockOverlay.SetActive(skillData.currentLevel <= 0);
+
+        //  비용 표시
+        int nextLevel = skillData.currentLevel + 1;
+        costText.text = (nextLevel > skillData.maxLevel)
+            ? "  최대레벨"
+            : $"레벨업 비용:{nextLevel}";
     }
 
     public void LevelUp()
     {
-        if (skillData == null || skillData.currentLevel >= skillData.maxLevel) return;
+        if (skillData == null || skillData.currentLevel >= skillData.maxLevel)
+            return;
 
-        skillData.SyncLevelRecursive(skillData.currentLevel + 1); //  핵심
+        int cost = skillData.currentLevel + 1;
+
+        if (!SkillPointManager.Instance.TrySpend(cost))
+        {
+            Debug.LogWarning($"스킬 포인트 부족: {cost} 필요");
+            return;
+        }
+
+        skillData.SyncLevelRecursive(skillData.currentLevel + 1);
         UpdateUI();
+        SkillUIManager.Instance.UpdateSkillPointText();
     }
 
     public void LevelDown()
     {
         if (skillData == null || skillData.currentLevel <= 1) return;
 
-        skillData.SyncLevelRecursive(skillData.currentLevel - 1); //  핵심
+        int refund = skillData.currentLevel; // 현재레벨 → 감소 후 레벨+1이니까
+
+        skillData.SyncLevelRecursive(skillData.currentLevel - 1);
+        SkillPointManager.Instance.Refund(refund);
+
         UpdateUI();
+        SkillUIManager.Instance.UpdateSkillPointText();
     }
 
     public void UpgradeSkill(SkillInfo upgraded)
@@ -74,13 +101,24 @@ public class SkillSlotUI : MonoBehaviour,
 
     public void OnClickSlot()
     {
-        // Upgrade UI에는 항상 baseSkill 기준 전달
+        if (SkillUpgradeUI.Instance == null)
+        {
+            Debug.LogWarning("[SkillSlotUI] SkillUpgradeUI가 아직 초기화되지 않았습니다.");
+            return;
+        }
+
         SkillUpgradeUI.Instance.ShowSkillDetail(baseSkill, this);
     }
 
     //  여기부터 드래그 관련 인터페이스 구현 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (skillData == null || skillData.currentLevel <= 0)
+        {
+            Debug.Log("[SkillSlotUI] 잠금된 스킬은 드래그할 수 없습니다.");
+            return;
+        }
+
         draggedSkill = skillData;
         if (draggedSkill != null)
         {

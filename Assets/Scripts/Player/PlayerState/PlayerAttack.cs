@@ -90,6 +90,8 @@ public class PlayerAttack : MonoBehaviour
             movement.StopAgent();
             movement.RotateToMouse();
 
+            animator.applyRootMotion = true;
+
             stateMachine.ChangeState(PlayerState.Attacking);
             animator.SetTrigger("NextCombo");
 
@@ -152,6 +154,8 @@ public class PlayerAttack : MonoBehaviour
         canExecuteImmediately = false;
         inputLocked = false;
         comboIndex = 0;
+
+        animator.applyRootMotion = false;
 
         movement.ResumeAgent();
 

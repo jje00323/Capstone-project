@@ -10,6 +10,7 @@ public enum ItemType
     Quest,
     Etc
 }
+public enum ItemRarity { Normal, Rare, Epic }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item Data")]
 public class ItemData : ScriptableObject
@@ -19,6 +20,9 @@ public class ItemData : ScriptableObject
     [TextArea] public string description;
     public Sprite icon;
     public ItemType itemType;
+
+    [Header("등급")]
+    public ItemRarity rarity;
 
     [Header("스택 설정")]
     public bool isStackable = false;

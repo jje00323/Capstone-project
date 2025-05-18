@@ -29,9 +29,8 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 0
     Feature: "\uC77C\uBC18"
-  - skillKey: Attack
+  - skillKey: W
     skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
     description: "\uBAB0\uB77C"
@@ -45,14 +44,13 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: dash
-    skillName: "\uC55E\uAD6C\uB974\uAE30"
+  - skillKey: E
+    skillName: "\uB300\uC26C"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
     description: "\uBAB0\uB77C"
     cooldown: 3
-    hitboxPrefab: {fileID: 8628970951321349092, guid: 893f50fe3ce27ec4c8414d1066efb2fa, type: 3}
+    hitboxPrefab: {fileID: 0}
     effectPrefab: {fileID: 0}
     effectDuration: 0
     followCaster: 0
@@ -60,6 +58,5 @@ MonoBehaviour:
     manaCost: 0
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 10
-    isUnlocked: 1
+    maxLevel: 1
     Feature: "\uB300\uC26C"

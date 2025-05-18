@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d80c3616cce71b4ba64fd338998f93c, type: 3}
   m_Name: Basic_Helmet
   m_EditorClassIdentifier: 
-  itemName: "\uAE30\uBCF8 \uD22C\uAD6C"
-  description: 
-  icon: {fileID: 566335295, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
+  itemName: "\uBCF4\uC628 \uBAA8\uC790"
+  description: "\uBCF4\uC628\uD6A8\uACFC\uAC00\uC788\uB294 \uBAA8\uC790\uC774\uB2E4
+    .\n\uBC29\uC5B4\uB825: 2\n\uCD5C\uB300\uCCB4\uB825:10\n\uCCB4\uB825\uC7AC\uC0DD:
+    1"
+  icon: {fileID: 21300000, guid: 5ff9b869a12e70b4db7a137f84ed920b, type: 3}
   itemType: 1
+  rarity: 0
   isStackable: 0
   maxStack: 1
   equipmentType: 1
   allowedJobs: 00000000
-  Defense: 10
+  Defense: 2
   MaxHP: 10
-  HealthRegen: 10
+  HealthRegen: 1

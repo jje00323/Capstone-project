@@ -28,8 +28,10 @@ public class SkillInfo
     public int requiredLevel;
     public int currentLevel = 1;
     public int maxLevel = 5;
-    public bool isUnlocked = true;
+    public bool IsUnlocked => currentLevel > 0;
     public string Feature;
+
+
 
     [HideInInspector] public SkillInfo originalSkill; // 업그레이드 전 참조
 
