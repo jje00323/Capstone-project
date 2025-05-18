@@ -32,6 +32,15 @@ public class QuestManager : MonoBehaviour
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(questData.startNarration))
+        {
+            if (!string.IsNullOrWhiteSpace(questData.startNarration))
+            {
+                Debug.Log($"[QuestManager] 내레이션 출력 시도: {questData.startNarration}");
+                DialogueSystem.Instance?.ShowNarration(questData.startNarration);
+            }
+        }
+        OnQuestUpdated?.Invoke(newProgress);
         Debug.Log($"[QuestManager] 퀘스트 수락: {questData.questTitle}");
     }
 
@@ -98,6 +107,20 @@ public class QuestManager : MonoBehaviour
         GrantRewards(questData.reward);
 
         progress.state = QuestState.Rewarded;
+
+        if (questData.nextQuestID != -1)
+        {
+            QuestData nextQuest = Resources.Load<QuestData>($"Quest/Quest_{questData.nextQuestID}");
+            if (nextQuest != null)
+            {
+                AcceptQuest(nextQuest);
+                Debug.Log($"[QuestManager] 다음 퀘스트 자동 수락됨: {nextQuest.questTitle}");
+            }
+            else
+            {
+                Debug.LogWarning($"[QuestManager] 다음 퀘스트(ID: {questData.nextQuestID})를 찾을 수 없습니다.");
+            }
+        }
         Debug.Log($"[QuestManager] 보상 수령 완료: {questData.questTitle}");
     }
 

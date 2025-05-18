@@ -44,7 +44,7 @@ public class NPCInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (isTalking && Input.GetKeyDown(KeyCode.G))
+        if (isTalking && Input.GetKeyDown(KeyCode.F))
         {
             ShowNextLine();
         }

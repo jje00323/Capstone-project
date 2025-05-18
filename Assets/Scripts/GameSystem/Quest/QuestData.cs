@@ -24,4 +24,8 @@ public class QuestData : ScriptableObject
 
     [Header("보상")]
     public QuestReward reward;
+
+    [Header("퀘스트 시작 내레이션")]
+    [TextArea]
+    public string startNarration; // 퀘스트 시작 시 출력될 혼잣말 또는 설명
 }

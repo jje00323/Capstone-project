@@ -23,5 +23,5 @@ MonoBehaviour:
   attackRange: 1
   detectRadius: 6
   returnDistance: 15
-  returnSpeedMultiplier: 3
-  expDrop: 10
+  returnSpeedMultiplier: 0.5
+  expDrop: 4
