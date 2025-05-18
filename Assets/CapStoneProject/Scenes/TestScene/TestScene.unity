@@ -80406,7 +80406,7 @@ PrefabInstance:
     - target: {fileID: 1422203485942576846, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
       propertyPath: m_NavMeshData
       value: 
-      objectReference: {fileID: 23800000, guid: f37a977d50fb9894195506619eb316ef, type: 2}
+      objectReference: {fileID: 23800000, guid: 1ab805cec9b2d3f4791994d9958eb6a8, type: 2}
     - target: {fileID: 5389327968858559513, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.847765
