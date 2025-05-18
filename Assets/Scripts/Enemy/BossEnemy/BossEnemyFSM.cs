@@ -26,6 +26,9 @@ public class BossEnemyFSM : BaseEnemyFSM
     public bool useTestPattern = false;
     [Range(0, 7)] public int testPatternIndex = 0;
 
+    [HideInInspector] public bool cutsceneTriggered = false;
+    [HideInInspector] public bool cutsceneReserved = false;
+
     protected override void Awake()
     {
         base.Awake();

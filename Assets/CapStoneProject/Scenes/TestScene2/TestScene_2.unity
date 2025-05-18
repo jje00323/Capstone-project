@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6d73ded36af9e54ebaed8757264701d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 3793412650054521457, guid: 1c320142a240764409e1494985c417ea, type: 3}
+  enemyPrefab: {fileID: 4150780873371026577, guid: c0983a17d1ed3f74fab51a3e6b7638bf, type: 3}
   spawnPoints:
   - {fileID: 1343470257}
   bossHPUI: {fileID: 0}
@@ -1142,7 +1142,7 @@ Transform:
   m_GameObject: {fileID: 1343470255}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -11.33, y: 0, z: -2.79}
+  m_LocalPosition: {x: -7.02, y: 0, z: -1.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

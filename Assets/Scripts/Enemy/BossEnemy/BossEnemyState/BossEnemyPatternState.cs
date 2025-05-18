@@ -50,6 +50,15 @@ public class BossEnemyPatternState : BossEnemyState
         // NavMeshObstacle ´Ù½Ã È°¼ºÈ­
         if (boss.navMeshObstacle != null)
             boss.navMeshObstacle.enabled = true;
+
+        // ÄÆ¾À ¿¹¾à È®ÀÎ
+        if (!boss.cutsceneTriggered && boss.cutsceneReserved)
+        {
+            boss.cutsceneTriggered = true;
+            boss.cutsceneReserved = false;
+            boss.ChangeState(boss.cutsceneState);
+            Debug.Log("[PatternState] ÄÆ¾À ¿¹¾à ½ÇÇà ¡æ CutsceneState ÀüÈ¯");
+        }
     }
 
     private IEnumerator HandlePattern()

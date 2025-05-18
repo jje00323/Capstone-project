@@ -123,10 +123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86245b2c708ead548adc4e014a6564bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 11400000, guid: b9487591046bc214f8a040ce1d323c2e, type: 2}
-  skillButtonPrefab: {fileID: 4539525156826694376}
-  skillButtonParent: {fileID: 7511421874414528240}
-  skillController: {fileID: 0}
 --- !u!1 &326081184758581819
 GameObject:
   m_ObjectHideFlags: 0
@@ -13970,6 +13966,7 @@ GameObject:
   - component: {fileID: 229614944085617916}
   - component: {fileID: 4065697774161968639}
   - component: {fileID: 6114571172120931262}
+  - component: {fileID: 1755392115803206765}
   m_Layer: 5
   m_Name: Player_UI_Canvas
   m_TagString: Untagged
@@ -14083,9 +14080,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpSlider: {fileID: 2976472687392445314}
+  hpText: {fileID: 0}
   mpSlider: {fileID: 341612296627379603}
+  mpText: {fileID: 0}
   expSlider: {fileID: 6725667684601848584}
+  expText: {fileID: 0}
   levelText: {fileID: 3696427365359212365}
+--- !u!225 &1755392115803206765
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8976148094566820824}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &9024101755941761673
 GameObject:
   m_ObjectHideFlags: 0

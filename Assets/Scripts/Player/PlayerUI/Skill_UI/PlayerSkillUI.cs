@@ -1,10 +1,13 @@
-//using UnityEngine;
+using UnityEngine;
 //using UnityEngine.UI;
 //using TMPro;
 //using System.Collections;
 //using System.Collections.Generic;
 
-//public class PlayerSkillUI : MonoBehaviour
+public class PlayerSkillUI : MonoBehaviour
+{
+
+}
 //{
 //    [Header("스킬 데이터")]
 //    public JobSkillData skillData;

@@ -14,6 +14,8 @@ public class BossEnemyDeadState : BossEnemyState
             col.enabled = false;
 
         boss.StartCoroutine(HandleDeathSequence());
+
+        boss.Animator.speed = 0.5f;
     }
 
     public override void Update() { }
