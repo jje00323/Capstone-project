@@ -70,6 +70,8 @@ public class BossEnemyPatternState : BossEnemyState
             isPhase2Started = true;
             boss.patternController.StartPhase2LightningPattern();
         }
+
+
     }
     private IEnumerator HandlePattern()
     {

@@ -34,6 +34,8 @@ public class BossEnemyMoveState : BossEnemyState
 
     public override void Update()
     {
+        if (boss.currentState == boss.cutsceneState) return;  // 컷씬 중이면 동작 금지
+
         if (target == null) return;
 
         float distance = Vector3.Distance(boss.transform.position, target.position);
@@ -45,14 +47,12 @@ public class BossEnemyMoveState : BossEnemyState
             return;
         }
 
-        // 거리 ≤ 12f → 패턴 가능성 있음
         if (distance <= 12f && boss.patternController.HasAvailablePattern(distance, boss.CheckWallNearby()))
         {
             boss.ChangeState(boss.patternState);
             return;
         }
 
-        // 거리 > 12f → 계속 이동
         MoveTowardsTarget();
     }
 

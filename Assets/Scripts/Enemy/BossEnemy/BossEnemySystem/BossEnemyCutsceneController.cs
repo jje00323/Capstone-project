@@ -24,6 +24,23 @@ public class BossEnemyCutsceneController : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
+    private void Start()
+    {
+        if (bossUIGroup == null)
+        {
+            GameObject go = GameObject.Find("BossUIGroup");
+            if (go != null)
+            {
+                bossUIGroup = go.GetComponent<CanvasGroup>();
+                Debug.Log("[CutsceneController] BossUIGroup 자동 연결 완료");
+            }
+            else
+            {
+                Debug.LogWarning("[CutsceneController] BossUIGroup이 씬에 없습니다.");
+            }
+        }
+
+    }
 
     // 블랙아웃
     public void FadeOut(float duration, System.Action onComplete = null)

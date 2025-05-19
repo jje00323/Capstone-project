@@ -35,6 +35,8 @@ public class BossEnemyIdleState : BossEnemyState
 
     public override void Update()
     {
+        if (boss.currentState == boss.cutsceneState) return;  // 컷씬 중이면 동작 금지
+
         if (target == null) return;
 
         timer += Time.deltaTime;
@@ -52,7 +54,7 @@ public class BossEnemyIdleState : BossEnemyState
             }
             else
             {
-                boss.ChangeState(boss.moveState); // 쿨타임 중이므로 이동해서 다시 접근
+                boss.ChangeState(boss.moveState);
             }
         }
     }

@@ -48,23 +48,14 @@ public class BossEnemyStatus : CharacterStatus
         {
             var fsm = GetComponent<BossEnemyFSM>();
 
-            if (fsm.currentState == fsm.patternState &&
-                fsm.Animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
+            if (!fsm.cutsceneTriggered && !fsm.cutsceneReserved && currentHP / maxHP <= 0.5f)
             {
-                // ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà ÁßÀÌ¸é ¿¹¾à
                 fsm.cutsceneReserved = true;
-                Debug.Log("[BossEnemyStatus] ÄÆ¾À ¿¹¾àµÊ (°ø°Ý Áß)");
+                Debug.Log("[BossEnemyStatus] ÄÆ¾À ¿¹¾àµÊ (Ã¼·Â 50% ÀÌÇÏ)");
             }
-            else if (!fsm.Animator.IsInTransition(0))
-            {
-                // Áï½Ã ÁøÀÔ °¡´É
-                fsm.cutsceneTriggered = true;
-                fsm.ChangeState(fsm.cutsceneState);
-                Debug.Log("[BossEnemyStatus] ÄÆ¾À »óÅÂ Áï½Ã ÁøÀÔ");
-            }
-
-            return;
         }
+
+
 
         if (IsDead)
         {

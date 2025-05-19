@@ -167,7 +167,18 @@ public class BossEnemyPatternController : MonoBehaviour
         {
             Debug.Log("[애니메이션 이벤트] EndBossPattern 호출됨");
             bossFSM.Animator.speed = 1f;
-            bossFSM.EndBossPattern(); // FSM에서 상태 전환 처리
+
+            if (bossFSM.cutsceneReserved && !bossFSM.cutsceneTriggered)
+            {
+                bossFSM.cutsceneReserved = false;
+                bossFSM.cutsceneTriggered = true;
+                bossFSM.ChangeState(bossFSM.cutsceneState);
+                Debug.Log("[애니메이션 이벤트] 컷씬 상태로 전환됨");
+            }
+            else
+            {
+                bossFSM.EndBossPattern(); // IdleState로 복귀
+            }
         }
         else
         {

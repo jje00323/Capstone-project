@@ -69,6 +69,13 @@ public class BossEnemyFSM : BaseEnemyFSM
 
     public void ChangeState(BossEnemyState newState)
     {
+        // 컷씬 중에는 절대 다른 상태로 전환 불가
+        if (currentState == cutsceneState && newState != cutsceneState)
+        {
+            Debug.LogWarning($"[FSM] 컷씬 중 상태 전환 차단됨: {newState.GetType().Name}");
+            return;
+        }
+
         if (currentState == newState) return;
 
         currentState?.Exit();
@@ -91,10 +98,10 @@ public class BossEnemyFSM : BaseEnemyFSM
         Vector3 forward = transform.forward;
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, forward, out hit, checkDistance))
-        {
-            return hit.collider.CompareTag("Wall") || hit.collider.CompareTag("Obstacle");
-        }
+        //if (Physics.Raycast(transform.position, forward, out hit, checkDistance))
+        //{
+        //    return hit.collider.CompareTag("Wall") || hit.collider.CompareTag("Obstacle");
+        //}
 
         return false;
     }

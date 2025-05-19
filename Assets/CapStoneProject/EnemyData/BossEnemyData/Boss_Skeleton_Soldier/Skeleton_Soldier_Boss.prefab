@@ -888,7 +888,7 @@ MonoBehaviour:
   attackController: {fileID: 0}
   navMeshObstacle: {fileID: 1402751927481038657}
   lockRotation: 0
-  useTestPattern: 1
+  useTestPattern: 0
   testPatternIndex: 2
   cutsceneTriggered: 0
   cutsceneReserved: 0
