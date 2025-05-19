@@ -64,6 +64,10 @@ public class QuickSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             }
 
             InventoryManager.Instance.RemoveItem(referencedSlot.item, 1);
+
+            QuestManager.Instance?.UpdateCondition("UseItem", referencedSlot.item.itemName);
+
+
             RefreshSlotUI();
 
             if (referencedSlot.quantity <= 0 || referencedSlot.item == null)

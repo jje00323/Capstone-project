@@ -9,6 +9,7 @@ public class InventoryManager : MonoBehaviour
     public int maxSlotCount = 48;
     public List<InventorySlot> slots = new();
     private int gold;
+
     void Awake()
     {
         if (Instance == null)
@@ -41,6 +42,8 @@ public class InventoryManager : MonoBehaviour
     {
         Debug.Log($"[AddItem] {item.itemName} x{amount} 추가 시도");
 
+        int totalAdded = 0;
+
         // 1. 스택 가능한 슬롯에 우선 추가
         foreach (var slot in slots)
         {
@@ -50,6 +53,7 @@ public class InventoryManager : MonoBehaviour
                 int addAmount = Mathf.Min(space, amount);
                 slot.quantity += addAmount;
                 amount -= addAmount;
+                totalAdded += addAmount;
 
                 Debug.Log($"[AddItem] 기존 스택 슬롯에 {addAmount} 추가됨 → 현재: {slot.quantity}");
 
@@ -57,6 +61,9 @@ public class InventoryManager : MonoBehaviour
                 {
                     InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
                     RefreshQuickSlots();
+
+                    // 퀘스트 조건 반영
+                    QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
                     return true;
                 }
             }
@@ -72,6 +79,7 @@ public class InventoryManager : MonoBehaviour
                 slot.item = item;
                 slot.quantity = addAmount;
                 amount -= addAmount;
+                totalAdded += addAmount;
 
                 Debug.Log($"[AddItem] 빈 슬롯에 {item.itemName} x{addAmount} 추가됨");
 
@@ -79,6 +87,9 @@ public class InventoryManager : MonoBehaviour
                 {
                     InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
                     RefreshQuickSlots();
+
+                    // 퀘스트 조건 반영
+                    QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
                     return true;
                 }
             }
@@ -86,6 +97,13 @@ public class InventoryManager : MonoBehaviour
 
         // 3. 아직도 남은 수량이 있다면 실패
         Debug.LogWarning($"[AddItem] 실패: {item.itemName} x{amount} 남음 → 인벤토리에 추가 불가");
+
+        // 그래도 일부 추가된 경우 조건 반영
+        if (totalAdded > 0)
+        {
+            QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
+        }
+
         return false;
     }
 

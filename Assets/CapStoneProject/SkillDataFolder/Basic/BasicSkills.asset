@@ -27,7 +27,7 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: f3dd00059f0b52549ba54eb6e9c9bee1, type: 2}
     manaCost: 10
     requiredLevel: 0
-    currentLevel: 1
+    currentLevel: 0
     maxLevel: 10
     Feature: "\uC77C\uBC18"
   - skillKey: W
