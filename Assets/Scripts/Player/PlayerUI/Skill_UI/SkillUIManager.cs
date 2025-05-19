@@ -30,12 +30,25 @@ public class SkillUIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        LoadSkillListForCurrentJob();  // 슬롯 생성 & 스킬 포인트 텍스트 갱신
-        UpdateSkillPointText();
+        if (JobManager.Instance != null && JobManager.Instance.GetSkillData(JobManager.Instance.GetCurrentJob()) != null)
+        {
+            StartCoroutine(WaitUntilSkillDataReadyThenLoad());
+        }
+        else
+        {
+            Debug.LogWarning("[SkillUIManager] JobManager가 초기화되지 않았거나 skillData가 없음. 로딩 생략");
+        } // 슬롯 생성 & 스킬 포인트 텍스트 갱신
+        
     }
 
     private void OnJobChanged(JobManager.JobType newJob)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogWarning("[SkillUIManager] GameObject가 꺼져 있어 스킬 UI 로딩 생략됨");
+            return;
+        }
+
         LoadSkillListForCurrentJob();
     }
 
@@ -68,16 +81,19 @@ public class SkillUIManager : MonoBehaviour
 
         foreach (var skill in jobData.skills)
         {
+
+            SkillInfo displaySkill = SkillUpgradeManager.Instance.GetCurrentVersionOf(skill);
+
             GameObject slotObj = Instantiate(skillSlotPrefab, skillListArea);
             SkillSlotUI slotUI = slotObj.GetComponent<SkillSlotUI>();
-
+            
             if (slotUI == null)
             {
                 Debug.LogError("[SkillUIManager] SkillSlotUI 컴포넌트가 없습니다.");
                 continue;
             }
 
-            slotUI.SetSlot(skill);
+            slotUI.SetSlot(displaySkill);
 
             if (firstSlot == null)
                 firstSlot = slotUI;
@@ -147,6 +163,30 @@ public class SkillUIManager : MonoBehaviour
 
         // UI는 생성하지 않고, 데이터만 준비
         SkillUpgradeManager.Instance.AutoLinkUpgradeToBase(allJobSkills);
+    }
+
+    private IEnumerator WaitUntilSkillDataReadyThenLoad()
+    {
+        // 최대 2~3 프레임까지 대기 (필요시 시간 제한도 추가 가능)
+        for (int i = 0; i < 5; i++)
+        {
+            if (JobManager.Instance != null &&
+                SkillUpgradeManager.Instance != null &&
+                JobManager.Instance.GetSkillData(JobManager.Instance.GetCurrentJob()) != null)
+            {
+                LoadSkillListForCurrentJob();
+                UpdateSkillPointText();
+                yield break;
+            }
+
+            yield return null; // 한 프레임 대기
+            yield return null; // 한 프레임 대기
+            yield return null; // 한 프레임 대기
+            yield return null; // 한 프레임 대기
+
+        }
+
+        Debug.LogWarning("[SkillUIManager] 스킬 데이터가 준비되지 않아 초기화를 건너뜁니다.");
     }
 
 }
