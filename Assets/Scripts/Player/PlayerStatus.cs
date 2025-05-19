@@ -114,13 +114,27 @@ public class PlayerStatus : CharacterStatus
 
     public void GainLevel(JobStatusData statData)
     {
+        int previousLevel = level;
+
         currentEXP -= maxEXP;
         level++;
+
         maxHP += statData.hpPerLevel;
         maxMP += statData.mpPerLevel;
         // 필요 시 attack, defense 등도 증가
         currentHP = maxHP;
         currentMP = maxMP;
+
+        if (SkillPointManager.Instance != null)
+        {
+            SkillPointManager.Instance.GainPointByLevel(previousLevel);
+            Debug.Log($"[레벨업] Lv.{previousLevel} → Lv.{level} / 스킬포인트 +{previousLevel}");
+        }
+        else
+        {
+            Debug.LogWarning("[레벨업] SkillPointManager가 초기화되지 않았습니다.");
+        }
+
         UpdateAllUI();
     }
 

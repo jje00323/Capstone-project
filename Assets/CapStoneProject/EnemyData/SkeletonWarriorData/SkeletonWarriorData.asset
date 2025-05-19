@@ -25,3 +25,16 @@ MonoBehaviour:
   returnDistance: 15
   returnSpeedMultiplier: 3
   expDrop: 10
+  dropItems:
+  - itemPrefab: {fileID: 24792105360149571, guid: 76dfbcb52a686e541b250531f91d9cfd, type: 3}
+    dropChance: 100
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 4168374944478765363, guid: 0fc1105f913950144a73c7524cafbfc0, type: 3}
+    dropChance: 100
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 6615836593635104580, guid: 053ec8f4641a8de4395fb531c702cd7f, type: 3}
+    dropChance: 100
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 2586433584476429404, guid: 0ded79ce27a29144f9282db964fd9e56, type: 3}
+    dropChance: 100
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}

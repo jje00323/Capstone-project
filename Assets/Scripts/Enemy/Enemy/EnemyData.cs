@@ -32,4 +32,17 @@ public class EnemyData : ScriptableObject
 
     [Header("보상")]
     public int expDrop;
+
+    
+    [Header("드롭 아이템")]
+    public List<DropItemData> dropItems = new List<DropItemData>();
+}
+
+
+[System.Serializable]
+public class DropItemData
+{
+    public GameObject itemPrefab;                  // 아이템 프리팹 (ItemObject 붙은)
+    [Range(0f, 100f)] public float dropChance = 100f; // 확률 %
+    public GameObject dropEffectPrefab;            // 드롭 이펙트 (선택)
 }

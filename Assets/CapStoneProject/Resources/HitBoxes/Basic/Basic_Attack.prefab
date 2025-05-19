@@ -86,7 +86,7 @@ MonoBehaviour:
   boxSize: {x: 2, y: 2, z: 2}
   coneAngle: 45
   coneDistance: 3
-  offset: {x: 0, y: 0, z: 1.2}
+  offset: {x: 0, y: 0.5, z: 0.5}
   isProjectile: 0
   projectileSpeed: 10
   projectileRigidbody: {fileID: 0}

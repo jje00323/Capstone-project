@@ -29,8 +29,16 @@ public class PlayerSkill : MonoBehaviour
     {
         if (!stateMachine.CanSkill()) return;
 
+        
+
         var skill = SkillEquipManager.Instance.GetEquippedSkill(skillKey);
         if (skill == null) return;
+
+        if (skill.currentLevel <= 0)
+        {
+            Debug.Log($"[Skill] {skillKey}는 잠금 상태입니다.");
+            return;
+        }
 
         float cooldown = skillController.GetSkillCooldown(skillKey);
         float lastUsedTime = skillController.GetSkillLastUsedTime(skillKey);
@@ -55,9 +63,21 @@ public class PlayerSkill : MonoBehaviour
     }
     public void EndSkill()
     {
-        animator.applyRootMotion = false;
+        var attack = GetComponent<PlayerAttack>();
+        if (attack != null)
+            attack.EndCombo(); // 콤보 종료 시 RootMotion은 이쪽에서 꺼짐
+
+        //  공격 중이 아니라면 여기서만 꺼줌
+        if (attack == null || !IsInAttackState())
+            animator.applyRootMotion = false;
+
         playerMovement.ResumeAgent();
         animator.SetTrigger("EndSkill");
         stateMachine.ChangeState(PlayerStateMachine.PlayerState.Idle);
+    }
+
+    private bool IsInAttackState()
+    {
+        return stateMachine.CurrentState == PlayerStateMachine.PlayerState.Attacking;
     }
 }
