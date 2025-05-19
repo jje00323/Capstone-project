@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: CloseRange_Attack_3
   m_EditorClassIdentifier: 
   attackIndex: 2
-  hitboxPrefabs:
-  - {fileID: 5557548418706590239, guid: fcaaf7fff79a01046a9d14461f7e32d1, type: 3}
+  hitboxInfos:
+  - hitboxPrefab: {fileID: 5557548418706590239, guid: fcaaf7fff79a01046a9d14461f7e32d1, type: 3}
+    followCaster: 0
   telegraphInfos:
   - telegraphPrefab: {fileID: 8042199655072720705, guid: 5f6ee8185079f3f42abcb7b0761b88ec, type: 3}
     shapeType: 2

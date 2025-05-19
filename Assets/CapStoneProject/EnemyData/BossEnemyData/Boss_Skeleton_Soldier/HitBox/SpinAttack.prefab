@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7736908661702863509}
-  - component: {fileID: -3741319747426429002}
+  - component: {fileID: 9046998770325828003}
   m_Layer: 9
   m_Name: SpinAttack
   m_TagString: EnemyHitbox
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 2948882322570944832}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-3741319747426429002
+--- !u!114 &9046998770325828003
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,31 +42,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 4743754892185120454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9c855a064373914b8d3c6a9422ab230, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b575731577e1d943befca4611487dbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
   duration: 0.1
   startDelay: 0
   repeatCount: 1
-  repeatInterval: 0
+  repeatInterval: 0.5
   shape: 0
-  radius: 5.2
+  radius: 5.4
   boxSize: {x: 2, y: 2, z: 2}
-  coneAngle: 0
-  coneDistance: 0
-  offset: {x: 0, y: 0, z: 0}
-  isProjectile: 0
-  projectileSpeed: 10
-  projectileRigidbody: {fileID: 0}
-  secondaryHitboxPrefab: {fileID: 0}
-  useMousePosition: 0
-  mouseGroundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  coneAngle: 45
+  coneDistance: 3
+  hitboxOffset: {x: 0, y: 0, z: 0}
+  effectPrefab: {fileID: 4743754892185120454, guid: e32a2dcf531aab544ab7ae74c9106ef8, type: 3}
+  effectOffset: {x: 0, y: 0, z: 0}
+  effectDuration: 2
+  followCaster: 1
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  followCaster: 1
 --- !u!1001 &2953375839932324304
 PrefabInstance:
   m_ObjectHideFlags: 0

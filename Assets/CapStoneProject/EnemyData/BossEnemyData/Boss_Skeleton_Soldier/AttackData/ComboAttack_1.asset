@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73cc3fecf20ae72418aaae436721967c, type: 3}
   m_Name: ComboAttack_1
   m_EditorClassIdentifier: 
-  attackIndex: 0
-  hitboxPrefabs:
-  - {fileID: 5557548418706590239, guid: 5263ffd11f115334ab385f13e664eebe, type: 3}
-  - {fileID: 5557548418706590239, guid: 8c13b166c9ef74e48a32a4b887d5a5f6, type: 3}
-  - {fileID: 5557548418706590239, guid: 005ecc1c1e0c5d549a0d27a73d88470e, type: 3}
+  attackIndex: 3
+  hitboxInfos:
+  - hitboxPrefab: {fileID: 5557548418706590239, guid: 5263ffd11f115334ab385f13e664eebe, type: 3}
+    followCaster: 0
+  - hitboxPrefab: {fileID: 5557548418706590239, guid: 8c13b166c9ef74e48a32a4b887d5a5f6, type: 3}
+    followCaster: 0
+  - hitboxPrefab: {fileID: 5557548418706590239, guid: 005ecc1c1e0c5d549a0d27a73d88470e, type: 3}
+    followCaster: 0
   telegraphInfos: []

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.IO.LowLevel.Unsafe;
@@ -9,6 +10,7 @@ public class BossEnemyPatternController : MonoBehaviour
     private int lastUsedIndex = -1;
 
     public BossEnemyFSM bossFSM; // 인스펙터에서 직접 연결
+    private Coroutine lightningRoutine;
 
     private readonly float comboMinCooldown = 12f;
     private readonly float comboMaxCooldown = 20f;
@@ -172,4 +174,69 @@ public class BossEnemyPatternController : MonoBehaviour
             Debug.LogWarning("BossEnemyFSM가 연결되지 않았습니다.");
         }
     }
+
+    public void StartPhase2LightningPattern()
+    {
+        if (lightningRoutine == null)
+            Debug.Log("[번개패턴] Phase2 Lightning Pattern 시작됨 (코루틴 실행)");
+            lightningRoutine = StartCoroutine(Phase2LightningRoutine());
+    }
+
+
+    private IEnumerator Phase2LightningRoutine()
+    {
+        const int lightningIndex = 8;
+
+        while (true)
+        {
+            float delay = Random.Range(5f, 8f);
+            Debug.Log($"[번개패턴] {delay:F2}초 후 번개 {Random.Range(2, 5)}개 소환 예정");
+
+            yield return new WaitForSeconds(delay);
+
+            int count = Random.Range(3, 6);
+            List<Vector3> usedPositions = new List<Vector3>();
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 pos = GetValidLightningPosition(usedPositions, minDistance: 2f);
+                usedPositions.Add(pos);
+
+                Debug.Log($"[번개패턴] 번개 #{i + 1} 위치: {pos}");
+                bossFSM.attackController.SpawnLightningAttackGroup(pos, lightningIndex);
+            }
+        }
+    }
+    private Vector3 GetValidLightningPosition(List<Vector3> existingPositions, float minDistance = 2f, int maxAttempts = 10)
+    {
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            Vector2 randCircle = Random.insideUnitCircle * 8f;
+            Vector3 candidate = bossFSM.transform.position + new Vector3(randCircle.x, 0f, randCircle.y);
+
+            bool tooClose = false;
+            foreach (var existing in existingPositions)
+            {
+                if (Vector3.Distance(candidate, existing) < minDistance)
+                {
+                    tooClose = true;
+                    break;
+                }
+            }
+
+            if (!tooClose)
+                return candidate;
+        }
+
+        // 재시도 실패 시 마지막 임의값 반환
+        Vector2 fallback = Random.insideUnitCircle * 6f;
+        return bossFSM.transform.position + new Vector3(fallback.x, 0f, fallback.y);
+    }
+
+    //private Vector3 GetRandomPositionAroundBoss()
+    //{
+    //    Vector2 randCircle = Random.insideUnitCircle * 6f;
+    //    return bossFSM.transform.position + new Vector3(randCircle.x, 0f, randCircle.y);
+    //}
 }
+

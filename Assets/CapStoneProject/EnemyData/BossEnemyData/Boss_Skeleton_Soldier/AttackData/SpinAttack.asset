@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73cc3fecf20ae72418aaae436721967c, type: 3}
   m_Name: SpinAttack
   m_EditorClassIdentifier: 
-  attackIndex: 6
-  hitboxPrefabs:
-  - {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
-  - {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
-  - {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
-  - {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+  attackIndex: 7
+  hitboxInfos:
+  - hitboxPrefab: {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+    followCaster: 1
+  - hitboxPrefab: {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+    followCaster: 1
+  - hitboxPrefab: {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+    followCaster: 1
+  - hitboxPrefab: {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+    followCaster: 1
+  - hitboxPrefab: {fileID: 4743754892185120454, guid: 6e8fb05ce91f47849988ed4c41bdc4cb, type: 3}
+    followCaster: 1
   telegraphInfos: []

@@ -9,6 +9,8 @@ public class BossEnemyFSM : BaseEnemyFSM
     [Header("연결 컴포넌트")]
     public BossEnemyStatus bossStatus;
     public BossEnemyPatternController patternController;
+    [Header("공격 컨트롤러")]
+    public BossEnemyAttackController attackController;
     public NavMeshObstacle navMeshObstacle; // 보스 충돌 관통 처리를 위한 필드 추가
 
     [Header("상태 제어")]
@@ -34,6 +36,7 @@ public class BossEnemyFSM : BaseEnemyFSM
         base.Awake();
         bossStatus = GetComponent<BossEnemyStatus>();
         patternController = GetComponent<BossEnemyPatternController>();
+        attackController = GetComponent<BossEnemyAttackController>();
         navMeshObstacle = GetComponent<NavMeshObstacle>(); // NavMeshObstacle 컴포넌트 참조 초기화
     }
 

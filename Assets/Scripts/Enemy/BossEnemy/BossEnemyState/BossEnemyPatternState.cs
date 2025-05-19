@@ -10,6 +10,9 @@ public class BossEnemyPatternState : BossEnemyState
     private Collider bossCollider;
     private Collider playerCollider;
 
+    private bool isPhase2Started = false;
+    //private Coroutine lightningRoutine = null;
+
     public BossEnemyPatternState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
@@ -60,7 +63,14 @@ public class BossEnemyPatternState : BossEnemyState
             Debug.Log("[PatternState] ÄÆ¾À ¿¹¾à ½ÇÇà ¡æ CutsceneState ÀüÈ¯");
         }
     }
-
+    public override void Update()
+    {
+        if (boss.cutsceneTriggered && !isPhase2Started)
+        {
+            isPhase2Started = true;
+            boss.patternController.StartPhase2LightningPattern();
+        }
+    }
     private IEnumerator HandlePattern()
     {
         if (target == null)
@@ -149,7 +159,7 @@ public class BossEnemyPatternState : BossEnemyState
         direction.Normalize();
 
         float fullDistance = Vector3.Distance(bossPosition, targetPosition);
-        float adjustedDistance = Mathf.Max(fullDistance - 3.0f, 0f);
+        float adjustedDistance = Mathf.Max(fullDistance - 5.0f, 0f);
         Vector3 destination = bossPosition + direction * adjustedDistance;
 
         boss.transform.rotation = Quaternion.LookRotation(direction);
@@ -242,6 +252,5 @@ public class BossEnemyPatternState : BossEnemyState
                 break;
         }
     }
-
-    public override void Update() { }
+    
 }

@@ -885,10 +885,13 @@ MonoBehaviour:
   bossData: {fileID: 11400000, guid: 54cf017d3e0cc7d44af7f3a2f4a86511, type: 2}
   bossStatus: {fileID: -5813994297054512813}
   patternController: {fileID: 9221184078685343720}
+  attackController: {fileID: 0}
   navMeshObstacle: {fileID: 1402751927481038657}
   lockRotation: 0
-  useTestPattern: 0
-  testPatternIndex: 0
+  useTestPattern: 1
+  testPatternIndex: 2
+  cutsceneTriggered: 0
+  cutsceneReserved: 0
 --- !u!114 &9221184078685343720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -923,6 +926,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 02a34b9e46d8b534d8f323f89bb62f98, type: 2}
   - {fileID: 11400000, guid: 616215749df7701479d0bf9e69ff95fc, type: 2}
   - {fileID: 11400000, guid: 68136869beb725249ad3c13be1dd7339, type: 2}
+  - {fileID: 11400000, guid: 1a5a309a09ade5f49b5066407a65c37e, type: 2}
   animSpeedProfiles:
   - attackIndex: 2
     startSpeed: 0.2

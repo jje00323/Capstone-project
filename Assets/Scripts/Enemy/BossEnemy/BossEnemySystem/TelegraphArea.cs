@@ -1,11 +1,10 @@
+using System.Collections;
 using UnityEngine;
-
-public enum ShapeType { None, Cone, Circle, Box, Projectile }
 
 public class TelegraphArea : MonoBehaviour
 {
     [Header("기본 정보")]
-    public ShapeType shape = ShapeType.Cone;
+    public BossHitbox.ShapeType shape = BossHitbox.ShapeType.Cone;
     public Vector3 offset = Vector3.zero;
     public float growTime = 1.5f;
     public float duration = 3f;
@@ -15,72 +14,96 @@ public class TelegraphArea : MonoBehaviour
     public GameObject hitboxPrefab;
 
     private Vector3 finalScale = Vector3.one;
-    private Transform caster;
+    //private Transform caster;
     private float time = 0f;
 
+    private bool initializedExternally;
+
+    //public void Initialize(Vector3 spawnPos, Quaternion rotation, Transform casterTransform, bool isJumpAttack = false)
+    //{
+    //    initializedExternally = true;
+
+    //    Vector3 offsetXZ = new Vector3(offset.x, 0f, offset.z);
+    //    Vector3 worldXZ = rotation * offsetXZ;
+    //    float y = offset.y;
+
+    //    transform.position = spawnPos + worldXZ + new Vector3(0f, y, 0f);
+    //    transform.rotation = rotation;
+
+    //    if (autoScaleFromHitbox && hitboxPrefab != null)
+    //    {
+    //        BossHitbox hit = hitboxPrefab.GetComponent<BossHitbox>();
+    //        if (hit != null)
+    //        {
+    //            switch (hit.shape)
+    //            {
+    //                case BossHitbox.ShapeType.Sphere:
+    //                    finalScale = Vector3.one * hit.radius;
+    //                    break;
+    //                case BossHitbox.ShapeType.Box:
+    //                    finalScale = hit.boxSize;
+    //                    break;
+    //                case BossHitbox.ShapeType.Cone:
+    //                    finalScale = new Vector3(
+    //                        hit.coneDistance,
+    //                        1f,
+    //                        hit.coneDistance
+    //                    );
+    //                    break;
+    //            }
+    //        }
+    //    }
+    //}
     public void Initialize(Vector3 spawnPos, Quaternion rotation, Transform casterTransform, bool isJumpAttack = false)
     {
-        caster = casterTransform;
+        initializedExternally = true;
 
-        if (isJumpAttack)
-        {
-            transform.position = spawnPos + casterTransform.TransformDirection(offset);
-        }
-        else
-        {
-            transform.position = casterTransform.position + casterTransform.TransformDirection(offset);
-        }
+        Vector3 offsetXZ = new Vector3(offset.x, 0f, offset.z);
+        Vector3 worldXZ = rotation * offsetXZ;
+        float y = offset.y;
 
+        transform.position = spawnPos + worldXZ + new Vector3(0f, y, 0f);
         transform.rotation = rotation;
+
+        transform.localScale = Vector3.zero;
+
+        Debug.Log($"[TelegraphArea] Initialized at: {transform.position}, offset 적용 후");
+        Debug.Log($"[TelegraphArea] Caster: {casterTransform.name}, Offset: {offset}, Shape: {shape}");
 
         if (autoScaleFromHitbox && hitboxPrefab != null)
         {
-            Hitbox hit = hitboxPrefab.GetComponent<Hitbox>();
-            if (hit == null) return;
-
-            switch (shape)
+            BossHitbox hit = hitboxPrefab.GetComponent<BossHitbox>();
+            if (hit != null)
             {
-                case ShapeType.Cone:
-                    float distance = hit.coneDistance;
-                    finalScale = new Vector3(distance, distance, distance);
-                    break;
-                case ShapeType.Circle:
-                    float radius = hit.radius;
-                    finalScale = new Vector3(radius, radius, radius);
-                    break;
-                case ShapeType.Box:
-                    finalScale = hit.boxSize;
-                    break;
-                default:
-                    finalScale = Vector3.one * 3f;
-                    break;
+                switch (hit.shape)
+                {
+                    case BossHitbox.ShapeType.Sphere:
+                        finalScale = Vector3.one * hit.radius;
+                        break;
+                    case BossHitbox.ShapeType.Box:
+                        finalScale = hit.boxSize;
+                        break;
+                    case BossHitbox.ShapeType.Cone:
+                        finalScale = new Vector3(
+                            hit.coneDistance,
+                            1f,
+                            hit.coneDistance
+                        );
+                        break;
+                }
             }
         }
     }
 
-
-    void Update()
+    private void Update()
     {
+        if (!initializedExternally) return;
+
         time += Time.deltaTime;
         float t = Mathf.Clamp01(time / growTime);
+        transform.localScale = Vector3.Lerp(Vector3.zero, finalScale, t);
 
-        if (shape == ShapeType.Box)
-        {
-            // 네모 장판일 경우 → 앞 방향으로만 커지도록 처리
-            Vector3 scaled = Vector3.Lerp(Vector3.zero, finalScale, t);
-            transform.localScale = scaled;
-
-            // 중심 위치를 offset (절반 거리만큼 앞으로 이동)
-            Vector3 forward = caster.forward;
-            transform.position = caster.position + caster.TransformDirection(offset) + forward * (scaled.z / 2f);
-        }
-        else
-        {
-            transform.localScale = Vector3.Lerp(Vector3.zero, finalScale, t);
-        }
-
-        if (time >= duration)
+        if (time > duration)
             Destroy(gameObject);
     }
 }
-

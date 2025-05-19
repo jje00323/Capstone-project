@@ -19,10 +19,11 @@ public class BossHitbox : MonoBehaviour
     public Vector3 boxSize = new Vector3(2f, 2f, 2f);
     public float coneAngle = 45f;
     public float coneDistance = 3f;
-    public Vector3 offset = Vector3.forward;
+    public Vector3 hitboxOffset = Vector3.forward;
 
     [Header("이펙트 설정")]
     public GameObject effectPrefab;
+    public Vector3 effectOffset = Vector3.zero;
     public float effectDuration = 2f;
 
     [Header("동작 설정")]
@@ -34,7 +35,7 @@ public class BossHitbox : MonoBehaviour
 
     private Transform caster;
     private bool initialized = false;
-    private bool isHitboxActive = false;
+    //private bool isHitboxActive = false;
 
     public void Initialize(Transform casterTransform, bool shouldFollow)
     {
@@ -42,12 +43,35 @@ public class BossHitbox : MonoBehaviour
         followCaster = shouldFollow;
         initialized = true;
 
-        transform.position = caster.position + caster.TransformDirection(offset);
+        // 히트박스 위치 및 회전 설정
+        transform.position = caster.position + caster.TransformDirection(hitboxOffset);
         transform.rotation = caster.rotation;
+
+        // 이펙트 생성
+        if (effectPrefab != null)
+        {
+            Vector3 effectPos = caster.position + caster.TransformDirection(effectOffset);
+            GameObject vfx = Instantiate(effectPrefab, effectPos, caster.rotation);
+            if (followCaster)
+                vfx.transform.SetParent(transform);
+            Destroy(vfx, effectDuration);
+        }
+
+        StartCoroutine(HandleHitbox());
+    }
+    public void Initialize(Vector3 spawnPos, Quaternion rotation, Transform casterTransform, bool shouldFollow)
+    {
+        caster = casterTransform;
+        followCaster = shouldFollow;
+        initialized = true;
+
+        transform.position = spawnPos;
+        transform.rotation = rotation;
 
         if (effectPrefab != null)
         {
-            GameObject vfx = Instantiate(effectPrefab, transform.position, transform.rotation);
+            Vector3 effectPos = spawnPos + transform.TransformDirection(effectOffset);
+            GameObject vfx = Instantiate(effectPrefab, effectPos, rotation);
             if (followCaster)
                 vfx.transform.SetParent(transform);
             Destroy(vfx, effectDuration);
@@ -56,11 +80,12 @@ public class BossHitbox : MonoBehaviour
         StartCoroutine(HandleHitbox());
     }
 
+
     private void Update()
     {
         if (!initialized || caster == null || !followCaster) return;
 
-        transform.position = caster.position + caster.TransformDirection(offset);
+        transform.position = caster.position + caster.TransformDirection(hitboxOffset);
         transform.rotation = caster.rotation;
     }
 
@@ -70,10 +95,10 @@ public class BossHitbox : MonoBehaviour
 
         for (int i = 0; i < repeatCount; i++)
         {
-            isHitboxActive = true;
+            //isHitboxActive = true;
             ApplyDamage();
             yield return new WaitForSeconds(0.1f);
-            isHitboxActive = false;
+            //isHitboxActive = false;
 
             if (i < repeatCount - 1)
                 yield return new WaitForSeconds(repeatInterval);
@@ -85,7 +110,7 @@ public class BossHitbox : MonoBehaviour
 
     private void ApplyDamage()
     {
-        Vector3 center = transform.position + transform.TransformDirection(offset);
+        Vector3 center = transform.position + transform.TransformDirection(hitboxOffset);
         Collider[] hits = null;
         List<Collider> filteredHits = new List<Collider>();
         LayerMask targetLayer = LayerMask.GetMask("Player");
@@ -129,11 +154,10 @@ public class BossHitbox : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (!drawGizmos) return;
-        if (!Application.isPlaying && !isHitboxActive) return;
-
-        Vector3 center = transform.position + transform.TransformDirection(offset);
 
         Gizmos.color = gizmoColor;
+
+        Vector3 center = transform.position + transform.TransformDirection(hitboxOffset);
 
         switch (shape)
         {
@@ -146,11 +170,12 @@ public class BossHitbox : MonoBehaviour
                 Gizmos.matrix = Matrix4x4.identity;
                 break;
             case ShapeType.Cone:
-                Gizmos.DrawRay(center, transform.forward * coneDistance);
-                Vector3 right = Quaternion.Euler(0, coneAngle * 0.5f, 0) * transform.forward;
-                Vector3 left = Quaternion.Euler(0, -coneAngle * 0.5f, 0) * transform.forward;
-                Gizmos.DrawRay(center, right * coneDistance);
-                Gizmos.DrawRay(center, left * coneDistance);
+                Vector3 forward = transform.forward * coneDistance;
+                Vector3 left = Quaternion.Euler(0, -coneAngle * 0.5f, 0) * forward;
+                Vector3 right = Quaternion.Euler(0, coneAngle * 0.5f, 0) * forward;
+                Gizmos.DrawRay(center, forward);
+                Gizmos.DrawRay(center, left);
+                Gizmos.DrawRay(center, right);
                 break;
         }
     }
