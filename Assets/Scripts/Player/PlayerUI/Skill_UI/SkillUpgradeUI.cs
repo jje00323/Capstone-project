@@ -87,6 +87,25 @@ public class SkillUpgradeUI : MonoBehaviour
                     {
                         currentSlot.UpgradeSkill(skill);
                         UpdateDescription(skill);
+
+                        //  여기에 SkillEquipSlotUI 반영 로직 추가
+                        string equippedSlotKey = SkillEquipManager.Instance.FindEquippedSlotKey(baseSkill);
+                        if (!string.IsNullOrEmpty(equippedSlotKey))
+                        {
+                            SkillEquipManager.Instance.EquipSkill(equippedSlotKey, skill);
+
+                            // 슬롯 UI 갱신
+                            SkillEquipSlotUI[] equipSlots = GameObject.FindObjectsOfType<SkillEquipSlotUI>();
+                            foreach (var slot in equipSlots)
+                            {
+                                if (slot.name.Contains(equippedSlotKey) || slot.slotKey == equippedSlotKey)
+                                {
+                                    slot.SetSkillIcon(skill);
+                                    Debug.Log($"[SkillUpgradeUI] {baseSkill.skillName} → {skill.skillName} 슬롯 {slot.slotKey} 교체 완료");
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             });

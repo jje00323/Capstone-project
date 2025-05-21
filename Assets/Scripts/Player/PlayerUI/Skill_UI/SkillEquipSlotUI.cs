@@ -6,7 +6,7 @@ using TMPro;
 public class SkillEquipSlotUI : MonoBehaviour, IDropHandler
 {
     [Header("슬롯 키 지정 (예: Q, W, E, R)")]
-    [SerializeField] private string slotKey;
+    [SerializeField] public string slotKey;
 
     [Header("UI Components")]
     [SerializeField] private Image iconImage;
@@ -35,6 +35,23 @@ public class SkillEquipSlotUI : MonoBehaviour, IDropHandler
             return;
         }
 
+        foreach (var pair in SkillEquipManager.Instance.GetAllEquippedSkills())
+        {
+            var equipped = pair.Value;
+
+            bool isSameLine =
+                equipped == draggedSkill ||
+                equipped.originalSkill == draggedSkill ||
+                draggedSkill.originalSkill == equipped;
+
+            if (isSameLine)
+            {
+                Debug.LogWarning($"[SkillEquipSlotUI] 계열 중복: {draggedSkill.skillName}은 이미 슬롯 {pair.Key}에 장착됨");
+                return; // 장착 금지
+            }
+        }
+
+        // 장착 허용
         SkillEquipManager.Instance.EquipSkill(slotKey, draggedSkill);
         SetSkillIcon(draggedSkill);
 

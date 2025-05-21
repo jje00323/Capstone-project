@@ -15,13 +15,33 @@ public class SkillEquipManager : MonoBehaviour
 
     public void EquipSkill(string key, SkillInfo skill)
     {
-        if (equippedSkills.ContainsKey(key))
-            equippedSkills[key] = skill;
-        else
-            equippedSkills.Add(key, skill);
+        //  중복 계열 검사: 자기 슬롯은 제외
+        foreach (var pair in equippedSkills)
+        {
+            if (pair.Key == key) continue; // 자기 슬롯은 제외
 
-        skill.skillKey = key; // 실제 키 반영
+            bool isSameLine =
+                pair.Value == skill ||
+                pair.Value.originalSkill == skill ||
+                skill.originalSkill == pair.Value;
+
+            if (isSameLine)
+            {
+                Debug.LogWarning($"[SkillEquipManager] {skill.skillName}는 이미 슬롯({pair.Key})에 장착되어 있습니다. 중복 불가.");
+                return;
+            }
+        }
+
+        //  정상 장착
+        equippedSkills[key] = skill;
+        skill.skillKey = key;
     }
+
+    public Dictionary<string, SkillInfo> GetAllEquippedSkills()
+    {
+        return equippedSkills; // 슬롯 키 → 스킬
+    }
+
 
     public SkillInfo GetEquippedSkill(string key)
     {
@@ -30,5 +50,15 @@ public class SkillEquipManager : MonoBehaviour
         return null;
     }
 
-    public Dictionary<string, SkillInfo> GetAllEquippedSkills() => equippedSkills;
+    public string FindEquippedSlotKey(SkillInfo skill)
+    {
+        foreach (var kvp in equippedSkills)
+        {
+            if (kvp.Value == skill || kvp.Value.originalSkill == skill || skill.originalSkill == kvp.Value)
+                return kvp.Key;
+        }
+        return null;
+    }
+
+
 }

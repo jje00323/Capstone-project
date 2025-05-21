@@ -1,3 +1,4 @@
+//  SkillUpgradeManager.cs 수정
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -7,6 +8,9 @@ public class SkillUpgradeManager : MonoBehaviour
 
     [SerializeField] private List<SkillUpgradeData> allUpgradeData;
 
+    //  현재 업그레이드 상태 추적용 맵
+    private Dictionary<SkillInfo, SkillInfo> upgradeMap = new();
+
     private void Awake()
     {
         Instance = this;
@@ -14,25 +18,13 @@ public class SkillUpgradeManager : MonoBehaviour
 
     public SkillUpgradeData GetUpgradeDataFor(SkillInfo baseSkill)
     {
-        if (baseSkill == null)
-        {
-            Debug.LogWarning("[SkillUpgradeManager] baseSkill이 null입니다.");
-            return null;
-        }
+        if (baseSkill == null) return null;
+        return allUpgradeData.Find(data => data.skillName == baseSkill.skillName);
+    }
 
-        //Debug.Log($"[SkillUpgradeManager] 찾는 대상: {baseSkill.skillName}");
-
-        foreach (var data in allUpgradeData)
-        {
-            //Debug.Log($"[SkillUpgradeManager] 비교 중: '{data.skillName}' vs '{baseSkill.skillName}' → {data.skillName == baseSkill.skillName}");
-        }
-
-        var result = allUpgradeData.Find(data => data.skillName == baseSkill.skillName);
-
-        //if (result == null)
-        //    Debug.LogError("[SkillUpgradeManager] 일치하는 SkillUpgradeData를 찾지 못했습니다.");
-
-        return result;
+    public SkillUpgradeData GetUpgradeDataFor(string baseSkillName)
+    {
+        return allUpgradeData.Find(data => data.skillName == baseSkillName);
     }
 
     public void AutoLinkUpgradeToBase(JobSkillData[] allJobSkills)
@@ -41,35 +33,39 @@ public class SkillUpgradeManager : MonoBehaviour
         {
             foreach (var baseSkill in jobData.skills)
             {
-                SkillUpgradeData upgradeData = GetUpgradeDataFor(baseSkill.skillName);
-
+                SkillUpgradeData upgradeData = GetUpgradeDataFor(baseSkill);
                 if (upgradeData == null || upgradeData.upgradeOptions == null) continue;
 
                 foreach (var upgraded in upgradeData.upgradeOptions)
                 {
                     upgraded.originalSkill = baseSkill;
-
-                    //Debug.Log($"[링크완료] '{upgraded.skillName}' → 원본: '{upgraded.originalSkill?.skillName}'");
                 }
             }
         }
-
     }
 
-    // 기존 메서드에 skillName 기반 버전 추가
-    public SkillUpgradeData GetUpgradeDataFor(string baseSkillName)
+    //  업그레이드 적용 기록
+    public void SetCurrentUpgrade(SkillInfo original, SkillInfo upgraded)
     {
-        foreach (var data in allUpgradeData)
-        {
-            Debug.Log($"[SkillUpgradeManager] 비교 중: '{data.skillName}' vs '{baseSkillName}' → {data.skillName == baseSkillName}");
-
-            if (data.skillName == baseSkillName)
-            {
-                return data;
-            }
-        }
-
-        //Debug.LogError($"[SkillUpgradeManager] 일치하는 SkillUpgradeData를 찾지 못했습니다: {baseSkillName}");
-        return null;
+        if (upgradeMap.ContainsKey(original))
+            upgradeMap[original] = upgraded;
+        else
+            upgradeMap.Add(original, upgraded);
     }
+
+    //  현재 선택된 버전 반환
+    public SkillInfo GetCurrentVersionOf(SkillInfo baseSkill)
+    {
+        if (upgradeMap.TryGetValue(baseSkill, out var upgraded))
+            return upgraded;
+        return baseSkill;
+    }
+
+    //  업그레이드 초기화 (예: 리셋 시)
+    public void ClearUpgrades()
+    {
+        upgradeMap.Clear();
+    }
+
+
 }

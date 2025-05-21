@@ -23,7 +23,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f3e02d76e97ff804d9c55ef4b721568b, type: 2}
   reward:
     experience: 20
-    gold: 0
+    gold: 20
     items: []
   startNarration: "\uB808\uBCA8\uC774 \uC62C\uB790\uC5B4!!\n[K]\uD0A4\uB97C \uB20C\uB7EC
     \uC2A4\uD0AC\uCC3D\uC744 \uC5F4\uACE0 \uC2A4\uD0AC\uC744 \uBC30\uC6CC \uC2A4\uCF08\uB808\uD1A4\uC5D0\uAC8C

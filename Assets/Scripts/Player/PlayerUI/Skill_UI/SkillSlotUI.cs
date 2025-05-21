@@ -91,7 +91,18 @@ public class SkillSlotUI : MonoBehaviour,
     {
         skillData = upgraded;
         UpdateUI();
+        SkillUpgradeManager.Instance.SetCurrentUpgrade(baseSkill, upgraded);
+
+        //  SkillEquipManager에서 슬롯 키를 찾고 업그레이드 적용
+        string slotKey = SkillEquipManager.Instance.FindEquippedSlotKey(baseSkill);
+        if (!string.IsNullOrEmpty(slotKey))
+        {
+            SkillEquipManager.Instance.EquipSkill(slotKey, upgraded);
+            Debug.Log($"[SkillSlotUI] 슬롯 {slotKey}의 스킬을 {upgraded.skillName}으로 업그레이드 반영함");
+        }
     }
+
+
 
     public void ResetToOriginal()
     {
