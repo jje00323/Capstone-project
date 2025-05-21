@@ -12,7 +12,6 @@ public class BossEnemyCutsceneState : BossEnemyState
 
     public override void Enter()
     {
-        Debug.Log("[CutsceneState] 컷씬 시작");
 
         InitializeCutsceneObjects(); // ▶ 참조 시점 보장
 
@@ -83,10 +82,12 @@ public class BossEnemyCutsceneState : BossEnemyState
     }
     private IEnumerator WaitAndEnterIdle()
     {
-        yield return new WaitForSeconds(1f); // 카메라 전환 완료 후 추가 대기 시간
+        yield return new WaitForSeconds(1f);
 
-        boss.cutsceneTriggered = false;
         boss.Animator.speed = 1.0f;
+        boss.patternController.StartPhase2LightningPattern();
+
+        Debug.Log("[CutsceneState] FSM 상태 전환: Cutscene → Idle");
         boss.ChangeState(boss.idleState);
     }
 

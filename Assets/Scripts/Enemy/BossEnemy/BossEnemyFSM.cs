@@ -29,16 +29,13 @@ public class BossEnemyFSM : BaseEnemyFSM
     public bool useTestPattern = false;
     [Range(0, 7)] public int testPatternIndex = 0;
 
-    [HideInInspector] public bool cutsceneTriggered = false;
-    [HideInInspector] public bool cutsceneReserved = false;
-
     protected override void Awake()
     {
         base.Awake();
         bossStatus = GetComponent<BossEnemyStatus>();
         patternController = GetComponent<BossEnemyPatternController>();
         attackController = GetComponent<BossEnemyAttackController>();
-        navMeshObstacle = GetComponent<NavMeshObstacle>(); // NavMeshObstacle 컴포넌트 참조 초기화
+        navMeshObstacle = GetComponent<NavMeshObstacle>();
     }
 
     private void Start()
@@ -49,11 +46,9 @@ public class BossEnemyFSM : BaseEnemyFSM
             return;
         }
 
-        // 데이터 적용
         bossStatus.Setup(bossData);
         Animator.runtimeAnimatorController = bossData.animatorController;
 
-        // 상태 초기화
         idleState = new BossEnemyIdleState(this);
         moveState = new BossEnemyMoveState(this);
         patternState = new BossEnemyPatternState(this);
@@ -71,13 +66,6 @@ public class BossEnemyFSM : BaseEnemyFSM
 
     public void ChangeState(BossEnemyState newState)
     {
-        // 컷씬 중에는 절대 다른 상태로 전환 불가
-        if (currentState == cutsceneState && newState != cutsceneState)
-        {
-            Debug.LogWarning($"[FSM] 컷씬 중 상태 전환 차단됨: {newState.GetType().Name}");
-            return;
-        }
-
         if (currentState == newState) return;
 
         currentState?.Exit();
@@ -91,19 +79,11 @@ public class BossEnemyFSM : BaseEnemyFSM
         ChangeState(deadState);
     }
 
-    /// <summary>
-    /// 전방 벽 체크: 보스가 바라보는 방향에 벽 또는 장애물이 가까이 있는지 확인
-    /// </summary>
     public bool CheckWallNearby()
     {
         float checkDistance = 2.0f;
         Vector3 forward = transform.forward;
         RaycastHit hit;
-
-        //if (Physics.Raycast(transform.position, forward, out hit, checkDistance))
-        //{
-        //    return hit.collider.CompareTag("Wall") || hit.collider.CompareTag("Obstacle");
-        //}
 
         return false;
     }

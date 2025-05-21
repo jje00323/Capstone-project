@@ -14,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] private bool autoSpawnOnStart = true;
 
+    [HideInInspector] public GameObject spawnedBoss;
+
     private void Awake()
     {
         // 컷씬용 BossUIGroup(CanvasGroup)의 Transform을 찾아서 자식으로 넣기
@@ -32,7 +34,11 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         if (autoSpawnOnStart)
-            SpawnAll();
+            if (enemyPrefab != null && !enemyPrefab.CompareTag("Boss"))
+            {
+                Debug.Log("[EnemySpawner] 일반 몬스터 자동 스폰 실행");
+                SpawnAll();
+            }
     }
 
     public void SpawnAll()
@@ -41,8 +47,11 @@ public class EnemySpawner : MonoBehaviour
         {
             GameObject enemy = Instantiate(enemyPrefab, spawn.position, spawn.rotation);
 
+            // 보스일 경우 외부 노출용 필드에 저장
             if (enemy.CompareTag("Boss"))
             {
+                spawnedBoss = enemy; // 핵심 포인트
+
                 var bossFSM = enemy.GetComponent<BossEnemyFSM>();
                 if (bossFSM != null && bossFSM.bossData != null)
                 {
@@ -60,19 +69,7 @@ public class EnemySpawner : MonoBehaviour
                             hpUI.SetBoss(bossFSM.bossStatus);
                             Debug.Log("[EnemySpawner] BossHealthUI에 bossStatus 연결 완료");
                         }
-                        else
-                        {
-                            Debug.LogError("[EnemySpawner] BossHPUIPrefab에 BossEnemyHealthUI 컴포넌트가 없습니다.");
-                        }
                     }
-                    else
-                    {
-                        Debug.LogWarning("[EnemySpawner] bossHPUIPrefab 또는 bossUIParent가 비어있습니다.");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("[EnemySpawner] bossFSM 또는 bossData가 누락되었습니다.");
                 }
             }
             else
@@ -81,6 +78,8 @@ public class EnemySpawner : MonoBehaviour
             }
         }
     }
+
+
 
     private void SetupNavMeshObstacle(GameObject enemy)
     {

@@ -80281,6 +80281,10 @@ PrefabInstance:
       propertyPath: m_NavMeshData
       value: 
       objectReference: {fileID: 23800000, guid: 15f9e49837b7f414391a3b633f113995, type: 2}
+    - target: {fileID: 1422203485942576846, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
+      propertyPath: m_LayerMask.m_Bits
+      value: 439
+      objectReference: {fileID: 0}
     - target: {fileID: 5389327968858559513, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.847765

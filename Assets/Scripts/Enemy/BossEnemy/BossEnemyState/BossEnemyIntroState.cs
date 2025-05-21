@@ -6,64 +6,88 @@ public class BossEnemyIntroState : BossEnemyState
 {
     private CinemachineVirtualCamera introCam;
     private CinemachineVirtualCamera mainCam;
+    private Coroutine introRoutine;
 
     public BossEnemyIntroState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
     {
-        Debug.Log("[IntroState] 보스 인트로 시작");
+        var rb = boss.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.velocity = Vector3.zero;
+        }
 
+        boss.Animator.applyRootMotion = false;
         InitializeIntroCameras();
 
         if (introCam == null || mainCam == null)
         {
-            Debug.LogWarning("[IntroState] 인트로/메인 카메라가 없습니다.");
             boss.ChangeState(boss.idleState);
             return;
         }
+        SetLookAtTarget();
 
-        // Step 1: Fade Out → UI 숨기고 카메라 전환
         BossEnemyIntroController.Instance.FadeOut(0.5f, () =>
         {
             SetCameraPriority(introCam, 100);
             SetCameraPriority(mainCam, 10);
-
             BossEnemyIntroController.Instance.HideAll();
 
-            // Step 2: Fade In → 애니메이션 실행
             BossEnemyIntroController.Instance.FadeIn(0.5f, () =>
             {
                 boss.Animator.SetTrigger("Intro");
-
-                // Step 3: 연출 끝난 후 상태 전환
-                boss.StartCoroutine(WaitAndEnterIdle());
+                introRoutine = boss.StartCoroutine(CheckLandingAndTransition());
             });
         });
     }
 
     private void InitializeIntroCameras()
     {
-        Transform trackRoot = GameObject.Find("BossIntroTrack(Clone)")?.transform;
-        if (trackRoot != null)
-            introCam = trackRoot.Find("BossIntroVCam")?.GetComponent<CinemachineVirtualCamera>();
-
+        var trackGO = GameObject.Find("BossIntroTrack(Clone)");
+        introCam = trackGO?.transform.Find("BossIntroVCam")?.GetComponent<CinemachineVirtualCamera>();
         mainCam = GameObject.Find("MainVCam")?.GetComponent<CinemachineVirtualCamera>();
     }
 
-    private IEnumerator WaitAndEnterIdle()
+    private IEnumerator CheckLandingAndTransition()
     {
-        yield return new WaitForSeconds(4f); // 인트로 연출 시간
+        var rb = boss.GetComponent<Rigidbody>();
 
-        // Step 4: Fade Out → 메인 카메라 복귀
+        while (true)
+        {
+            float y = boss.transform.position.y;
+            float vy = rb != null ? rb.velocity.y : 0f;
+            if (y <= 0.5f && Mathf.Abs(vy) < 0.05f)
+                break;
+            yield return null;
+        }
+
+        yield return new WaitUntil(() => boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("JumpLoop"));
+        boss.Animator.SetBool("isLanding", true);
+
+        yield return new WaitUntil(() => boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("JumpEnd"));
+        float jumpEndLength = boss.Animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(jumpEndLength);
+
         BossEnemyIntroController.Instance.FadeOut(0.5f, () =>
         {
             SetCameraPriority(introCam, 10);
             SetCameraPriority(mainCam, 100);
 
-            // Step 5: Fade In → UI 복원 → Idle 상태 진입
             BossEnemyIntroController.Instance.FadeIn(0.5f, () =>
             {
                 BossEnemyIntroController.Instance.ShowAll();
+
+                if (rb != null)
+                {
+                    rb.isKinematic = true;
+                    rb.useGravity = false;
+                    rb.velocity = Vector3.zero;
+                }
+
+                boss.Animator.applyRootMotion = true;
                 boss.ChangeState(boss.idleState);
             });
         });
@@ -73,8 +97,31 @@ public class BossEnemyIntroState : BossEnemyState
     {
         if (cam != null) cam.Priority = priority;
     }
+    private void SetLookAtTarget()
+    {
+        Transform lookAt = FindDeepChild(boss.transform, "LookAtTarget");
+        if (introCam != null && lookAt != null)
+            introCam.LookAt = lookAt;
+    }
+    private Transform FindDeepChild(Transform parent, string name)
+    {
+        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == name)
+                return child;
+        }
+        return null;
+    }
 
     public override void Update() { }
 
-    public override void Exit() { }
+    public override void Exit()
+    {
+        if (introRoutine != null)
+        {
+            boss.StopCoroutine(introRoutine);
+            introRoutine = null;
+        }
+        boss.Animator.SetBool("isLanding", false);
+    }
 }

@@ -106,20 +106,6 @@ public class BossEnemyPatternController : MonoBehaviour
         return selected;
     }
 
-    // 단일 인덱스를 반환하고 기록하는 헬퍼 메서드
-    private int SelectSingleAndRecord(int index)
-    {
-        lastUsedIndex = index;
-
-        // 쿨타임 적용 대상일 경우
-        if (index == 6 || index == 7)
-        {
-            float cooldown = Random.Range(farMinCooldown, farMaxCooldown);
-            cooldownTimers[index] = Time.time + cooldown;
-        }
-
-        return index;
-    }
     public bool HasAvailablePattern(float distanceToPlayer, bool isNearWall)
     {
         if (isNearWall)
@@ -163,21 +149,25 @@ public class BossEnemyPatternController : MonoBehaviour
     }
     public void EndBossPattern()
     {
+        Debug.Log("[PatternController] 애니메이션 이벤트 → EndBossPattern 호출됨");
+
         if (bossFSM != null)
         {
             Debug.Log("[애니메이션 이벤트] EndBossPattern 호출됨");
             bossFSM.Animator.speed = 1f;
 
-            if (bossFSM.cutsceneReserved && !bossFSM.cutsceneTriggered)
+            var status = bossFSM.bossStatus;
+
+            if (!status.hasEnteredCutscene &&
+                status.currentHP / status.maxHP <= 0.5f)
             {
-                bossFSM.cutsceneReserved = false;
-                bossFSM.cutsceneTriggered = true;
+                status.hasEnteredCutscene = true;
                 bossFSM.ChangeState(bossFSM.cutsceneState);
                 Debug.Log("[애니메이션 이벤트] 컷씬 상태로 전환됨");
             }
             else
             {
-                bossFSM.EndBossPattern(); // IdleState로 복귀
+                bossFSM.EndBossPattern(); // Idle 상태로 복귀
             }
         }
         else
@@ -185,7 +175,6 @@ public class BossEnemyPatternController : MonoBehaviour
             Debug.LogWarning("BossEnemyFSM가 연결되지 않았습니다.");
         }
     }
-
     public void StartPhase2LightningPattern()
     {
         if (lightningRoutine == null)
@@ -243,11 +232,5 @@ public class BossEnemyPatternController : MonoBehaviour
         Vector2 fallback = Random.insideUnitCircle * 6f;
         return bossFSM.transform.position + new Vector3(fallback.x, 0f, fallback.y);
     }
-
-    //private Vector3 GetRandomPositionAroundBoss()
-    //{
-    //    Vector2 randCircle = Random.insideUnitCircle * 6f;
-    //    return bossFSM.transform.position + new Vector3(randCircle.x, 0f, randCircle.y);
-    //}
 }
 

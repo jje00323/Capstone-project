@@ -16,16 +16,8 @@ public class BossSummonTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggered) return;
-        triggered = true; // 첫 줄에서 바로 true 설정
-
-        if (!other.CompareTag("Player"))
-        {
-            Debug.Log("[BossSummonTrigger] 태그 불일치 - 무시");
-            return;
-        }
-
-        Debug.Log("[BossSummonTrigger] 플레이어 진입 감지됨 → 보스 소환 시작");
+        if (triggered || !other.CompareTag("Player")) return;
+        triggered = true;
         StartCoroutine(SummonBossSequence());
     }
 
@@ -33,21 +25,42 @@ public class BossSummonTrigger : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        if (bossSpawnerPrefab != null)
-        {
-            var bossObj = Instantiate(bossSpawnerPrefab, transform.position, transform.rotation);
-            Debug.Log("[BossSummonTrigger] 보스 스포너 생성됨");
-
-            // FSM 상태 진입은 보스 스크립트 내부에서 처리하거나 여기서도 가능
-            var fsm = bossObj.GetComponentInChildren<BossEnemyFSM>();
-            if (fsm != null)
-                fsm.ChangeState(fsm.introState);
-        }
-
         if (introTrackPrefab != null)
             Instantiate(introTrackPrefab, transform.position, Quaternion.identity);
 
-        Destroy(gameObject); // 마법진 제거
+        if (cutsceneTrackPrefab != null)
+            Instantiate(cutsceneTrackPrefab, transform.position, Quaternion.identity);
+
+        if (bossSpawnerPrefab != null)
+        {
+            var spawnPos = transform.position + Vector3.up * 12f;
+            var spawnerGO = Instantiate(bossSpawnerPrefab, spawnPos, transform.rotation);
+            var spawner = spawnerGO.GetComponent<EnemySpawner>();
+
+            if (spawner != null)
+            {
+                spawner.SpawnAll();
+                yield return null;
+
+                var boss = spawner.spawnedBoss;
+                if (boss != null)
+                {
+                    var rb = boss.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = false;
+                        rb.useGravity = true;
+                    }
+
+                    yield return new WaitUntil(() => GameObject.Find("BossIntroTrack(Clone)") != null);
+
+                    var fsm = boss.GetComponent<BossEnemyFSM>();
+                    if (fsm != null)
+                        fsm.ChangeState(fsm.introState);
+                }
+            }
+        }
+
+        Destroy(gameObject);
     }
 }
-

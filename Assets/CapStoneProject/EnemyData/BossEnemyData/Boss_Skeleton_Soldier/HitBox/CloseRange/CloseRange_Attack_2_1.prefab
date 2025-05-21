@@ -57,7 +57,7 @@ MonoBehaviour:
   hitboxOffset: {x: 0.15, y: 1, z: 1.5}
   effectPrefab: {fileID: 5557548418706590239, guid: ca29037f8795b504aa1c37f6568ae406, type: 3}
   effectOffset: {x: -0.5, y: 1, z: 3}
-  effectDuration: 2
+  effectDuration: 1
   followCaster: 0
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}

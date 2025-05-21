@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shape: 1
-  offset: {x: 0, y: 0.01, z: -1.5}
+  offset: {x: 0, y: 0.01, z: -2.5}
   growTime: 1.06
   duration: 1.06
   autoScaleFromHitbox: 1
