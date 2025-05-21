@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
-using System.Collections.Generic;
 
 public class BossEnemyCutsceneState : BossEnemyState
 {
@@ -9,38 +8,29 @@ public class BossEnemyCutsceneState : BossEnemyState
     private CinemachineDollyCart dollyCart;
     private CinemachineVirtualCamera mainCam;
 
-
-
-    public BossEnemyCutsceneState(BossEnemyFSM boss) : base(boss)
-    {
-        // 상위 오브젝트 기준으로 자식 오브젝트 접근
-        Transform trackRoot = GameObject.Find("BossCutSceneTrack")?.transform;
-
-        if (trackRoot != null)
-        {
-            cutsceneCam = trackRoot.Find("BossCutsceneVCam")?.GetComponent<CinemachineVirtualCamera>();
-            dollyCart = trackRoot.Find("Dolly Cart")?.GetComponent<CinemachineDollyCart>();
-        }
-
-        mainCam = GameObject.Find("MainVCam")?.GetComponent<CinemachineVirtualCamera>();
-    }
+    public BossEnemyCutsceneState(BossEnemyFSM boss) : base(boss) { }
 
     public override void Enter()
     {
         Debug.Log("[CutsceneState] 컷씬 시작");
+
+        InitializeCutsceneObjects(); // ▶ 참조 시점 보장
+
+        if (cutsceneCam != null)
+            cutsceneCam.gameObject.SetActive(true); // ▶ 비활성화 대비
 
         BossEnemyCutsceneController.Instance.FadeOut(0.5f, () =>
         {
             TeleportBossToTransitionPoint();
             HideAllUI();
 
-            SetCameraPriority(10, 100);  // MainCam, CutsceneCam
+            SetCameraPriority(10, 100);  // MainVCam = 10, CutsceneVCam = 100
             SetLookAtTarget();
 
             if (dollyCart != null)
             {
                 dollyCart.m_Position = 0f;
-                dollyCart.m_Speed = 1.5f;
+                dollyCart.m_Speed = 3f; // 필요 시 1.5f로 조정
             }
 
             BossEnemyCutsceneController.Instance.FadeIn(0.5f, () =>
@@ -53,38 +43,49 @@ public class BossEnemyCutsceneState : BossEnemyState
         });
     }
 
+    private void InitializeCutsceneObjects()
+    {
+        // 씬에서 동적으로 생성된 오브젝트 이름 기준
+        Transform trackRoot = GameObject.Find("BossCutSceneTrack(Clone)")?.transform;
+        if (trackRoot != null)
+        {
+            cutsceneCam = trackRoot.Find("BossCutsceneVCam")?.GetComponent<CinemachineVirtualCamera>();
+            dollyCart = trackRoot.Find("Dolly Cart")?.GetComponent<CinemachineDollyCart>();
+        }
+
+        mainCam = GameObject.Find("MainVCam")?.GetComponent<CinemachineVirtualCamera>();
+    }
+
     private IEnumerator PlayCutscene()
     {
-        yield return new WaitUntil(() => boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("CutScene"));
-
+        // 컷씬 애니메이션 시작까지 대기
+        yield return new WaitUntil(() =>
+            boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("CutScene"));
         Debug.Log("[CutsceneState] 애니메이션 CutScene 시작됨");
+
+        // 컷씬 애니메이션 재생 시간 대기
         yield return new WaitForSeconds(boss.bossData.cutsceneDuration);
 
+        // 페이드 아웃 → 카메라 전환
         BossEnemyCutsceneController.Instance.FadeOut(0.5f, () =>
         {
-            SetCameraPriority(100, 10); // 복구
+            SetCameraPriority(100, 10); // CutsceneCam → MainCam
             if (dollyCart != null) dollyCart.m_Speed = 0f;
 
             ShowAllUI();
 
+            // 페이드 인 완료 후 1초 대기하고 Idle 상태 진입
             BossEnemyCutsceneController.Instance.FadeIn(0.5f, () =>
             {
-                boss.StartCoroutine(EndAfterDelay());
+                boss.StartCoroutine(WaitAndEnterIdle());
             });
         });
     }
-    private Transform FindDeepChild(Transform parent, string name)
+    private IEnumerator WaitAndEnterIdle()
     {
-        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
-        {
-            if (child.name == name)
-                return child;
-        }
-        return null;
-    }
-    private IEnumerator EndAfterDelay()
-    {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f); // 카메라 전환 완료 후 추가 대기 시간
+
+        boss.cutsceneTriggered = false;
         boss.Animator.speed = 1.0f;
         boss.ChangeState(boss.idleState);
     }
@@ -114,10 +115,19 @@ public class BossEnemyCutsceneState : BossEnemyState
     {
         Transform lookAt = FindDeepChild(boss.transform, "LookAtTarget");
         if (cutsceneCam != null && lookAt != null)
-        {
             cutsceneCam.LookAt = lookAt;
-        }
     }
+
+    private Transform FindDeepChild(Transform parent, string name)
+    {
+        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == name)
+                return child;
+        }
+        return null;
+    }
+
     private void HideAllUI()
     {
         BossEnemyCutsceneController.Instance.HideAll();
@@ -127,12 +137,11 @@ public class BossEnemyCutsceneState : BossEnemyState
     {
         BossEnemyCutsceneController.Instance.ShowAll();
     }
+
     public override void Exit()
     {
         if (dollyCart != null)
-        {
             dollyCart.m_Speed = 0f;
-        }
     }
 
     public override void Update() { }

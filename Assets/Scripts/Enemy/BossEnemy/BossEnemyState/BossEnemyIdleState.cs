@@ -44,7 +44,7 @@ public class BossEnemyIdleState : BossEnemyState
         float distance = Vector3.Distance(boss.transform.position, target.position);
         boss.Animator.SetFloat("DistanceToPlayer", distance);
 
-        if (timer >= delay)
+        if (timer >= delay && !boss.cutsceneTriggered)
         {
             bool isNearWall = boss.CheckWallNearby();
 

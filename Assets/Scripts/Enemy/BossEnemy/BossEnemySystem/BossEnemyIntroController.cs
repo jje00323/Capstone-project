@@ -2,20 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossEnemyCutsceneController : MonoBehaviour
+public class BossEnemyIntroController : MonoBehaviour
 {
-    public static BossEnemyCutsceneController Instance;
+    public static BossEnemyIntroController Instance;
 
     [Header("블랙아웃 오버레이")]
     [SerializeField] private CanvasGroup overlayGroup;
 
-    [Header("플레이어 제어")]
-    [SerializeField] private PlayerInputHandler playerInputHandler;
-
     [Header("UI 요소들")]
     [SerializeField] private CanvasGroup playerUIGroup;
     [SerializeField] private CanvasGroup bossUIGroup;
-    [SerializeField] private List<GameObject> uiToBackupAndToggleDuringCutscene;
+    [SerializeField] private List<GameObject> uiToToggleDuringIntro;
 
     private Dictionary<GameObject, bool> uiActiveStates = new();
 
@@ -24,18 +21,14 @@ public class BossEnemyCutsceneController : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
-    private void Start()
-    {
 
-    }
-
-    // 블랙아웃
+    // 페이드 아웃: 어둡게
     public void FadeOut(float duration, System.Action onComplete = null)
     {
         StartCoroutine(Fade(1f, duration, onComplete));
     }
 
-    // 복귀 연출
+    // 페이드 인: 밝게
     public void FadeIn(float duration, System.Action onComplete = null)
     {
         StartCoroutine(Fade(0f, duration, onComplete));
@@ -64,17 +57,14 @@ public class BossEnemyCutsceneController : MonoBehaviour
         SetCanvasGroup(playerUIGroup, false);
         SetCanvasGroup(bossUIGroup, false);
 
-        foreach (var ui in uiToBackupAndToggleDuringCutscene)
+        foreach (var ui in uiToToggleDuringIntro)
         {
             if (ui != null)
             {
-                uiActiveStates[ui] = ui.activeSelf;  // 상태 저장
-                ui.SetActive(false);                 // 비활성화
+                uiActiveStates[ui] = ui.activeSelf;
+                ui.SetActive(false);
             }
         }
-
-        if (playerInputHandler != null)
-            playerInputHandler.enabled = false;
     }
 
     public void ShowAll()
@@ -85,11 +75,8 @@ public class BossEnemyCutsceneController : MonoBehaviour
         foreach (var kvp in uiActiveStates)
         {
             if (kvp.Key != null)
-                kvp.Key.SetActive(kvp.Value); // 저장된 상태로 복원
+                kvp.Key.SetActive(kvp.Value);
         }
-
-        if (playerInputHandler != null)
-            playerInputHandler.enabled = true;
     }
 
     private void SetCanvasGroup(CanvasGroup group, bool active)

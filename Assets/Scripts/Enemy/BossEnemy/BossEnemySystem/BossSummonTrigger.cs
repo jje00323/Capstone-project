@@ -8,7 +8,9 @@ public class BossSummonTrigger : MonoBehaviour
 
     [Header("컷씬 및 페이드 프리팹")]
     public GameObject cutsceneTrackPrefab;
-    public GameObject fadeCanvasPrefab;
+
+    [Header("인트로 카메라 프리팹")]
+    public GameObject introTrackPrefab;
 
     private bool triggered = false;
 
@@ -33,15 +35,17 @@ public class BossSummonTrigger : MonoBehaviour
 
         if (bossSpawnerPrefab != null)
         {
-            Instantiate(bossSpawnerPrefab, transform.position, transform.rotation);
-            Debug.Log("[BossSummonTrigger] 보스 스포너 생성됨 (SpawnAll은 자동 호출됨)");
+            var bossObj = Instantiate(bossSpawnerPrefab, transform.position, transform.rotation);
+            Debug.Log("[BossSummonTrigger] 보스 스포너 생성됨");
+
+            // FSM 상태 진입은 보스 스크립트 내부에서 처리하거나 여기서도 가능
+            var fsm = bossObj.GetComponentInChildren<BossEnemyFSM>();
+            if (fsm != null)
+                fsm.ChangeState(fsm.introState);
         }
 
-        if (cutsceneTrackPrefab != null)
-            Instantiate(cutsceneTrackPrefab, transform.position, transform.rotation);
-
-        if (fadeCanvasPrefab != null)
-            Instantiate(fadeCanvasPrefab);
+        if (introTrackPrefab != null)
+            Instantiate(introTrackPrefab, transform.position, Quaternion.identity);
 
         Destroy(gameObject); // 마법진 제거
     }

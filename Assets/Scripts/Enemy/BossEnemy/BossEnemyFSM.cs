@@ -23,6 +23,7 @@ public class BossEnemyFSM : BaseEnemyFSM
     public BossEnemyPatternState patternState;
     public BossEnemyDeadState deadState;
     public BossEnemyCutsceneState cutsceneState;
+    public BossEnemyIntroState introState;
 
     [Header("디버그용 테스트 패턴")]
     public bool useTestPattern = false;
@@ -58,8 +59,9 @@ public class BossEnemyFSM : BaseEnemyFSM
         patternState = new BossEnemyPatternState(this);
         deadState = new BossEnemyDeadState(this);
         cutsceneState = new BossEnemyCutsceneState(this);
+        introState = new BossEnemyIntroState(this);
 
-        ChangeState(idleState);
+        ChangeState(introState);
     }
 
     private void Update()
