@@ -4,14 +4,14 @@ public class BossEnemyStatus : CharacterStatus
 {
     [Header("전투 상태")]
     public Transform target;
+
     [Header("보스 능력치")]
     public float moveSpeed;
 
     [Header("패턴 관리")]
     public int lastAttackIndex = -1; // 패턴별 Idle 딜레이 관리용
 
-    //private bool cutsceneTriggered = false;
-
+    [HideInInspector] public bool hasEnteredCutscene = false; // 컷씬 1회 진입용
 
     public BossEnemyData bossData { get; private set; }
 
@@ -21,7 +21,6 @@ public class BossEnemyStatus : CharacterStatus
         maxHP = data.maxHP;
         currentHP = maxHP;
         moveSpeed = data.moveSpeed;
-        // attackPower 등 추가 필요시 가져오기
     }
 
     private void Start()
@@ -42,21 +41,6 @@ public class BossEnemyStatus : CharacterStatus
         float segmentHP = maxHP / totalBars;
         int currentBarIndex = Mathf.FloorToInt(currentHP / segmentHP);
 
-        // 컷씬 조건 (체력 50% 이하 + 미발동)
-        if (!GetComponent<BossEnemyFSM>().cutsceneTriggered &&
-            currentHP / maxHP <= 0.5f)
-        {
-            var fsm = GetComponent<BossEnemyFSM>();
-
-            if (!fsm.cutsceneTriggered && !fsm.cutsceneReserved && currentHP / maxHP <= 0.5f)
-            {
-                fsm.cutsceneReserved = true;
-                Debug.Log("[BossEnemyStatus] 컷씬 예약됨 (체력 50% 이하)");
-            }
-        }
-
-
-
         if (IsDead)
         {
             OnDeath();
@@ -68,5 +52,4 @@ public class BossEnemyStatus : CharacterStatus
     {
         GetComponent<BossEnemyFSM>()?.Die();
     }
-
 }

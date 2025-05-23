@@ -50,28 +50,24 @@ public class BossEnemyPatternState : BossEnemyState
         if (bossCollider != null && playerCollider != null)
             Physics.IgnoreCollision(bossCollider, playerCollider, false);
 
-        // NavMeshObstacle ´Ù½Ã È°¼ºÈ­
         if (boss.navMeshObstacle != null)
             boss.navMeshObstacle.enabled = true;
 
-        // ÄÆ¾À ¿¹¾à È®ÀÎ
-        if (!boss.cutsceneTriggered && boss.cutsceneReserved)
+        if (!boss.bossStatus.hasEnteredCutscene &&
+            boss.bossStatus.currentHP / boss.bossStatus.maxHP <= 0.5f)
         {
-            boss.cutsceneTriggered = true;
-            boss.cutsceneReserved = false;
+            boss.bossStatus.hasEnteredCutscene = true;
             boss.ChangeState(boss.cutsceneState);
-            Debug.Log("[PatternState] ÄÆ¾À ¿¹¾à ½ÇÇà ¡æ CutsceneState ÀüÈ¯");
+            Debug.Log("[PatternState] ÄÆ¾À »óÅÂ·Î ÁøÀÔ");
         }
     }
     public override void Update()
     {
-        if (boss.cutsceneTriggered && !isPhase2Started)
+        if (boss.bossStatus.hasEnteredCutscene && !isPhase2Started)
         {
             isPhase2Started = true;
             boss.patternController.StartPhase2LightningPattern();
         }
-
-
     }
     private IEnumerator HandlePattern()
     {
