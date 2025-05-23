@@ -98,7 +98,7 @@ public class CharacterPreviewUI : MonoBehaviour
             JobManager.JobType.Basic => "Idle_Basic",
             JobManager.JobType.Warrior => "Idle_Warrior",
             JobManager.JobType.Mage => "Idle_Mage",
-            JobManager.JobType.Archer => "Idle_Archer",
+            JobManager.JobType.Paladine => "Idle_Archer",
             _ => "Idle"
         };
     }

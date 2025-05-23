@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JobManager : MonoBehaviour
 {
-    public enum JobType { Basic, Warrior, Mage, Archer }
+    public enum JobType { Basic, Warrior, Mage, Paladine, Assasine, Babarian }
     public JobType currentJob = JobType.Basic;
 
     public static JobManager Instance { get; private set; }
@@ -82,7 +82,7 @@ public class JobManager : MonoBehaviour
             { JobType.Basic, new DashSettings(5f, 0.2f, 3f, true) },
             { JobType.Warrior, new DashSettings(3f, 0.15f, 4f, false) },
             { JobType.Mage, new DashSettings(7f, 0.3f, 5f, true) },
-            { JobType.Archer, new DashSettings(6f, 0.25f, 6f, true) }
+            
         };
     }
 
@@ -224,7 +224,7 @@ public class JobManager : MonoBehaviour
     public void ChangeToBasic() => ChangeJob(JobType.Basic);
     public void ChangeToWarrior() => ChangeJob(JobType.Warrior);
     public void ChangeToMage() => ChangeJob(JobType.Mage);
-    public void ChangeToArcher() => ChangeJob(JobType.Archer);
+    public void ChangeToArcher() => ChangeJob(JobType.Paladine);
 
     public JobStatusData[] allJobStatData;
     private Dictionary<JobType, JobStatusData> jobStatDict;

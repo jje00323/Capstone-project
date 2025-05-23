@@ -9,6 +9,10 @@ public class CharacterSelectCameraController : MonoBehaviour
     public int currentIndex = 0;
     private Transform camTransform;
 
+
+    public int CurrentIndex => currentIndex;
+
+    public System.Action<int> OnCameraIndexChanged;
     void Start()
     {
         camTransform = Camera.main?.transform;
@@ -34,6 +38,7 @@ public class CharacterSelectCameraController : MonoBehaviour
         currentIndex = (currentIndex + 1) % cameraPositions.Length;
         Debug.Log($"[CameraController] Next() 호출 → currentIndex = {currentIndex}");
         MoveToPosition(currentIndex);
+        OnCameraIndexChanged?.Invoke(currentIndex);
     }
 
     public void Prev()
@@ -41,6 +46,7 @@ public class CharacterSelectCameraController : MonoBehaviour
         currentIndex = (currentIndex - 1 + cameraPositions.Length) % cameraPositions.Length;
         Debug.Log($"[CameraController] Prev() 호출 → currentIndex = {currentIndex}");
         MoveToPosition(currentIndex);
+        OnCameraIndexChanged?.Invoke(currentIndex);
     }
 
     void MoveToPosition(int index)

@@ -44,7 +44,7 @@ public class JobAnimations : MonoBehaviour
             animator.SetFloat("Speed_Mage", speed);
             Debug.Log($"Mage 직업 - Speed_Mage 값 설정: {speed}");
         }
-        else if (JobManager.Instance.GetCurrentJob() == JobManager.JobType.Archer)
+        else if (JobManager.Instance.GetCurrentJob() == JobManager.JobType.Paladine)
         {
             animator.SetFloat("Speed_Archer", speed);
             Debug.Log($"Archer 직업 - Speed_Archer 값 설정: {speed}");
