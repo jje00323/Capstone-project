@@ -8,6 +8,8 @@ TagManager:
   - PlayerHitbox
   - EnemyHitbox
   - Boss
+  - Interactive
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -24,7 +26,7 @@ TagManager:
   - Ground
   - Boss
   - npc
-  - 
+  - NavMeshTerrain
   - 
   - 
   - 
