@@ -25,5 +25,5 @@ MonoBehaviour:
     experience: 30
     gold: 0
     items: []
-  startNarration: "\uC870\uC2EC\uD558\uBA70 \uC55E\uC758 \uCEA0\uD504\uAE4C\uC9C0
-    \uC774\uB3D9\uD558\uC790"
+  startNarration: "\uC55E\uC5D0 \uBB34\uC5B8\uAC00 \uC788\uC5B4 \uC870\uC2EC\uD558\uBA70
+    \uC55E\uC758 \uCEA0\uD504\uAE4C\uC9C0 \uC774\uB3D9\uD558\uC790"

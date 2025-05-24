@@ -77,5 +77,17 @@ public class NPCInteraction : MonoBehaviour
         isTalking = false;
         dialogueUI.SetActive(false);
         dialogueText.text = "";
+
+        // 유물 퀘스트 완료 시 연출 실행
+        if (npcID == "end_tutorial") // 유물 NPC만 실행
+        {
+            var progress = QuestManager.Instance.GetProgress(10); // 퀘스트 ID는 상황에 맞게 유지
+            if (progress != null && progress.state == QuestState.Completed)
+            {
+                ScreenTransitionController.Instance.StartRelicCutscene(); // 인자 제거
+            }
+        }
     }
+
+
 }

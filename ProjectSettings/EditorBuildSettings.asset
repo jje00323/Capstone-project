@@ -11,4 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CapStoneProject/Scenes/TestScene/TestScene_E.unity
     guid: 4a673c773e67de949a8a177fdec9ac06
+  - enabled: 1
+    path: "Assets/CapStoneProject/Scenes/TestScene/\uBC31\uC5C5.unity"
+    guid: 2e60d470c3674c84c9e25659afb633b2
+  - enabled: 1
+    path: Assets/CapStoneProject/Scenes/TestScene/Charactor_Scene.unity
+    guid: d104205eb5767a940bf69fe7dbaa5799
+  - enabled: 1
+    path: Assets/CapStoneProject/Scenes/TestScene/MainGameScene.unity
+    guid: b5a291f80c1bae347867758639c06667
   m_configObjects: {}

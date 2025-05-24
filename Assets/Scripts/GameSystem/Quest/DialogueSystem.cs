@@ -16,11 +16,26 @@ public class DialogueSystem : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            Debug.Log("[DialogueSystem] 싱글톤 인스턴스 등록 성공");
+            Debug.Log("싱글톤 인스턴스 등록 성공");
+
+            // 자동 연결 시도
+            if (narrationPanel == null)
+            {
+                narrationPanel = GameObject.Find("System_text");
+                if (narrationPanel == null)
+                    Debug.LogError("'System_text 오브젝트를 찾을 수 없습니다.");
+            }
+
+            if (narrationText == null && narrationPanel != null)
+            {
+                narrationText = narrationPanel.GetComponentInChildren<TextMeshProUGUI>();
+                if (narrationText == null)
+                    Debug.LogError("narrationText(TMP) 컴포넌트를 찾을 수 없습니다.");
+            }
         }
         else
         {
-            Debug.LogWarning("[DialogueSystem] 중복 인스턴스 발견, 파괴됨");
+            Debug.LogWarning("중복 인스턴스 발견, 파괴됨");
             Destroy(gameObject);
         }
     }
@@ -35,27 +50,22 @@ public class DialogueSystem : MonoBehaviour
 
     public void ShowNarration(string text)
     {
-        if (narrationPanel == null)
+        if (narrationPanel == null || narrationText == null)
         {
-            Debug.LogError("[DialogueSystem] narrationPanel이 연결되지 않았습니다.");
-            return;
-        }
-        if (narrationText == null)
-        {
-            Debug.LogError("[DialogueSystem] narrationText가 연결되지 않았습니다.");
+            Debug.LogError(" UI 컴포넌트가 연결되지 않았습니다.");
             return;
         }
 
         narrationText.text = text;
         narrationPanel.SetActive(true);
         isNarrationActive = true;
-        Debug.Log("[DialogueSystem] 내레이션 시작됨");
     }
 
     public void CloseNarration()
     {
-        narrationPanel.SetActive(false);
+        if (narrationPanel != null)
+            narrationPanel.SetActive(false);
+
         isNarrationActive = false;
-        Debug.Log("[DialogueSystem] 내레이션 닫힘 (F 키)");
     }
 }
