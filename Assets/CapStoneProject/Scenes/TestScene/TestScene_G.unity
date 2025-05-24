@@ -722,6 +722,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Directional Light
       objectReference: {fileID: 0}
+    - target: {fileID: 8110595173291161735, guid: 5057d7599607f8c45971ad314b9f3fbb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3303,6 +3307,10 @@ PrefabInstance:
     - target: {fileID: 6434863712184502708, guid: 5efc20235eb9bcd42958df8e2f120290, type: 3}
       propertyPath: m_Name
       value: Global Volume
+      objectReference: {fileID: 0}
+    - target: {fileID: 6434863712184502708, guid: 5efc20235eb9bcd42958df8e2f120290, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
