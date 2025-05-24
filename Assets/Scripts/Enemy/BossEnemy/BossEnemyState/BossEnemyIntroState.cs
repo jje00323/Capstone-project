@@ -36,8 +36,17 @@ public class BossEnemyIntroState : BossEnemyState
             SetCameraPriority(mainCam, 10);
             BossEnemyIntroController.Instance.HideAll();
 
+            
+
             BossEnemyIntroController.Instance.FadeIn(0.5f, () =>
             {
+                var bgm = GameObject.FindObjectOfType<BGMManager>();
+                if (bgm != null && boss.bossData != null && boss.bossData.bossThemeMusic != null)
+                {
+                    bgm.PlayBGM(boss.bossData.bossThemeMusic);
+                    Debug.Log("[IntroState] 보스 인트로 BGM 재생됨");
+                }
+
                 boss.Animator.SetTrigger("Intro");
                 introRoutine = boss.StartCoroutine(CheckLandingAndTransition());
             });

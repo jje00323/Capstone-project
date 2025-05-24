@@ -24,7 +24,7 @@ public class BossEnemyDeadState : BossEnemyState
 
     private IEnumerator HandleDeathSequence()
     {
-        // 사망 애니메이션 기다리기 (2초라고 가정)
+        // 사망 애니메이션 기다리기
         yield return new WaitForSeconds(4f);
 
         // 체력 UI 제거
@@ -47,6 +47,13 @@ public class BossEnemyDeadState : BossEnemyState
                 GameObject.Instantiate(drop, spawnPosition, spawnRotation);
                 Debug.Log($"[DeadState] 보물상자 또는 드랍 아이템 생성됨: {drop.name}");
             }
+        }
+
+        BGMManager bgm = GameObject.FindObjectOfType<BGMManager>();
+        if (bgm != null)
+        {
+            bgm.RestoreToDefaultBGM();
+            Debug.Log("[DeadState] 기본 배경음악 복구됨");
         }
 
         // 4. 보스 오브젝트 제거
