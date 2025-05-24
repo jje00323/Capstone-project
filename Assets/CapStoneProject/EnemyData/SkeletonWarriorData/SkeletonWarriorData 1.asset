@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab99714feab6964dab6b9067bb93029, type: 3}
+  m_Name: SkeletonWarriorData 1
+  m_EditorClassIdentifier: 
+  enemyName: SkeletonBasic
+  enemyLevel: 1
+  enemyTag: "\uC2A4\uCF08\uB808\uD1A4"
+  animatorController: {fileID: 9100000, guid: abe810a19261bd84a9667f59b83dd03f, type: 2}
+  maxHP: 100
+  moveSpeed: 2
+  attackPower: 10
+  attackCooldown: 2
+  attackRange: 1
+  detectRadius: 6
+  returnDistance: 15
+  returnSpeedMultiplier: 3
+  expDrop: 10
+  dropItems:
+  - itemPrefab: {fileID: 2316002803908206585, guid: 8c926500367a2d24992aed73602c8ca8, type: 3}
+    dropChance: 23.4
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 7274685173848346600, guid: 29fd682c64780b84eacca6ce2cf4c512, type: 3}
+    dropChance: 20.1
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 5973495711899178357, guid: c43a191f57415534dbaf81ac09f76e66, type: 3}
+    dropChance: 26.1
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}
+  - itemPrefab: {fileID: 4313674656838803031, guid: d4e40b3d3dab76f45b71f297b5325dd5, type: 3}
+    dropChance: 30.5
+    dropEffectPrefab: {fileID: 7366701124083779821, guid: 0b68e209461f0114eb14bfc2fa684439, type: 3}

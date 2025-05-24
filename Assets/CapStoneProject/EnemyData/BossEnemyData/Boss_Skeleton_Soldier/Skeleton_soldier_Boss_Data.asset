@@ -30,3 +30,4 @@ MonoBehaviour:
   itemDrops:
   - {fileID: 7860532433299138414, guid: 8262d0d3692857648baf63bfcb5a1e46, type: 3}
   bossThemeMusic: {fileID: 8300000, guid: ce97a7647653f7c45a51bafbb67817fc, type: 3}
+  enemyTag: "\uADF8\uB78C\uD14C\uB974"

@@ -35,4 +35,7 @@ public class BossEnemyData : ScriptableObject
 
     [Header("기타")]
     public AudioClip bossThemeMusic;
+
+    [Header("퀘스트 조건용 태그")] //  추가
+    public string enemyTag;
 }
