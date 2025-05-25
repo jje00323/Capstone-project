@@ -27,9 +27,13 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: f3dd00059f0b52549ba54eb6e9c9bee1, type: 2}
     manaCost: 10
     requiredLevel: 0
-    currentLevel: 0
+    currentLevel: 1
     maxLevel: 10
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 8300000, guid: 8bad7b585036f0c4abd6e0dde0d16816, type: 3}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.382
+    skillSFXVolume2: 0.7
   - skillKey: W
     skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
@@ -45,6 +49,10 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 10
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 8300000, guid: 3b74aafca9a19054b8cc9e5b78cf7618, type: 3}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.334
+    skillSFXVolume2: 0.7
   - skillKey: E
     skillName: "\uB300\uC26C"
     skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
@@ -60,3 +68,7 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 1
     Feature: "\uB300\uC26C"
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7

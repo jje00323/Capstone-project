@@ -287495,6 +287495,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 1.1
+    functionName: PlaySkillSound1
+    data: "\uB9C8\uB825\uD0C4"
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 1.8833333
     functionName: EndSkill
     data: Q

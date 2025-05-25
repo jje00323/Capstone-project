@@ -10,6 +10,16 @@ public class PlayerSkillController : MonoBehaviour
     [Header("스킬 데이터 (ScriptableObject)")]
     public JobSkillData skillData;
 
+    [System.Serializable]
+    public class BasicAttackSoundData
+    {
+        public AudioClip clip;
+        [Range(0f, 1f)] public float volume = 0.7f;
+    }
+
+    [Header("기본 공격 사운드")]
+    public BasicAttackSoundData[] basicAttackSounds;
+
     private Dictionary<string, GameObject> hitboxPrefabs = new();
     private Dictionary<string, GameObject> effectPrefabs = new();
     private Dictionary<string, float> skillCooldowns = new();
@@ -87,6 +97,24 @@ public class PlayerSkillController : MonoBehaviour
         if (skill.effectDuration > 0f)
             Destroy(activeEffect, skill.effectDuration);
     }
+
+    public void PlaySkillSound1(string skillName)
+    {
+        var skill = FindSkillInfoByName(skillName);
+        if (skill == null || skill.skillSFX1 == null) return;
+
+        AudioManager.Instance?.PlaySFX(skill.skillSFX1, skill.skillSFXVolume1);
+    }
+
+    public void PlaySkillSound2(string skillName)
+    {
+        var skill = FindSkillInfoByName(skillName);
+        if (skill == null || skill.skillSFX2 == null) return;
+
+        AudioManager.Instance?.PlaySFX(skill.skillSFX2, skill.skillSFXVolume2);
+    }
+
+
 
     public void DestroyEffect()
     {

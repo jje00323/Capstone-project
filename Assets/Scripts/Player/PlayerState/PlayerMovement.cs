@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float defaultStoppingDistance = 0.5f;
 
+    public AudioClip[] footstepSounds;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -74,7 +76,15 @@ public class PlayerMovement : MonoBehaviour
         ResumeAgent();
     }
 
-  
+    public void PlayFootstepSound()
+    {
+        if (footstepSounds == null || footstepSounds.Length == 0) return;
+
+        int index = Random.Range(0, footstepSounds.Length);
+        AudioClip clip = footstepSounds[index];
+
+        AudioManager.Instance?.PlaySFX(clip, 0.1f); // 2D로 설정된 AudioSource에서 재생
+    }
 
     public void RotateTowardsMovementDirection()
     {

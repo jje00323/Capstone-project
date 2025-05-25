@@ -29,6 +29,10 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 10
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 8300000, guid: 6f6c4986830ed6744a3e85b37bfc95bd, type: 3}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.149
+    skillSFXVolume2: 0.7
   - skillKey: W
     skillName: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     skillIcon: {fileID: 21300000, guid: a96f5f25e6b399d4ea75828a29498b73, type: 3}
@@ -44,6 +48,10 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 5
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: E
     skillName: "\uB9C8\uB825\uD3ED\uBC1C"
     skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
@@ -59,6 +67,10 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 5
     Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: R
     skillName: "\uB9C8\uB825\uAC00\uC2DC"
     skillIcon: {fileID: 21300000, guid: 10dc9c67ffb56dd4f800103585f26888, type: 3}
@@ -74,6 +86,10 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 5
     Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: Attack
     skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: d65aa248374bb30449985d6c635a3278, type: 3}
@@ -89,3 +105,7 @@ MonoBehaviour:
     currentLevel: 1
     maxLevel: 5
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 8300000, guid: bd8bead59d5511047b48f2c3b17d8d64, type: 3}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.168
+    skillSFXVolume2: 0.7

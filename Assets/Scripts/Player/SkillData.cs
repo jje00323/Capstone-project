@@ -31,7 +31,10 @@ public class SkillInfo
     public bool IsUnlocked => currentLevel > 0;
     public string Feature;
 
-
+    public AudioClip skillSFX1;
+    public AudioClip skillSFX2;
+    [Range(0f, 1f)] public float skillSFXVolume1 = 0.7f;
+    [Range(0f, 1f)] public float skillSFXVolume2 = 0.7f;
 
     [HideInInspector] public SkillInfo originalSkill; // 업그레이드 전 참조
 

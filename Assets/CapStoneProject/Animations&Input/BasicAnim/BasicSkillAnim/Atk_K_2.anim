@@ -53206,6 +53206,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.43333334
+    functionName: PlaySkillSound1
+    data: "\uC8FC\uBA39\uCE58\uAE30"
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.43333334
     functionName: ActivateHitbox
     data: "\uC8FC\uBA39\uCE58\uAE30"
     objectReferenceParameter: {fileID: 0}

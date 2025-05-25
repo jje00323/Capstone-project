@@ -13,12 +13,13 @@ public class AudioManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public void PlaySFX(AudioClip clip)
+    public float sfxVolume = 0.1f; // [0.0 ~ 1.0] 사이로 조절 가능
+
+    public void PlaySFX(AudioClip clip, float volume)
     {
         if (clip == null || sfxSource == null) return;
-        sfxSource.PlayOneShot(clip);
+        sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume)); // 개별 볼륨 사용
     }
-
     public void PlaySFXAtPoint(AudioClip clip, Vector3 position)
     {
         if (clip == null) return;
