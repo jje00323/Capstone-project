@@ -746,7 +746,7 @@ PrefabInstance:
     - target: {fileID: 1422203485942576846, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
       propertyPath: m_NavMeshData
       value: 
-      objectReference: {fileID: 23800000, guid: 15f9e49837b7f414391a3b633f113995, type: 2}
+      objectReference: {fileID: 23800000, guid: 3fe2208c73044fe46ac27b0148c99b00, type: 2}
     - target: {fileID: 1422203485942576846, guid: 59b2a4886b2d8c140baa6b222e725e80, type: 3}
       propertyPath: m_LayerMask.m_Bits
       value: 32768
@@ -5244,7 +5244,7 @@ PrefabInstance:
     - target: {fileID: 6881220043369062483, guid: 146597c842078404d821a447e3df3f60, type: 3}
       propertyPath: enemyPrefab
       value: 
-      objectReference: {fileID: 4150780873371026577, guid: 4a75fbd03ebf8c84995e0c5f39341e9c, type: 3}
+      objectReference: {fileID: 764589013409372735, guid: 0f87341bf3822e6458c7eef5093f3296, type: 3}
     - target: {fileID: 6881220043369062483, guid: 146597c842078404d821a447e3df3f60, type: 3}
       propertyPath: spawnPoints.Array.size
       value: 1

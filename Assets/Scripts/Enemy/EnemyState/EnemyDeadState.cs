@@ -5,8 +5,6 @@ public class EnemyDeadState : EnemyState
 {
     
 
-    private Material dissolveMat;
-
     public EnemyDeadState(EnemyFSM enemy) : base(enemy) { }
 
     public override void Enter()
@@ -33,14 +31,7 @@ public class EnemyDeadState : EnemyState
             enemy.Collider.enabled = true;
         }
 
-        // Dissolve 머티리얼 할당
-        Renderer rend = enemy.GetComponentInChildren<Renderer>();
-        if (rend != null)
-        {
-            dissolveMat = rend.material; // 반드시 인스턴스 머티리얼 사용
-            if (dissolveMat.HasProperty("_DissolveAmount"))
-                dissolveMat.SetFloat("_DissolveAmount", 0f);
-        }
+        
 
         if (!string.IsNullOrEmpty(enemy.enemyData.enemyTag))
         {
@@ -67,6 +58,9 @@ public class EnemyDeadState : EnemyState
             Debug.LogWarning("[EnemyDeadState] Player 태그를 가진 오브젝트를 찾을 수 없습니다.");
         }
         TryDropItems();
+
+        enemy.coroutineRunner.StartCoroutine(DelayDisappear());
+
     }
 
     private void TryDropItems()
@@ -118,5 +112,26 @@ public class EnemyDeadState : EnemyState
     public override void Exit()
     {
         
+    }
+
+    private System.Collections.IEnumerator DelayDisappear()
+    {
+        yield return new WaitForSeconds(3f);
+
+        // 충돌 제거
+        if (enemy.Collider != null)
+        {
+            enemy.Collider.enabled = false;
+        }
+
+        // 모델 렌더링 제거
+        Renderer[] renderers = enemy.GetComponentsInChildren<Renderer>();
+        foreach (var rend in renderers)
+        {
+            rend.enabled = false;
+        }
+
+        // 필요 시, 오브젝트 자체 제거 (생략 가능)
+         GameObject.Destroy(enemy.gameObject);
     }
 }

@@ -2128,6 +2128,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3661806494073249323}
     m_Modifications:
+    - target: {fileID: 1132412961900536390, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2717537962258721564, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -2198,7 +2202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 4283991491624652781, guid: 0435aca5beb51f249aff637cf134e1ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

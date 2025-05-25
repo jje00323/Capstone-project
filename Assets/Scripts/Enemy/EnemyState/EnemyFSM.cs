@@ -20,6 +20,7 @@ public class EnemyFSM : BaseEnemyFSM
     public EnemyDeadState deadState;
 
     [HideInInspector] public Vector3 spawnPosition;
+    [HideInInspector] public MonoBehaviour coroutineRunner;
 
     protected override void Awake()
     {
@@ -53,6 +54,8 @@ public class EnemyFSM : BaseEnemyFSM
         deadState = new EnemyDeadState(this);
 
         ChangeState(idleState);
+
+        coroutineRunner = this;
     }
 
     private void Update()

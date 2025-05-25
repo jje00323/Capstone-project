@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: "\uC720\uC801\uAC00\uB514\uC5B8"
   m_EditorClassIdentifier: 
   conditionName: "\uC720\uC801\uAC00\uB514\uC5B8 \uCC98\uCE58\uD558\uAE30"
-  targetEnemyTag: "\uC2A4\uCF08\uB808\uD1A4"
+  targetEnemyTag: "\uC5D8\uB9AC\uD2B8\uBCF4\uC2A4"
   requiredKillCount: 1
