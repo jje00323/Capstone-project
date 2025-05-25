@@ -48,6 +48,7 @@ public class BossEnemyCutsceneState : BossEnemyState
         Transform trackRoot = GameObject.Find("BossCutSceneTrack(Clone)")?.transform;
         if (trackRoot != null)
         {
+            trackRoot.rotation = Quaternion.Euler(0f, -135f, 0f);
             cutsceneCam = trackRoot.Find("BossCutsceneVCam")?.GetComponent<CinemachineVirtualCamera>();
             dollyCart = trackRoot.Find("Dolly Cart")?.GetComponent<CinemachineDollyCart>();
         }

@@ -870,6 +870,7 @@ MonoBehaviour:
   target: {fileID: 0}
   moveSpeed: 0
   lastAttackIndex: -1
+  hasEnteredCutscene: 0
 --- !u!114 &4978133360219689201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,8 +891,6 @@ MonoBehaviour:
   lockRotation: 0
   useTestPattern: 0
   testPatternIndex: 2
-  cutsceneTriggered: 0
-  cutsceneReserved: 0
 --- !u!114 &9221184078685343720
 MonoBehaviour:
   m_ObjectHideFlags: 0
