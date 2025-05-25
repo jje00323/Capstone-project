@@ -56,6 +56,7 @@ public class BossEnemyIntroState : BossEnemyState
     private void InitializeIntroCameras()
     {
         var trackGO = GameObject.Find("BossIntroTrack(Clone)");
+        trackGO.transform.rotation = Quaternion.Euler(0f, -135f, 0f);
         introCam = trackGO?.transform.Find("BossIntroVCam")?.GetComponent<CinemachineVirtualCamera>();
         mainCam = GameObject.Find("MainVCam")?.GetComponent<CinemachineVirtualCamera>();
     }
