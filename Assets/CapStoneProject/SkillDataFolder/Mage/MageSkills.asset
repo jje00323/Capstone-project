@@ -24,13 +24,12 @@ MonoBehaviour:
     effectDuration: 1
     followCaster: 0
     skillAnimation: {fileID: 7400000, guid: e6773d61aebb0c14db1f8bdf4cfa171d, type: 2}
-    manaCost: 10
+    manaCost: 5
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 1
     Feature: "\uC77C\uBC18"
-  - skillKey: Q
+  - skillKey: W
     skillName: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     skillIcon: {fileID: 21300000, guid: a96f5f25e6b399d4ea75828a29498b73, type: 3}
     description: ...
@@ -43,10 +42,9 @@ MonoBehaviour:
     manaCost: 10
     requiredLevel: 0
     currentLevel: 1
-    maxLevel: 10
-    isUnlocked: 1
+    maxLevel: 5
     Feature: "\uC77C\uBC18"
-  - skillKey: Q
+  - skillKey: E
     skillName: "\uB9C8\uB825\uD3ED\uBC1C"
     skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
     description: ...
@@ -58,9 +56,8 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: 9a4fcb370bc65cc449807fd65c30b9f2, type: 2}
     manaCost: 0
     requiredLevel: 0
-    currentLevel: 4
-    maxLevel: 10
-    isUnlocked: 1
+    currentLevel: 1
+    maxLevel: 5
     Feature: 
   - skillKey: R
     skillName: "\uB9C8\uB825\uAC00\uC2DC"
@@ -76,14 +73,13 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 5
-    isUnlocked: 1
     Feature: 
   - skillKey: Attack
-    skillName: RRR
+    skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: d65aa248374bb30449985d6c635a3278, type: 3}
     description: ...
-    cooldown: 3
-    hitboxPrefab: {fileID: 9113390112757731325, guid: b38943ff748e8744e8ec391be9358c41, type: 3}
+    cooldown: 0
+    hitboxPrefab: {fileID: 334107297067051712, guid: a5054e789e7fede408879f3af2a6f8a8, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
     followCaster: 0
@@ -92,5 +88,4 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 5
-    isUnlocked: 1
-    Feature: 
+    Feature: "\uC77C\uBC18"

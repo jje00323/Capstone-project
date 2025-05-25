@@ -48,13 +48,13 @@ public class ScreenTransitionController : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         // 4. [F] 입력 유도
-        centerText.text = "<size=150%>[F]</size>\n계승할 영웅을 선택하세요";
+        centerText.text = "<size=150%>[G]</size>\n계승할 영웅을 선택하세요";
         waitingForInput = true;
     }
 
     private void Update()
     {
-        if (waitingForInput && Input.GetKeyDown(KeyCode.F))
+        if (waitingForInput && Input.GetKeyDown(KeyCode.G))
         {
             waitingForInput = false;
             SceneManager.LoadScene("Charactor_Scene"); // 정확한 씬 이름으로 바꿔주세요

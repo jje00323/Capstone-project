@@ -7,8 +7,8 @@ public class QuestManager : MonoBehaviour
 
     private List<PlayerQuestProgress> activeQuests = new List<PlayerQuestProgress>();
 
-
     public event System.Action<PlayerQuestProgress> OnQuestUpdated;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -23,7 +23,6 @@ public class QuestManager : MonoBehaviour
         PlayerQuestProgress newProgress = new PlayerQuestProgress(questData);
         activeQuests.Add(newProgress);
 
-        //  퀘스트 조건 순회하면서 ReachAreaCondition 확인
         foreach (var condition in questData.conditions)
         {
             if (condition is ReachAreaCondition areaCond)
@@ -34,12 +33,10 @@ public class QuestManager : MonoBehaviour
 
         if (!string.IsNullOrWhiteSpace(questData.startNarration))
         {
-            if (!string.IsNullOrWhiteSpace(questData.startNarration))
-            {
-                Debug.Log($"[QuestManager] 내레이션 출력 시도: {questData.startNarration}");
-                DialogueSystem.Instance?.ShowNarration(questData.startNarration);
-            }
+            Debug.Log($"[QuestManager] 내레이션 출력 시도: {questData.startNarration}");
+            DialogueSystem.Instance?.ShowNarration(questData.startNarration);
         }
+
         OnQuestUpdated?.Invoke(newProgress);
         Debug.Log($"[QuestManager] 퀘스트 수락: {questData.questTitle}");
     }
@@ -55,35 +52,26 @@ public class QuestManager : MonoBehaviour
             {
                 var condition = progress.questData.conditions[i];
 
-                if (condition is KillEnemyCondition killCond && type == "KillEnemy")
+                if (condition is KillEnemyCondition killCond && type == "KillEnemy" && killCond.targetEnemyTag == identifier)
                 {
-                    if (killCond.targetEnemyTag == identifier)
-                        progress.IncrementProgress(i, amount);
+                    progress.IncrementProgress(i, amount);
                 }
-                else if (condition is CollectItemCondition collectCond && type == "CollectItem")
+                else if (condition is CollectItemCondition collectCond && type == "CollectItem" && collectCond.targetItem.itemName == identifier)
                 {
-                    if (collectCond.targetItem.itemName == identifier)
-                        progress.IncrementProgress(i, amount);
+                    progress.IncrementProgress(i, amount);
                 }
-                else if (condition is TalkToNPCCondition talkCond && type == "TalkToNPC")
+                else if (condition is TalkToNPCCondition talkCond && type == "TalkToNPC" && talkCond.npcID == identifier)
                 {
-                    if (talkCond.npcID == identifier)
-                        progress.IncrementProgress(i, amount);
+                    progress.IncrementProgress(i, amount);
                 }
-                else if (condition is ReachAreaCondition areaCond && type == "ReachArea")
+                else if (condition is ReachAreaCondition areaCond && type == "ReachArea" && areaCond.areaID == identifier)
                 {
-                    if (areaCond.areaID == identifier)
-                    {
-                        progress.IncrementProgress(i, amount);
-
-                        //  트리거 즉시 제거
-                        QuestAreaTriggerSpawner.Instance?.RemoveTrigger(identifier);
-                    }
+                    progress.IncrementProgress(i, amount);
+                    QuestAreaTriggerSpawner.Instance?.RemoveTrigger(identifier);
                 }
-                else if (condition is UseItemCondition useCond && type == "UseItem")
+                else if (condition is UseItemCondition useCond && type == "UseItem" && useCond.requiredItem.itemName == identifier)
                 {
-                    if (useCond.requiredItem.itemName == identifier)
-                        progress.IncrementProgress(i, amount);
+                    progress.IncrementProgress(i, amount);
                 }
             }
 
@@ -103,28 +91,29 @@ public class QuestManager : MonoBehaviour
         PlayerQuestProgress progress = GetProgress(questData.questID);
         if (progress == null || progress.state != QuestState.Completed) return;
 
-        // 보상 지급 처리
         GrantRewards(questData.reward);
-
         progress.state = QuestState.Rewarded;
 
         if (questData.nextQuestID != -1)
         {
-            QuestData nextQuest = Resources.Load<QuestData>($"Quest/Quest_{questData.nextQuestID}");
+            string prefix = questData.resourcePrefix ?? "Quest_";
+            string path = $"Quest/{prefix}{questData.nextQuestID}";
+
+            QuestData nextQuest = Resources.Load<QuestData>(path);
             if (nextQuest != null)
             {
                 AcceptQuest(nextQuest);
-                Debug.Log($"[QuestManager] 다음 퀘스트 자동 수락됨: {nextQuest.questTitle}");
+                Debug.Log($"[QuestManager] 연계 퀘스트 로드됨: {nextQuest.questTitle}");
             }
             else
             {
-                Debug.LogWarning($"[QuestManager] 다음 퀘스트(ID: {questData.nextQuestID})를 찾을 수 없습니다.");
+                Debug.LogWarning($"[QuestManager] 연계 퀘스트를 찾을 수 없음: {path}");
             }
         }
+
         Debug.Log($"[QuestManager] 보상 수령 완료: {questData.questTitle}");
     }
 
-    // 보상 지급
     private void GrantRewards(QuestReward reward)
     {
         var player = GameObject.FindWithTag("Player");
@@ -146,7 +135,7 @@ public class QuestManager : MonoBehaviour
 
         if (InventoryManager.Instance != null)
         {
-            InventoryManager.Instance.AddGold(reward.gold);  // 아래에 정의 추가 필요
+            InventoryManager.Instance.AddGold(reward.gold);
             foreach (var item in reward.items)
             {
                 InventoryManager.Instance.AddItem(item.item, item.amount);
@@ -158,7 +147,6 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    // 상태 확인
     public PlayerQuestProgress GetProgress(int questID)
     {
         return activeQuests.Find(q => q.questData.questID == questID);
@@ -172,5 +160,11 @@ public class QuestManager : MonoBehaviour
     public List<PlayerQuestProgress> GetActiveQuests()
     {
         return activeQuests;
+    }
+
+    public void ResetAllQuests()
+    {
+        activeQuests.Clear();
+        Debug.Log("[QuestManager] 모든 퀘스트 초기화 완료");
     }
 }

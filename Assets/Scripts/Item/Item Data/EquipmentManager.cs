@@ -16,7 +16,7 @@ public class EquipmentManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             Debug.Log("[EquipmentManager] 인스턴스 초기화 완료");
         }
         else

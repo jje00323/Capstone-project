@@ -19,6 +19,9 @@ public class QuestData : ScriptableObject
     public int levelRequirement = 1;
     public int nextQuestID = -1; // 다음 퀘스트 ID (없으면 -1)
 
+    [Header("연계 퀘스트 리소스 이름 앞부분 (예: 'Tutorial_', 'MainStory_')")]
+    public string resourcePrefix = "Quest_"; // 기본값은 기존 구조 유지
+
     [Header("수행 조건")]
     public List<QuestCondition> conditions;
 

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
-    public static InventoryUI Instance { get; private set; }
+    public static InventoryUI Instance { get; set; }
 
     [Header("Options")]
     [Range(0, 10)]

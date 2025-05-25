@@ -65,7 +65,8 @@ public class CharacterSelectionUI : MonoBehaviour
     public void OnClickConfirm()
     {
         int index = cameraController.CurrentIndex;
-
+        QuestManager.Instance.ResetAllQuests();
+        Debug.Log("[CharacterSelection] 퀘스트 초기화 호출됨");
         if (index < 0 || index >= jobTypePerIndex.Length)
         {
             Debug.LogError("[CharacterSelectionUI] 유효하지 않은 직업 인덱스입니다.");

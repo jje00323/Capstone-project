@@ -15,7 +15,7 @@ public class InventoryManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -24,6 +24,11 @@ public class InventoryManager : MonoBehaviour
         }
 
         InitializeSlots();
+    }
+
+    private void OnEnable()
+    {
+        ReconnectUI();
     }
 
     private void InitializeSlots()
@@ -35,16 +40,19 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 아이템을 인벤토리에 추가
-    /// </summary>
     public bool AddItem(ItemData item, int amount)
     {
         Debug.Log($"[AddItem] {item.itemName} x{amount} 추가 시도");
 
+        if (InventoryUI.Instance == null)
+        {
+            Debug.LogWarning("[InventoryManager] InventoryUI.Instance가 null → Reconnect 시도");
+            ReconnectUI();
+        }
+
         int totalAdded = 0;
 
-        // 1. 스택 가능한 슬롯에 우선 추가
+        // 1. 스택 가능한 슬롯에 추가
         foreach (var slot in slots)
         {
             if (slot.item != null && slot.item == item && item.isStackable && slot.quantity < item.maxStack)
@@ -55,14 +63,12 @@ public class InventoryManager : MonoBehaviour
                 amount -= addAmount;
                 totalAdded += addAmount;
 
-                Debug.Log($"[AddItem] 기존 스택 슬롯에 {addAmount} 추가됨 → 현재: {slot.quantity}");
+                Debug.Log($"[AddItem] 기존 슬롯에 {addAmount} 추가됨 → 현재 수량: {slot.quantity}");
 
                 if (amount <= 0)
                 {
-                    InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
+                    InventoryUI.Instance?.RefreshAllSlots();
                     RefreshQuickSlots();
-
-                    // 퀘스트 조건 반영
                     QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
                     return true;
                 }
@@ -75,30 +81,26 @@ public class InventoryManager : MonoBehaviour
             if (slot.item == null)
             {
                 int addAmount = item.isStackable ? Mathf.Min(item.maxStack, amount) : 1;
-
                 slot.item = item;
                 slot.quantity = addAmount;
                 amount -= addAmount;
                 totalAdded += addAmount;
 
-                Debug.Log($"[AddItem] 빈 슬롯에 {item.itemName} x{addAmount} 추가됨");
+                Debug.Log($"[AddItem] 새 슬롯에 {item.itemName} x{addAmount} 추가됨");
 
                 if (amount <= 0)
                 {
-                    InventoryUI.Instance?.RefreshAllSlots(); //  인벤토리 UI 갱신
+                    InventoryUI.Instance?.RefreshAllSlots();
                     RefreshQuickSlots();
-
-                    // 퀘스트 조건 반영
                     QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
                     return true;
                 }
             }
         }
 
-        // 3. 아직도 남은 수량이 있다면 실패
-        Debug.LogWarning($"[AddItem] 실패: {item.itemName} x{amount} 남음 → 인벤토리에 추가 불가");
+        // 3. 아직 남은 수량이 있다면 실패
+        Debug.LogWarning($"[AddItem] 인벤토리 공간 부족 → {item.itemName} x{amount} 남음");
 
-        // 그래도 일부 추가된 경우 조건 반영
         if (totalAdded > 0)
         {
             QuestManager.Instance?.UpdateCondition("CollectItem", item.itemName, totalAdded);
@@ -107,9 +109,6 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    /// 아이템 제거
-    /// </summary>
     public void RemoveItem(ItemData targetItem, int amount = 1)
     {
         for (int i = 0; i < slots.Count; i++)
@@ -118,11 +117,10 @@ public class InventoryManager : MonoBehaviour
             if (slot.item == targetItem)
             {
                 slot.quantity -= amount;
-
                 if (slot.quantity <= 0)
                     slot.Clear();
 
-                InventoryUI.Instance?.RefreshAllSlots(); //  아이템 제거 후에도 UI 갱신
+                InventoryUI.Instance?.RefreshAllSlots();
                 RefreshQuickSlots();
                 return;
             }
@@ -131,10 +129,11 @@ public class InventoryManager : MonoBehaviour
 
     private void RefreshQuickSlots()
     {
-        QuickSlotUI[] quickSlots = GameObject.FindObjectsOfType<QuickSlotUI>();
+        QuickSlotUI[] quickSlots = FindObjectsOfType<QuickSlotUI>(true); // 비활성 포함
         foreach (var qs in quickSlots)
         {
-            qs.RefreshSlotUI();
+            if (qs != null)
+                qs.RefreshSlotUI();
         }
     }
 
@@ -142,8 +141,22 @@ public class InventoryManager : MonoBehaviour
     {
         gold += amount;
         Debug.Log($"[Inventory] 골드 +{amount} → 총 {gold}");
-        // 필요 시 UI 갱신 로직 추가
     }
 
     public int GetGold() => gold;
+
+    private void ReconnectUI()
+    {
+        var inventoryUI = FindObjectOfType<InventoryUI>();
+        if (inventoryUI != null)
+        {
+            InventoryUI.Instance = inventoryUI; // 중요!
+            Debug.Log("[InventoryManager] InventoryUI 재연결 성공");
+            inventoryUI.RefreshAllSlots();
+        }
+        else
+        {
+            Debug.LogWarning("[InventoryManager] InventoryUI를 찾을 수 없습니다.");
+        }
+    }
 }
