@@ -32,7 +32,7 @@ MonoBehaviour:
     Feature: "\uC77C\uBC18"
     skillSFX1: {fileID: 8300000, guid: 8bad7b585036f0c4abd6e0dde0d16816, type: 3}
     skillSFX2: {fileID: 0}
-    skillSFXVolume1: 0.382
+    skillSFXVolume1: 0.7
     skillSFXVolume2: 0.7
   - skillKey: W
     skillName: "\uAE30\uBCF8\uACF5\uACA9"
@@ -51,7 +51,7 @@ MonoBehaviour:
     Feature: "\uC77C\uBC18"
     skillSFX1: {fileID: 8300000, guid: 3b74aafca9a19054b8cc9e5b78cf7618, type: 3}
     skillSFX2: {fileID: 0}
-    skillSFXVolume1: 0.334
+    skillSFXVolume1: 1
     skillSFXVolume2: 0.7
   - skillKey: E
     skillName: "\uB300\uC26C"

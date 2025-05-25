@@ -2622,7 +2622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sfxSource: {fileID: 1203675365}
-  sfxVolume: 0.1
+  sfxVolume: 2.85
 --- !u!4 &582110012
 Transform:
   m_ObjectHideFlags: 0
