@@ -23,5 +23,6 @@ MonoBehaviour:
   attackRange: 1
   detectRadius: 6
   returnDistance: 15
-  returnSpeedMultiplier: 0.5
+  returnSpeedMultiplier: 2
   expDrop: 4
+  dropItems: []
