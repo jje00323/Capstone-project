@@ -161,4 +161,10 @@ public class QuestManager : MonoBehaviour
     {
         return activeQuests;
     }
+
+    public void ResetAllQuests()
+    {
+        activeQuests.Clear();
+        Debug.Log("[QuestManager] 모든 퀘스트 초기화 완료");
+    }
 }

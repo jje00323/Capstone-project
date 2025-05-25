@@ -26,10 +26,10 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: e6773d61aebb0c14db1f8bdf4cfa171d, type: 2}
     manaCost: 5
     requiredLevel: 0
-    currentLevel: 0
+    currentLevel: 1
     maxLevel: 10
     Feature: "\uC77C\uBC18"
-  - skillKey: Q
+  - skillKey: W
     skillName: "\uC5D0\uB108\uC9C0 \uC794\uC601"
     skillIcon: {fileID: 21300000, guid: a96f5f25e6b399d4ea75828a29498b73, type: 3}
     description: ...
@@ -41,10 +41,10 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: 768ad1ad2536046419e3533ea6182e99, type: 2}
     manaCost: 10
     requiredLevel: 0
-    currentLevel: 0
+    currentLevel: 1
     maxLevel: 5
     Feature: "\uC77C\uBC18"
-  - skillKey: Q
+  - skillKey: E
     skillName: "\uB9C8\uB825\uD3ED\uBC1C"
     skillIcon: {fileID: 21300000, guid: e7c66fb6bf0e75f47b713684aafe510a, type: 3}
     description: ...
@@ -56,7 +56,7 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: 9a4fcb370bc65cc449807fd65c30b9f2, type: 2}
     manaCost: 0
     requiredLevel: 0
-    currentLevel: 0
+    currentLevel: 1
     maxLevel: 5
     Feature: 
   - skillKey: R
@@ -71,7 +71,7 @@ MonoBehaviour:
     skillAnimation: {fileID: 7400000, guid: dc634bbd41b51934b856820f9cd58665, type: 2}
     manaCost: 0
     requiredLevel: 0
-    currentLevel: 0
+    currentLevel: 1
     maxLevel: 5
     Feature: 
   - skillKey: Attack
@@ -79,7 +79,7 @@ MonoBehaviour:
     skillIcon: {fileID: 21300000, guid: d65aa248374bb30449985d6c635a3278, type: 3}
     description: ...
     cooldown: 0
-    hitboxPrefab: {fileID: 8628970951321349092, guid: 868178d24e8650f4a8597d3f93212316, type: 3}
+    hitboxPrefab: {fileID: 334107297067051712, guid: a5054e789e7fede408879f3af2a6f8a8, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
     followCaster: 0
@@ -88,4 +88,4 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 5
-    Feature: 
+    Feature: "\uC77C\uBC18"
