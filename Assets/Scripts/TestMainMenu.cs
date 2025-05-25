@@ -7,7 +7,7 @@ public class TestMainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("TestScene"); // 게임 씬으로 이동
+        SceneManager.LoadScene("TutorialGameSceneReal"); // 게임 씬으로 이동
     }
 
     public void OpenOptions()

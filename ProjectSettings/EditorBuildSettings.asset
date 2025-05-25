@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CapStoneProject/Scenes/TestScene/TestScene_Mainmenu.unity
     guid: 16589af31f2165e4e84a2a563b5a60d9
-  - enabled: 1
+  - enabled: 0
     path: Assets/CapStoneProject/Scenes/TestScene/TestScene_E.unity
     guid: 4a673c773e67de949a8a177fdec9ac06
-  - enabled: 1
+  - enabled: 0
     path: "Assets/CapStoneProject/Scenes/TestScene/\uBC31\uC5C5.unity"
     guid: 2e60d470c3674c84c9e25659afb633b2
   - enabled: 1
@@ -19,5 +19,8 @@ EditorBuildSettings:
     guid: d104205eb5767a940bf69fe7dbaa5799
   - enabled: 1
     path: Assets/CapStoneProject/Scenes/TestScene/MainGameScene.unity
-    guid: b5a291f80c1bae347867758639c06667
+    guid: 5acfb2c14d16f0f4b94f9599b8d8dbcb
+  - enabled: 1
+    path: Assets/CapStoneProject/Scenes/TestScene/TutorialGameSceneReal.unity
+    guid: b1dfd53054ecfe446b7ffcacd6a03019
   m_configObjects: {}
