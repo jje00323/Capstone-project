@@ -14941,7 +14941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11407ac324704ed479fb283f3e2528df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentJob: 0
+  currentJob: 2
   jobResourcesList:
   - jobType: 0
     animatorController: {fileID: 9100000, guid: 1ca0ec7d3e2db394f904bf536ecfd52e, type: 2}
@@ -14950,7 +14950,7 @@ MonoBehaviour:
   - jobType: 1
     animatorController: {fileID: 9100000, guid: 4625bf6b9577bed4bad538eb5bf061cc, type: 2}
     avatar: {fileID: 9000000, guid: 84bdafae2f1a71d4f8088242b55831d6, type: 3}
-    modelPrefab: {fileID: 1288249998622640856, guid: 128413c070f18f7478a273d832c7683d, type: 3}
+    modelPrefab: {fileID: 1288249998622640856, guid: de026dec92a35634a91ff677eb96c55f, type: 3}
   - jobType: 2
     animatorController: {fileID: 9100000, guid: 0fa1d9419ba5bb045b4eecb5397e0baa, type: 2}
     avatar: {fileID: 9000000, guid: 264088356dc073e4a822be9e71c15663, type: 3}
@@ -15735,7 +15735,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.05
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -15832,7 +15832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 774887914}
-  defaultBGM: {fileID: 8300000, guid: b8cfaa980683fb24bb4a95e34f192849, type: 3}
+  defaultBGM: {fileID: 8300000, guid: c53422fc55b7bd444ad230f275dffe7a, type: 3}
 --- !u!4 &774887916
 Transform:
   m_ObjectHideFlags: 0
@@ -27715,6 +27715,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Skill_Slot_Area
       objectReference: {fileID: 0}
+    - target: {fileID: 4343644627967160538, guid: 718f82c4125e2a04db5b6f17a34ad42d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -28365,7 +28369,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 1.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

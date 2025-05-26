@@ -287482,6 +287482,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.13333334
+    functionName: PlaySkillSound2
+    data: "\uB9C8\uB825\uD0C4"
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.13333334
     functionName: SpawnEffect
     data: "\uB9C8\uB825\uD0C4"
     objectReferenceParameter: {fileID: 0}

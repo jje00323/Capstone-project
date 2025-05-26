@@ -201768,9 +201768,23 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.53333336
+  - time: 0.25
+    functionName: PlaySkillSound1
+    data: "\uAE30\uBCF8\uACF5\uACA9"
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.35
     functionName: CanAttack
     data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.35
+    functionName: ActivateHitbox
+    data: "\uAE30\uBCF8\uACF5\uACA9"
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

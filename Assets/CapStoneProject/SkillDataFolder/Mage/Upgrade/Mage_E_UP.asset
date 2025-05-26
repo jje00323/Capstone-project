@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeOptions:
   - skillKey: E
     skillName: "\uB9C8\uB825\uD3ED\uBC1C+"
-    skillIcon: {fileID: 21300000, guid: 4029a9cfeb86f134c9c5af05993eaac8, type: 3}
+    skillIcon: {fileID: 21300000, guid: cdec13907ffc75749ab2ed436bec6b14, type: 3}
     description: "\uC5B4\uCA4C\uAD6C\uC800\uCA4C\uAD6C"
     cooldown: 2
     hitboxPrefab: {fileID: 9050656858112122589, guid: dd5666b624d332b44a27eddc2fae5f3c, type: 3}
@@ -28,5 +28,8 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 4
     maxLevel: 10
-    isUnlocked: 0
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7

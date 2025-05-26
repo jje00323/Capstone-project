@@ -98,7 +98,7 @@ public class SkillUpgradeUI : MonoBehaviour
                             SkillEquipSlotUI[] equipSlots = GameObject.FindObjectsOfType<SkillEquipSlotUI>();
                             foreach (var slot in equipSlots)
                             {
-                                if (slot.name.Contains(equippedSlotKey) || slot.slotKey == equippedSlotKey)
+                                if (slot.slotKey == equippedSlotKey)
                                 {
                                     slot.SetSkillIcon(skill);
                                     Debug.Log($"[SkillUpgradeUI] {baseSkill.skillName} → {skill.skillName} 슬롯 {slot.slotKey} 교체 완료");

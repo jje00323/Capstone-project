@@ -22,6 +22,17 @@ MonoBehaviour:
     hitboxPrefab: {fileID: 9088954983180458133, guid: dce8aef9e0f606b4f9b1cfc80b06ac4b, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 0}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 5
+    Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: W
     skillName: WWW
     skillIcon: {fileID: 21300000, guid: 2d972814256c47d488d38af0cc7a7ded, type: 3}
@@ -30,6 +41,17 @@ MonoBehaviour:
     hitboxPrefab: {fileID: 599437143022285730, guid: 3cf9003fe3e313e4caf8814aba471497, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 0}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 5
+    Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: E
     skillName: EEE
     skillIcon: {fileID: 21300000, guid: faab10c2bbbfc8a4e8bd69253a4edccf, type: 3}
@@ -38,6 +60,17 @@ MonoBehaviour:
     hitboxPrefab: {fileID: 7379637999519721567, guid: fcb17996a95ebd04092745c81b015e1b, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 0}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 5
+    Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: R
     skillName: RRR
     skillIcon: {fileID: 21300000, guid: 3ce5146121dd79e48a760f81492b10bc, type: 3}
@@ -46,11 +79,33 @@ MonoBehaviour:
     hitboxPrefab: {fileID: 5135922750843967348, guid: ad60cb9f413e9734f97266fe3bfaf867, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 0}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 5
+    Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
   - skillKey: Attack
-    skillName: RRR
+    skillName: "\uAE30\uBCF8\uACF5\uACA9"
     skillIcon: {fileID: 21300000, guid: d65aa248374bb30449985d6c635a3278, type: 3}
     description: ...
-    cooldown: 3
+    cooldown: 0
     hitboxPrefab: {fileID: 9113390112757731325, guid: b38943ff748e8744e8ec391be9358c41, type: 3}
     effectPrefab: {fileID: 0}
     effectDuration: 0
+    followCaster: 0
+    skillAnimation: {fileID: 0}
+    manaCost: 0
+    requiredLevel: 0
+    currentLevel: 1
+    maxLevel: 5
+    Feature: 
+    skillSFX1: {fileID: 8300000, guid: 3390081738a3f0148a9a426bb9c9e836, type: 3}
+    skillSFX2: {fileID: 8300000, guid: 616ed0605c6275a44bc4430a7dd29944, type: 3}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
