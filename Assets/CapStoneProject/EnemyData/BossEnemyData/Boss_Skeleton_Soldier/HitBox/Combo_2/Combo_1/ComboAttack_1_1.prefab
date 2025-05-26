@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4128868326218561708}
-  - component: {fileID: 542286502066982}
-  - component: {fileID: 3763566868278551455}
+  - component: {fileID: 5443310354168414909}
+  - component: {fileID: 6068108465611062616}
   m_Layer: 9
-  m_Name: ComboAttack_3_4
+  m_Name: ComboAttack_1_1
   m_TagString: EnemyHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &542286502066982
+--- !u!114 &5443310354168414909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,19 +50,19 @@ MonoBehaviour:
   startDelay: 0
   repeatCount: 1
   repeatInterval: 0
-  shape: 0
-  radius: 4.8
+  shape: 2
+  radius: 0
   boxSize: {x: 2, y: 2, z: 2}
-  coneAngle: 45
-  coneDistance: 3
-  hitboxOffset: {x: 0, y: 0, z: 0}
-  effectPrefab: {fileID: 5557548418706590239, guid: 99ca87cfc7355e64896a702c5e286418, type: 3}
-  effectOffset: {x: 0, y: 0, z: 0}
+  coneAngle: 200
+  coneDistance: 4
+  hitboxOffset: {x: 0, y: 0.01, z: 0}
+  effectPrefab: {fileID: 5557548418706590239, guid: 1e75ce6621899254085f008a4f67c10c, type: 3}
+  effectOffset: {x: 0, y: 1, z: 1.5}
   effectDuration: 2
   followCaster: 0
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!82 &3763566868278551455
+--- !u!82 &6068108465611062616
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,7 +72,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3d562e110764327459c53463c40d13d6, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7aadf0081f4bf3249a8901f76a27ac71, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

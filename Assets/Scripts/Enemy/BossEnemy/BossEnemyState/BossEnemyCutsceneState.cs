@@ -12,6 +12,7 @@ public class BossEnemyCutsceneState : BossEnemyState
 
     public override void Enter()
     {
+        boss.isInCutscene = true;
 
         InitializeCutsceneObjects(); // ▶ 참조 시점 보장
 
@@ -58,12 +59,17 @@ public class BossEnemyCutsceneState : BossEnemyState
 
     private IEnumerator PlayCutscene()
     {
-        // 컷씬 애니메이션 시작까지 대기
+        Debug.Log("[CutsceneState] PlayCutscene 시작");
+
         yield return new WaitUntil(() =>
-            boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("CutScene"));
+        {
+            var animName = boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("CutScene");
+            Debug.Log($"[CutsceneState] 현재 애니메이션 상태: {boss.Animator.GetCurrentAnimatorStateInfo(0).IsName("CutScene")}");
+            return animName;
+        });
+
         Debug.Log("[CutsceneState] 애니메이션 CutScene 시작됨");
 
-        // 컷씬 애니메이션 재생 시간 대기
         yield return new WaitForSeconds(boss.bossData.cutsceneDuration);
 
         // 페이드 아웃 → 카메라 전환
@@ -77,6 +83,7 @@ public class BossEnemyCutsceneState : BossEnemyState
             // 페이드 인 완료 후 1초 대기하고 Idle 상태 진입
             BossEnemyCutsceneController.Instance.FadeIn(0.5f, () =>
             {
+                Debug.Log("[CutsceneState] FadeIn 완료 → Idle 전환 시작");
                 boss.StartCoroutine(WaitAndEnterIdle());
             });
         });
@@ -89,6 +96,7 @@ public class BossEnemyCutsceneState : BossEnemyState
         boss.patternController.StartPhase2LightningPattern();
 
         Debug.Log("[CutsceneState] FSM 상태 전환: Cutscene → Idle");
+        boss.isInCutscene = false;
         boss.ChangeState(boss.idleState);
     }
 
@@ -142,6 +150,7 @@ public class BossEnemyCutsceneState : BossEnemyState
 
     public override void Exit()
     {
+        boss.isInCutscene = false;
         if (dollyCart != null)
             dollyCart.m_Speed = 0f;
     }
