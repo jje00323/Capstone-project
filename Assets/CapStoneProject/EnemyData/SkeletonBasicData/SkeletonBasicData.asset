@@ -18,7 +18,7 @@ MonoBehaviour:
   animatorController: {fileID: 9100000, guid: 27a55f0d6f84e1040a9379a1cd48a718, type: 2}
   maxHP: 100
   moveSpeed: 2
-  attackPower: 10
+  attackPower: 8
   attackCooldown: 2
   attackRange: 1
   detectRadius: 6

@@ -16,12 +16,13 @@ MonoBehaviour:
   enemyLevel: 1
   enemyTag: "\uC2A4\uCF08\uB808\uD1A4"
   animatorController: {fileID: 9100000, guid: 4b9ecafbf5ce91145b890c7154b0c9b1, type: 2}
-  maxHP: 100
+  maxHP: 150
   moveSpeed: 2
-  attackPower: 10
+  attackPower: 12
   attackCooldown: 2
   attackRange: 5
   detectRadius: 6
   returnDistance: 15
   returnSpeedMultiplier: 3
   expDrop: 10
+  dropItems: []

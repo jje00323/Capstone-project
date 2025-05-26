@@ -67,6 +67,10 @@ public class EnemyFSM : BaseEnemyFSM
     {
         if (currentState == newState) return;
 
+        // StunnedState로 진입 막기
+        if (newState == stunnedState && !enemyData.canBeStunned)
+            return;
+
         currentState?.Exit();
         currentState = newState;
         currentState.Enter();
@@ -89,6 +93,13 @@ public class EnemyFSM : BaseEnemyFSM
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(spawnPosition, enemyData.returnDistance);
         }
+    }
+    public void TryStun()
+    {
+        if (!enemyData.canBeStunned) return;
+        if (currentState == stunnedState || currentState == deadState) return;
+
+        ChangeState(stunnedState);
     }
 }
 

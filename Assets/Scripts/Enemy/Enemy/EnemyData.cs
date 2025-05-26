@@ -29,6 +29,7 @@ public class EnemyData : ScriptableObject
     public float detectRadius;
     public float returnDistance;
     public float returnSpeedMultiplier;
+    public bool canBeStunned = true; // 기본값 true
 
     [Header("보상")]
     public int expDrop;
@@ -36,6 +37,9 @@ public class EnemyData : ScriptableObject
     
     [Header("드롭 아이템")]
     public List<DropItemData> dropItems = new List<DropItemData>();
+
+
+
 }
 
 
