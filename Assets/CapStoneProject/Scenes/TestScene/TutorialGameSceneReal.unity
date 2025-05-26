@@ -9446,7 +9446,7 @@ PrefabInstance:
     - target: {fileID: 1712113265573438659, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: footstepSounds.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: 8c4fe6776cce6b044854c58873c68930, type: 3}
+      objectReference: {fileID: 8300000, guid: a265dd7a5fcacbe4493612bb43095191, type: 3}
     - target: {fileID: 3804641180752894480, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: stateUI
       value: 

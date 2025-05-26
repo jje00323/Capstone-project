@@ -32594,7 +32594,7 @@ MonoBehaviour:
   areaTriggerPrefab: {fileID: 5194661022467104588, guid: 7485fd4a25e0ac04a8f86de199cc295a, type: 3}
   areaMappings:
   - areaID: Main_1
-    position: {x: -50, y: 0, z: 25}
+    position: {x: -52, y: 0, z: 20}
 --- !u!4 &1683618685
 Transform:
   m_ObjectHideFlags: 0
@@ -41602,7 +41602,7 @@ PrefabInstance:
     - target: {fileID: 1712113265573438659, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: footstepSounds.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: e3e0e93721a10a24f9d591699d3a109b, type: 3}
+      objectReference: {fileID: 8300000, guid: a265dd7a5fcacbe4493612bb43095191, type: 3}
     - target: {fileID: 3804641180752894480, guid: ab62d5cbe91ae3b4a82a7bd889b9c78f, type: 3}
       propertyPath: stateUI
       value: 
