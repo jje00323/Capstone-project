@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: "\uB9C8\uB825\uD0C4"
   upgradeOptions:
-  - skillKey: W
+  - skillKey: Q
     skillName: "\uD3ED\uBC1C\uD0C4"
-    skillIcon: {fileID: 0}
+    skillIcon: {fileID: 21300000, guid: b12502ba5c973e3488a651f1e7634829, type: 3}
     description: "\uC774\uB7EC\uCFF5\uC800\uB7EC\uCFF5"
     cooldown: 1
     hitboxPrefab: {fileID: 334107297067051712, guid: 1876395792287184b9865fcba75c1e6e, type: 3}
@@ -28,5 +28,8 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 0
     Feature: "\uC77C\uBC18"
+    skillSFX1: {fileID: 8300000, guid: 16b57ac1e193aca44a3d05b1984e2242, type: 3}
+    skillSFX2: {fileID: 8300000, guid: 56da29a44427a7a43862f53332773a06, type: 3}
+    skillSFXVolume1: 0.719
+    skillSFXVolume2: 0.7

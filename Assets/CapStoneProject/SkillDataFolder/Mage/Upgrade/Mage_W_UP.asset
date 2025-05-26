@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeOptions:
   - skillKey: W
     skillName: "\uB9C8\uB825\uD3ED\uD48D"
-    skillIcon: {fileID: 0}
+    skillIcon: {fileID: 21300000, guid: cc16da6188962544787f7f3b5c7f499f, type: 3}
     description: 
     cooldown: 0
     hitboxPrefab: {fileID: 9050656858112122589, guid: 8f75f3d795256784a9bd6b494d1adae2, type: 3}
@@ -28,11 +28,14 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 0
     Feature: 
-  - skillKey: E
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
+  - skillKey: W
     skillName: "\uBE59\uACB0\uC9C0\uB300"
-    skillIcon: {fileID: 0}
+    skillIcon: {fileID: 21300000, guid: 3fcde16e60de7e7438dadb0909775d6c, type: 3}
     description: 
     cooldown: 0
     hitboxPrefab: {fileID: 334107297067051712, guid: c87afdd2aa34749438018ef6b38c1e4c, type: 3}
@@ -44,11 +47,14 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 0
     Feature: 
-  - skillKey: R
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7
+  - skillKey: W
     skillName: "\uBC14\uB78C\uB9C8\uBC95"
-    skillIcon: {fileID: 0}
+    skillIcon: {fileID: 21300000, guid: 07720b55bb7cb3c45a9e509ca5b5e01c, type: 3}
     description: 
     cooldown: 0
     hitboxPrefab: {fileID: 334107297067051712, guid: 44202b0df396f5f48820f5a4f49783fe, type: 3}
@@ -60,5 +66,8 @@ MonoBehaviour:
     requiredLevel: 0
     currentLevel: 1
     maxLevel: 10
-    isUnlocked: 0
     Feature: 
+    skillSFX1: {fileID: 0}
+    skillSFX2: {fileID: 0}
+    skillSFXVolume1: 0.7
+    skillSFXVolume2: 0.7

@@ -100,19 +100,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 15
   duration: 0.5
-  followCaster: 1
   startDelay: 0
   repeatCount: 1
   repeatInterval: 0.5
   shape: 2
   radius: 2
   boxSize: {x: 2, y: 2, z: 2}
-  coneAngle: 45
-  coneDistance: 3
-  offset: {x: 0, y: 0, z: 1}
+  coneAngle: 130
+  coneDistance: 2
+  offset: {x: 0, y: 0, z: 0.2}
   isProjectile: 0
   projectileSpeed: 10
   projectileRigidbody: {fileID: 0}
+  secondaryHitboxPrefab: {fileID: 0}
+  useMousePosition: 0
+  mouseGroundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   drawGizmos: 1
   gizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  caster: {fileID: 0}
+  followCaster: 1

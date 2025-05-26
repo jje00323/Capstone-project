@@ -16,7 +16,7 @@ MonoBehaviour:
   skills:
   - skillKey: Q
     skillName: "\uC8FC\uBA39\uCE58\uAE30"
-    skillIcon: {fileID: 21300000, guid: f656d804daeaddf409ad1ab6fa5041bd, type: 3}
+    skillIcon: {fileID: 21300000, guid: 8013ced2516877c43b1e60720f52748f, type: 3}
     description: "\uC190\uC744 \uC55E\uC73C\uB85C \uD718\uB450\uB978 \uB4A4 \uC804\uBC29\uC758
       \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4"
     cooldown: 3
@@ -32,11 +32,11 @@ MonoBehaviour:
     Feature: "\uC77C\uBC18"
     skillSFX1: {fileID: 8300000, guid: 8bad7b585036f0c4abd6e0dde0d16816, type: 3}
     skillSFX2: {fileID: 0}
-    skillSFXVolume1: 0.382
+    skillSFXVolume1: 0.7
     skillSFXVolume2: 0.7
   - skillKey: W
     skillName: "\uAE30\uBCF8\uACF5\uACA9"
-    skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
+    skillIcon: {fileID: 21300000, guid: b9a847102a75c8c429a8f749008df6c2, type: 3}
     description: "\uBAB0\uB77C"
     cooldown: 0
     hitboxPrefab: {fileID: 8628970951321349092, guid: 893f50fe3ce27ec4c8414d1066efb2fa, type: 3}
@@ -51,24 +51,5 @@ MonoBehaviour:
     Feature: "\uC77C\uBC18"
     skillSFX1: {fileID: 8300000, guid: 3b74aafca9a19054b8cc9e5b78cf7618, type: 3}
     skillSFX2: {fileID: 0}
-    skillSFXVolume1: 0.334
-    skillSFXVolume2: 0.7
-  - skillKey: E
-    skillName: "\uB300\uC26C"
-    skillIcon: {fileID: 21300000, guid: 922280c03fc483a409c6786d6d5b50d6, type: 3}
-    description: "\uBAB0\uB77C"
-    cooldown: 3
-    hitboxPrefab: {fileID: 0}
-    effectPrefab: {fileID: 0}
-    effectDuration: 0
-    followCaster: 0
-    skillAnimation: {fileID: 0}
-    manaCost: 0
-    requiredLevel: 0
-    currentLevel: 1
-    maxLevel: 1
-    Feature: "\uB300\uC26C"
-    skillSFX1: {fileID: 0}
-    skillSFX2: {fileID: 0}
-    skillSFXVolume1: 0.7
+    skillSFXVolume1: 1
     skillSFXVolume2: 0.7

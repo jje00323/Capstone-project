@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   conditionName: "\uC2A4\uCF08\uB808\uD1A4 \uCC98\uCE58\uD558\uAE30"
   targetEnemyTag: "\uC2A4\uCF08\uB808\uD1A4"
-  requiredKillCount: 1
+  requiredKillCount: 25

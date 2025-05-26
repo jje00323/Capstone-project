@@ -322588,6 +322588,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 1.2
+    functionName: PlaySkillSound1
+    data: "\uB9C8\uB825\uD3ED\uBC1C"
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 1.3333334
     functionName: ActivateHitbox
     data: "\uB9C8\uB825\uD3ED\uBC1C"
