@@ -29,6 +29,9 @@ public class BossEnemyFSM : BaseEnemyFSM
     public bool useTestPattern = false;
     [Range(0, 7)] public int testPatternIndex = 0;
 
+    [Header("컷씬 여부")]
+    public bool isInCutscene = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -66,6 +69,16 @@ public class BossEnemyFSM : BaseEnemyFSM
 
     public void ChangeState(BossEnemyState newState)
     {
+        //Debug.Log($"[FSM] 상태 전환 요청: {currentState?.GetType().Name} → {newState?.GetType().Name}");
+
+        if (isInCutscene && newState != cutsceneState)
+        {
+            //Debug.LogWarning("[FSM] 컷씬 중 상태 전환 시도 차단됨");
+            //Debug.Log($"[FSM] 상태: {currentState?.GetType().Name}");
+            //Debug.Log($"isInCutscene 상태: {isInCutscene}");
+            return;
+        }
+
         if (currentState == newState) return;
 
         currentState?.Exit();
