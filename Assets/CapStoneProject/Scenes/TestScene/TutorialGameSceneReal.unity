@@ -913,6 +913,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: npcName
+      value: "\uAC81\uBA39\uC740 \uC6A9\uBCD1"
+      objectReference: {fileID: 0}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
       propertyPath: dialogueUI
       value: 
       objectReference: {fileID: 2126244865}
@@ -924,6 +928,32 @@ PrefabInstance:
       propertyPath: dialogueText
       value: 
       objectReference: {fileID: 1811287178}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: dialogueLines.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: dialogueLines.Array.data[1]
+      value: "\uC720\uBB3C\uC740 \uD3EC\uAE30\uD558\uB294\uAC8C \uC88B\uC544\r\n\uC774
+        \uC55E\uC5D0\uC11C \uC720\uBB3C\uC744 \uD65C\uC131\uD654 \uD558\uAE30 \uC704\uD574\uC120
+        \uBAA9\uC228\uC744 \uAC78\uC5B4\uC57C \uD55C\uB2E4\uB294 \uAE00\uADC0\uB97C
+        \uCC3E\uC558\uC5B4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: dialogueLines.Array.data[2]
+      value: "\uC774 \uC720\uBB3C\uC740 \uC800\uC8FC\uBC1B\uC740 \uC720\uBB3C\uC774\uC57C
+        \uAC74\uB4DC\uB9AC\uBA74 \uC548\uB41C\uB2E4\uACE0!"
+      objectReference: {fileID: 0}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: dialogueLines.Array.data[3]
+      value: "\uADF8\uB9AC\uACE0 \uC55E\uC758 \uC720\uC801\uC740 \uAD34\uBB3C\uC774
+        \uC9C0\uD0A4\uACE0 \uC788\uC73C\uB2C8 \uAC00\uAE4C\uC774 \uAC00\uC9C0\uB3C4
+        \uBABB\uD560\uAC70\uC57C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 39419129294164999, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
+      propertyPath: dialogueLines.Array.data[4]
+      value: "\uB0B4 \uC870\uC5B8\uC744 \uC0C8\uACA8\uB4E3\uB294\uAC8C \uC88B\uC744\uAC70\uC57C..."
+      objectReference: {fileID: 0}
     - target: {fileID: 338507382384469164, guid: 3c435c47bae7a3f46aea8f52e185de5b, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -9350,6 +9380,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 315436980}
     m_Modifications:
+    - target: {fileID: 2064762208773221700, guid: 1126951403d3bfb4c9003355cceaa73d, type: 3}
+      propertyPath: npcName
+      value: "\uC232\uC758 \uB178\uC778"
+      objectReference: {fileID: 0}
     - target: {fileID: 2064762208773221700, guid: 1126951403d3bfb4c9003355cceaa73d, type: 3}
       propertyPath: dialogueUI
       value: 
